@@ -127,14 +127,14 @@ void display()
 	glPushMatrix();
 	{
 		// Draw square + extrude square
-		//CoordinateSet temp(10);
-		//temp.addCoordinate(0, 0, 0);
-		//temp.addCoordinate(0.5, 0, 0);
-		//temp.addCoordinate(0.5, 0.5, 0);
-		//temp.addCoordinate(0, 0.5, 0);
-		//Utility::drawPolygon(temp, new float[3]{ 0.25, 0.25, 0 });
-		//float zAxis[3] = {0, 0, 1};
-		//Utility::extrudePolygon(temp, new float[3]{ 0.25, 0.25, 0 }, zAxis, 0.5f, false, false);
+		CoordinateSet temp(10);
+		temp.addCoordinate(0, 0, 0);
+		temp.addCoordinate(0.5, 0, 0);
+		temp.addCoordinate(0.5, 0.5, 0);
+		temp.addCoordinate(0, 0.5, 0);
+		Utility::drawPolygon(temp, new float[3]{ 0.25, 0.25, 0 });
+		float zAxis[3] = {0, 0, 1};
+		Utility::extrudePolygon(temp, new float[3]{ 0.25, 0.25, 0 }, zAxis, 0.5f, false, false);
 
 
 		// Draw bezier line + combine coordinateSet
