@@ -19,6 +19,8 @@ const int Z_AXIS[3] = { 0, 0, 1 };
 float camRotation[3] = { 0, 0, 0 };
 float camRotateSpeed = 2.0f;
 
+//hsaahsajshas
+
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	bool inputting = false;
