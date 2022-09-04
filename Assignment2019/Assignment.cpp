@@ -19,8 +19,6 @@ const int Z_AXIS[3] = { 0, 0, 1 };
 float camRotation[3] = { 0, 0, 0 };
 float camRotateSpeed = 2.0f;
 
-//hsaahsajshas
-
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	bool inputting = false;
@@ -139,18 +137,18 @@ void display()
 		Utility::extrudePolygon(temp, new float[3]{ 0.25, 0.25, 0 }, zAxis, 0.5f, false, false);
 
 
-		// Draw bezier line + combine coordinateSet
-		//glColor3f(1, 0, 0);
-		//CoordinateSet temp2(10);
-		//temp2.addCoordinate(0, 0, 0);
-		//temp2.addCoordinate(0, 0.5, 0);
-		//temp2.addCoordinate(0.87, 0.87, 0);
-		//temp2 = Utility::bezierCurveCoords(temp2, 10);
-		//temp2.addCoordinate(...);
-		//CoordinateSet temp3(10);
-		//temp3.addCoordinate(...);
-		//temp3 = Utility::bezierCurveCoords(temp3, 10);
-		//temp2.combineCoords(temp3);
+		//Draw bezier line + combine coordinateSet
+		glColor3f(1, 0, 0);
+		CoordinateSet temp2(10);
+		temp2.addCoordinate(0, 0, 0);
+		temp2.addCoordinate(0, 0.5, 0);
+		temp2.addCoordinate(0.87, 0.87, 0);
+		temp2 = Utility::bezierCurveCoords(temp2, 10);
+		temp2.addCoordinate(...);
+		CoordinateSet temp3(10);
+		temp3.addCoordinate(...);
+		temp3 = Utility::bezierCurveCoords(temp3, 10);
+		temp2.combineCoords(temp3);
 	}
 	glPopMatrix();
 
