@@ -77,7 +77,7 @@ void Model::LegUpper() {
 	circle.combineCoords(line3);
 
 	Color::lightBlue();
-	float polygonCenter[3] = {0.35, -0.35, 0};
+	float polygonCenter[3] = { 0.35, -0.35, 0 };
 	Utility::extrudePolygon(circle, polygonCenter, zAxis, legThickness);
 
 	// Hinge
@@ -139,7 +139,7 @@ void Model::LegLower() {
 	line1.addCoordinate(0.075, -0.15, 0);
 	line1.addCoordinate(0.16, -0.19, 0);
 
-	float legP1Center[3] = {0.25, -0.15, 0};
+	float legP1Center[3] = { 0.25, -0.15, 0 };
 	Utility::extrudePolygon(line1, legP1Center, zAxis, legThickness);
 
 	// Draw Leg Part 2
@@ -211,7 +211,7 @@ void Model::LegPlate() {
 	plate.addCoordinate(0.275, -0.04, 0);
 	plate.addCoordinate(0.14, -0.03, 0);
 
-	float plateCenter[3] = {0.14, -0.06, 0};
+	float plateCenter[3] = { 0.14, -0.06, 0 };
 	Utility::extrudePolygon(plate, plateCenter, zAxis, feetWidth);
 
 	// Ankle
@@ -222,7 +222,7 @@ void Model::LegPlate() {
 		float ankleCenter[3] = { 0, 0, 0 };
 		CoordinateSet ankle = Utility::circleCoords(ankleCenter, 0.025f, 12);
 		glTranslatef(0, 0, -extrusion);
-		Utility::extrudePolygon(ankle, ankleCenter, zAxis, feetWidth + extrusion*2);
+		Utility::extrudePolygon(ankle, ankleCenter, zAxis, feetWidth + extrusion * 2);
 	}
 	glPopMatrix();
 
@@ -240,7 +240,7 @@ void Model::LegPlate() {
 		bar.addCoordinate(0.03, 0.035, 0);
 		bar.addCoordinate(0.035, 0.03, 0);
 		bar.addCoordinate(0.035, -0.01, 0);
-		float barCenter[3] = {0.025, 0.015, 0};
+		float barCenter[3] = { 0.025, 0.015, 0 };
 
 		// Right support plate
 		glPushMatrix();
@@ -279,7 +279,7 @@ void Model::LegPlate() {
 		glPopMatrix();
 	}
 	glPopMatrix();
-	
+
 
 
 }
@@ -307,7 +307,7 @@ void Model::ArmUpper() {
 		arm.addCoordinate(0.28f, -0.025f, 0);
 		arm.addCoordinate(0.2f, -0.1f, 0);
 		arm.addCoordinate(0.05f, -0.135f, 0);
-		float armCenter[3] = {0.5f, -0.3f, 0};
+		float armCenter[3] = { 0.5f, -0.3f, 0 };
 		Utility::extrudePolygon(arm, armCenter, zAxis, armThickness);
 
 		// Shoulder Hinge
@@ -327,5 +327,95 @@ void Model::ArmLower() {
 }
 
 void Model::Hand() {
+
+}
+
+void Model::r99() {
+	float centre1[3] = { 0,0,0 };
+	float centre2[3] = { 0,0,0 };
+	float zAxis[3] = { 0,0,1 };
+	float normal1[3] = { 0,0,0 };
+	float normal2[3] = { 0,0,0 };
+
+	CoordinateSet barrelCoors(10);
+	barrelCoors.addCoordinate(0.06, -0.05, 0);
+	barrelCoors.addCoordinate(0.07, -0.04, 0);
+	barrelCoors.addCoordinate(0.07, 0.04, 0);
+	barrelCoors.addCoordinate(0.06, 0.05, 0);
+	barrelCoors.addCoordinate(-0.06, 0.05, 0);
+	barrelCoors.addCoordinate(-0.07, 0.04, 0);
+	barrelCoors.addCoordinate(-0.07, -0.04, 0);
+	barrelCoors.addCoordinate(-0.06, -0.05, 0);
+
+	CoordinateSet barrelSide(10);
+	barrelSide.addCoordinate(-0.01, -0.04, 0);
+	barrelSide.addCoordinate(0.01, -0.04, 0);
+	barrelSide.addCoordinate(0.01, 0.04, 0);
+	barrelSide.addCoordinate(-0.01, 0.04, 0);
+
+	CoordinateSet barrelBottom(10);
+	barrelBottom.addCoordinate(0.05, -0.025, 0);
+	barrelBottom.addCoordinate(0.06, -0.02, 0);
+	barrelBottom.addCoordinate(0.06, 0.02, 0);
+	barrelBottom.addCoordinate(0.05, 0.025, 0);
+	barrelBottom.addCoordinate(-0.05, 0.025, 0);
+	barrelBottom.addCoordinate(-0.06, 0.02, 0);
+	barrelBottom.addCoordinate(-0.06, -0.02, 0);
+	barrelBottom.addCoordinate(-0.05, -0.025, 0);
+
+	CoordinateSet barrelTop(10);
+	barrelTop.addCoordinate(-0.05, -0.02, 0);
+	barrelTop.addCoordinate(0.05, -0.02, 0);
+	barrelTop.addCoordinate(0.05, 0.02, 0);
+	barrelTop.addCoordinate(-0.05, 0.02, 0);
+
+	CoordinateSet handle1(10);
+	handle1.addCoordinate(-0.05, -0.08, 0);
+	handle1.addCoordinate(-0.04, -0.1, 0);
+	handle1.addCoordinate(0.04, -0.1, 0);
+	handle1.addCoordinate(0.05, -0.08, 0);
+	handle1.addCoordinate(0.05, 0, 0);
+	handle1.addCoordinate(-0.05, 0, 0);
+
+	glPushMatrix();
+	Utility::extrudePolygon(barrelCoors, centre1, zAxis, 0.6f, true, true);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.069, 0, 0);
+	Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-0.069, 0, 0);
+	Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0, -0.075, 0.05);
+	Utility::extrudePolygon(barrelBottom, centre1, zAxis, 0.2f, true, true);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0, 0.07, 0.07);
+	Utility::extrudePolygon(barrelTop, centre1, zAxis, 0.48f, true, true);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0, -0.1, 0.05);
+	Utility::extrudePolygon(handle1, centre1, zAxis, 0.03f, true, true);
+	glPopMatrix();
+
+	//barrel head
+	glPushMatrix();
+	centre1[0] = 0;
+	centre1[1] = 0;
+	normal1[2] = 1;
+
+	centre2[2] = 0.08;
+	normal2[2] = 1;
+	//Utility::drawTube(centre1, normal1, 0.02, centre2, normal2, 0.02, 20);
+	glPopMatrix();
+
 
 }

@@ -7,6 +7,7 @@
 #include "CoordinateSet.h"
 #include "Model.h"
 #include "Animation.h"
+#include "Color.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 
@@ -126,29 +127,7 @@ void display()
 	
 	glPushMatrix();
 	{
-		// Draw square + extrude square
-		CoordinateSet temp(10);
-		temp.addCoordinate(0, 0, 0);
-		temp.addCoordinate(0.5, 0, 0);
-		temp.addCoordinate(0.5, 0.5, 0);
-		temp.addCoordinate(0, 0.5, 0);
-		Utility::drawPolygon(temp, new float[3]{ 0.25, 0.25, 0 });
-		float zAxis[3] = {0, 0, 1};
-		Utility::extrudePolygon(temp, new float[3]{ 0.25, 0.25, 0 }, zAxis, 0.5f, false, false);
-
-
-		//Draw bezier line + combine coordinateSet
-		glColor3f(1, 0, 0);
-		CoordinateSet temp2(10);
-		temp2.addCoordinate(0, 0, 0);
-		temp2.addCoordinate(0, 0.5, 0);
-		temp2.addCoordinate(0.87, 0.87, 0);
-		temp2 = Utility::bezierCurveCoords(temp2, 10);
-		temp2.addCoordinate(...);
-		CoordinateSet temp3(10);
-		temp3.addCoordinate(...);
-		temp3 = Utility::bezierCurveCoords(temp3, 10);
-		temp2.combineCoords(temp3);
+		Model::r99();
 	}
 	glPopMatrix();
 
@@ -162,6 +141,7 @@ void display()
 	//--------------------------------
 }
 //--------------------------------------------------------------------
+
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 {

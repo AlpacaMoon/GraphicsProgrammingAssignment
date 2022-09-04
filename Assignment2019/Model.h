@@ -20,5 +20,8 @@ public:
 	static void ArmUpper();
 	static void ArmLower();
 	static void Hand();
+
+	//weapon
+	static void r99();
 };
 
