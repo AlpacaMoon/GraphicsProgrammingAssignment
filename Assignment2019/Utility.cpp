@@ -1,6 +1,7 @@
 
 #include <Windows.h>
 #include <gl/GL.h>
+#include <gl/GLU.h>
 #include <math.h>
 #include <list>
 
@@ -10,6 +11,8 @@
 using namespace std;
 
 const float PI = 3.1415926f;
+
+GLUquadricObj* obj;
 
 // Convert degrees to radians
 float Utility::degToRad(float deg) {
@@ -91,7 +94,7 @@ void Utility::drawLine(CoordinateSet coords) {
 /*	Given the center, normal and radius,
 *	Draw a circle that faces towards the normal using GL_LINE_LOOP
 */
-void Utility::drawCircle(float center[3], float normal[3], float radius) {
+void Utility::drawCircle(float center[3], float normal[3], float radius, int edges) {
 	glPushMatrix();
 	// Translate to correct position
 	glTranslatef(center[0], center[1], center[2]);
@@ -104,8 +107,11 @@ void Utility::drawCircle(float center[3], float normal[3], float radius) {
 
 	// Draw the circle
 	glBegin(GL_LINE_LOOP);
-	for (int i = 0; i < 360; i++) {
-		glVertex3f(cos(degToRad(i)) * radius, sin(degToRad(i)) * radius, 0);
+	float rot = 0;
+	float inc = 360.0f / edges;
+	for (int i = 0; i < edges; i++) {
+		glVertex3f(cos(degToRad(rot)) * radius, sin(degToRad(rot)) * radius, 0);
+		rot += inc;
 	}
 	glEnd();
 	glPopMatrix();
@@ -154,7 +160,7 @@ void Utility::drawCirclesAroundBezier(CoordinateSet coordSet, int divisions, flo
 
 		// Draw circle using tangent as normal
 		glColor3f(0, 1, 0);
-		drawCircle(thisPoint, tangent, radius);
+		drawCircle(thisPoint, tangent, radius, 16);
 	}
 }
 
@@ -162,38 +168,47 @@ void Utility::drawCirclesAroundBezier(CoordinateSet coordSet, int divisions, flo
 *	draw a tube that uses quads as its faces
 *		- This function is different from gluCylinder as in this function
 *			allows the top and bottom of the cylinder to be non-parallel to each other
-*		- Used in drawBezierTube()
-*/
-/*	Developer's note
-[ Rotation in 3D space ]
-	- Rotation around Z-axis
-		|cos t   -sin t   0| |x|   |x cos t - y sin t |   |x'|
-		|sin t    cos t   0| |y| = |x sin t + y cos t | = |y'|
-		|  0        0     1| |z|   |		z		  |   |z'|
-
-	- Rotation around Y-axis
-		| cos t   0   sin t| |x|   | x cos t + z sin t|   |x'|
-		|   0     1     0  | |y| = |		 y		  | = |y'|
-		|-sin t   0   cos t| |z|   |-x sin t + z cos t|   |z'|
-
-	-Rotation around X-axis
-		|1     0        0  | |x|   |		 x		  |   |x'|
-		|0   cos t   -sin t| |y| = |y cos t - z sin t | = |y'|
-		|0   sin t    cos t| |z|   |y sin t + z cos t |   |z'|
-
-	*Note that rotation around an axis will not change its position on that axis,
-		ie: Rotation around Y-axis doesnt change the Y-coordinate,
-		because the rotation only happens on the XZ plane
-	*Reference: https://stackoverflow.com/questions/14607640/rotating-a-vector-in-3d-space
 */
 void Utility::drawTube(float centerA[3], float normalA[3], float radiusA, float centerB[3], float normalB[3], float radiusB, int faces) {
 	// Error handling
 	if (faces >= -2 && faces <= 2) return;
 
-	// Calculate the orthogonal basis vectors of normalA and normalB
 	float basisA1[3], basisA2[3], basisB1[3], basisB2[3];
-	orthogonalBasis(normalA, basisA1, basisA2);
-	orthogonalBasis(normalB, basisB1, basisB2);
+	float thisCenterA[3], thisCenterB[3];
+	glPushMatrix();
+	
+	// For some reason the tube will get shrinked to infinity when it is parallel to Z-axis (the bug is probably in orthogonalBasis())
+	// So instead of solving the bug, here I just rotate the tube 90 degrees so that it isn't parallel to Z-axis
+	float zAxis[3] = { 0, 0, 1 };
+	if (isParallelVector(normalA, zAxis) || isParallelVector(normalB, zAxis)) {
+		glRotatef(-90, 0, 1, 0);
+
+		float newNormalA[3], newNormalB[3], newCenterA[3], newCenterB[3];
+		rotateAroundYaxis(normalA, 90, newNormalA);
+		rotateAroundYaxis(normalB, 90, newNormalB);
+		rotateAroundYaxis(centerA, 90, newCenterA);
+		rotateAroundYaxis(centerB, 90, newCenterB);
+
+		// Calculate the orthogonal basis vectors of normalA and normalB
+		orthogonalBasis(newNormalA, basisA1, basisA2);
+		orthogonalBasis(newNormalB, basisB1, basisB2);
+
+		for (int i = 0; i < 3; i++) {
+			thisCenterA[i] = newCenterA[i];
+			thisCenterB[i] = newCenterB[i];
+		}
+	}
+	// Doesn't need to rotate if it isn't parallel to Z-axis
+	else {
+		// Calculate the orthogonal basis vectors of normalA and normalB
+		orthogonalBasis(normalA, basisA1, basisA2);
+		orthogonalBasis(normalB, basisB1, basisB2);
+
+		for (int i = 0; i < 3; i++) {
+			thisCenterA[i] = centerA[i];
+			thisCenterB[i] = centerB[i];
+		}
+	}
 
 	// Calculate rotation increment between faces
 	float increment = 360.0f / faces;
@@ -207,30 +222,31 @@ void Utility::drawTube(float centerA[3], float normalA[3], float radiusA, float 
 
 		// Draw #1 that lies on first circle, with angle = rot
 		for (int i = 0; i < 3; i++)
-			temp[i] = centerA[i] + radiusA * (basisA1[i] * cos(degToRad(rot)) + basisA2[i] * sin(degToRad(rot)));
+			temp[i] = thisCenterA[i] + radiusA * (basisA1[i] * cos(degToRad(rot)) + basisA2[i] * sin(degToRad(rot)));
 		glVertex3f(temp[0], temp[1], temp[2]);
 
 		// Draw #2 that lines on first circle, with angle = rot + increment
 		for (int i = 0; i < 3; i++)
-			temp[i] = centerA[i] + radiusA * (basisA1[i] * cos(degToRad(rot + increment)) + basisA2[i] * sin(degToRad(rot + increment)));
+			temp[i] = thisCenterA[i] + radiusA * (basisA1[i] * cos(degToRad(rot + increment)) + basisA2[i] * sin(degToRad(rot + increment)));
 		glVertex3f(temp[0], temp[1], temp[2]);
 
 		// Draw #3 that lines on second circle, with angle = rot + increment
 		for (int i = 0; i < 3; i++)
-			temp[i] = centerB[i] + radiusB * (basisB1[i] * cos(degToRad(rot + increment)) + basisB2[i] * sin(degToRad(rot + increment)));
+			temp[i] = thisCenterB[i] + radiusB * (basisB1[i] * cos(degToRad(rot + increment)) + basisB2[i] * sin(degToRad(rot + increment)));
 		glVertex3f(temp[0], temp[1], temp[2]);
 
 		// Draw #4 that lines on second circle, with angle = rot
 		for (int i = 0; i < 3; i++)
-			temp[i] = centerB[i] + radiusB * (basisB1[i] * cos(degToRad(rot)) + basisB2[i] * sin(degToRad(rot)));
+			temp[i] = thisCenterB[i] + radiusB * (basisB1[i] * cos(degToRad(rot)) + basisB2[i] * sin(degToRad(rot)));
 		glVertex3f(temp[0], temp[1], temp[2]);
 
 		glEnd();
 
 		// Increment rotation / theta
 		rot += increment;
-		
 	}
+
+	glPopMatrix();
 }
 
 /*	Given the bezier line coords,
@@ -330,6 +346,76 @@ void Utility::drawAlternatingBezierTube(CoordinateSet coordSet, int lineSmoothne
 		drawTube(pointA, tangentA, radius1, pointB, tangentB, radius2, faces);
 }
 
+/*	Draws multiple straight tubes, but the connections between them are made of auto generated bezier curves. 
+*	Each control points given (Except the first and last point) will be automatically converted into a 3-point bezier curve
+*	that will be drawn as a turning segment that connects the tube. 
+*	The degree / curvature of turn segments depends on the "turnMultiplier" variable. 
+* 
+*	@param	turnMultipler: The larger the value, the more curvy each turn segment is, maximum 0.5
+*/
+void Utility::drawStraightTubes(CoordinateSet points, int smoothnessStraight, int smoothnessTurn, int faces, float radius, float turnMultiplier) {
+	if (points.numberOfCoords <= 2) {
+		drawBezierTube(points, smoothnessStraight, faces, radius);
+		return;
+	}
+	
+	float coord1[3], coord2[3], coord3[3];
+	CoordinateSet tempSet(3);
+
+	// Prepare first tube's coordinates
+	points.getCoords(1, coord1);
+
+	// For each control point that are not first or last point in the sequence:
+	for (int i = 2; i < points.numberOfCoords; i++) {
+		// Draw a straight tube from previous point to current point
+		{
+			// Start point of straight tube is obtain from previous calculations. (coord1)
+			// Get end point of the straight tube and assign to coord3
+			points.getCoords(i, coord2);
+			for (int j = 0; j < 3; j++) {
+				coord3[j] = coord2[j] - (coord2[j] - coord1[j]) * turnMultiplier;
+			}
+
+			// Draw straight tube (coord1 -> coord3)
+			tempSet.clear(3);
+			tempSet.addCoordinate(coord1);
+			tempSet.addCoordinate(coord3);
+			drawBezierTube(tempSet, smoothnessStraight, faces, radius);
+		}
+
+		// Then draw a turning segment at the current point
+		{
+			// Start point of turning tube is obtained from previous calculations, (coord3)
+			// Use current point as pivot point, (coord2)
+			// Get the end point of the turning segment and assign to coord1
+			points.getCoords(i + 1, coord1);
+			for (int j = 0; j < 3; j++) {
+				coord1[j] = coord2[j] + (coord1[j] - coord2[j]) * turnMultiplier;
+			}
+			
+			// Draw the turning tube (coord3 -> coord2 -> coord1)
+			tempSet.clear(3);
+			tempSet.addCoordinate(coord3);
+			tempSet.addCoordinate(coord2);
+			tempSet.addCoordinate(coord1);
+			drawBezierTube(tempSet, smoothnessTurn, faces, radius);
+		}
+	}
+
+	// Draw last straight tube
+	// Start point of straight tube is obtain from previous calculations. (coord1)
+	points.getCoords(points.numberOfCoords, coord3);
+	tempSet.clear(3);
+	tempSet.addCoordinate(coord1);
+	tempSet.addCoordinate(coord3);
+	drawBezierTube(tempSet, smoothnessStraight, faces, radius);
+
+	tempSet.clear(3);
+
+	tempSet.destroy();
+}
+
+
 /*	Draw a polygon using the given coordinate set
 *	Draw polygon vertices in the order that the coordinates are given
 *		*DOESN'T check if the polygon is flat, use with caution
@@ -356,7 +442,6 @@ void Utility::drawConcavePolygon(CoordinateSet polygonLeft, CoordinateSet polygo
 		glEnd();
 	}
 
-	glColor3f(1, 0, 0);
 	// Quad strips for polygonRight
 	for (int i = 0; i < polygonRight.numberOfCoords - 1; i++) {
 		glBegin(GL_QUADS);
@@ -391,14 +476,12 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 
 	// Draw bottom face (In reverse direction)
 	if (drawBottom) {
-		glColor3f(1, 0, 1);
 		drawPolygon(another, anotherCenter);
 	}
 
 	// Draw quad strips in between
 	for (int i = 0; i < face.numberOfCoords - 1; i++) {
 		glBegin(GL_QUADS);
-		glColor3f(0, 1, 0);
 		// Point #1 and #2 (lies on first polygon)
 		glVertex3f(face.xCoords[i], face.yCoords[i], face.zCoords[i]);
 		glVertex3f(face.xCoords[i + 1], face.yCoords[i + 1], face.zCoords[i + 1]);
@@ -424,6 +507,8 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 		glEnd();
 	}
 
+	// Dealloc unused memory
+	another.destroy();
 }
 
 void Utility::extrudeConcavePolygon(CoordinateSet faceLeft, CoordinateSet faceRight, float middleLine, float direction[3], float amount, bool drawTop, bool drawBottom) {
@@ -446,13 +531,14 @@ void Utility::extrudeConcavePolygon(CoordinateSet faceLeft, CoordinateSet faceRi
 	// Draw quad strips in between
 	CoordinateSet face(10);
 	face.combineCoords(faceLeft);
-	face.combineCoords(faceRight.reverse());
+	CoordinateSet faceRightTemp = faceRight.copy();
+	faceRightTemp.reverse();
+	face.combineCoords(faceRightTemp);
 
 	CoordinateSet another = face.copy();
 	another.translate(new float[3]{ amount * direction[0], amount * direction[1], amount * direction[2] });
 	for (int i = 0; i < face.numberOfCoords - 1; i++) {
 		glBegin(GL_QUADS);
-		glColor3f(0, 1, 0);
 		// Point #1 and #2 (lies on first polygon)
 		glVertex3f(face.xCoords[i], face.yCoords[i], face.zCoords[i]);
 		glVertex3f(face.xCoords[i + 1], face.yCoords[i + 1], face.zCoords[i + 1]);
@@ -478,6 +564,115 @@ void Utility::extrudeConcavePolygon(CoordinateSet faceLeft, CoordinateSet faceRi
 		glEnd();
 	}
 
+	// Dealloc unused memory
+	anotherLeft.destroy();
+	anotherRight.destroy();
+	face.destroy();
+	another.destroy();
+	faceRightTemp.destroy();
+}
+
+/* Draw hemisphere at location 0, 0, 0
+*/
+void Utility::drawHemisphere(float radius, int slices, int stacks) {
+	if (obj == NULL) {
+		obj = gluNewQuadric();
+	}
+
+	// Draw cylinders stack by stack
+	glPushMatrix();
+	{
+		float currentStack = 0;
+		float stackIncrement = 90.0f / stacks;
+		glRotatef(-90, 1, 0, 0);
+		for (int i = 0; i < stacks; i++) {
+			float currentHeight = radius * sin(degToRad(currentStack + stackIncrement));
+			float previousHeight = radius * sin(degToRad(currentStack));
+			float thisHeight = currentHeight - previousHeight;
+			gluCylinder(obj, radius * cos(degToRad(currentStack)), radius * cos(degToRad(currentStack + stackIncrement)), thisHeight, slices, 1);
+			glTranslatef(0, 0, thisHeight);
+			currentStack += stackIncrement;
+		}
+	}
+	glPopMatrix();
+}
+
+/*	Draw the connections between two faces
+*	Doesn't draw the given faces itself
+*	Draw the connections using GL_QUADS
+*	The amount of vertices in both faces must be the same
+*	f1 must be in same rotational direction with f2
+*/
+void Utility::connectTwoFaces(CoordinateSet f1, CoordinateSet f2) {
+	if (f1.numberOfCoords != f2.numberOfCoords) {
+		throw exception("Vertices mismatch: Utility::connectTwoFaces()");
+		return;
+	}
+
+	int n = f1.numberOfCoords;
+
+	// Draw connection faces
+	for (int i = 0; i < n - 1; i++) {
+		glBegin(GL_QUADS);
+		glVertex3f(f1.xCoords[i], f1.yCoords[i], f1.zCoords[i]);
+		glVertex3f(f2.xCoords[i], f2.yCoords[i], f2.zCoords[i]);
+		glVertex3f(f2.xCoords[i + 1], f2.yCoords[i + 1], f2.zCoords[i + 1]);
+		glVertex3f(f1.xCoords[i + 1], f1.yCoords[i + 1], f1.zCoords[i + 1]);
+		glEnd();
+	}
+
+	// Draw connection faces between end and start vertices
+	glBegin(GL_QUADS);
+	glVertex3f(f1.xCoords[n - 1], f1.yCoords[n - 1], f1.zCoords[n - 1]);
+	glVertex3f(f2.xCoords[n - 1], f2.yCoords[n - 1], f2.zCoords[n - 1]);
+	glVertex3f(f2.xCoords[0], f2.yCoords[0], f2.zCoords[0]);
+	glVertex3f(f1.xCoords[0], f1.yCoords[0], f1.zCoords[0]);
+	glEnd();
+}
+
+/*	[ Rotation in 3D space ]
+	-Rotation around X-axis
+		|1     0        0  | |x|   |		 x		  |   |x'|
+		|0   cos t   -sin t| |y| = |y cos t - z sin t | = |y'|
+		|0   sin t    cos t| |z|   |y sin t + z cos t |   |z'|
+
+	- Rotation around Y-axis
+		| cos t   0   sin t| |x|   | x cos t + z sin t|   |x'|
+		|   0     1     0  | |y| = |		 y		  | = |y'|
+		|-sin t   0   cos t| |z|   |-x sin t + z cos t|   |z'|
+
+	- Rotation around Z-axis
+		|cos t   -sin t   0| |x|   |x cos t - y sin t |   |x'|
+		|sin t    cos t   0| |y| = |x sin t + y cos t | = |y'|
+		|  0        0     1| |z|   |		z		  |   |z'|
+
+	*Note that rotation around an axis will not change its position on that axis,
+		ie: Rotation around Y-axis doesnt change the Y-coordinate,
+		because the rotation only happens on the XZ plane
+	*Reference: https://stackoverflow.com/questions/14607640/rotating-a-vector-in-3d-space
+*/
+void Utility::rotateAroundXaxis(float vector[3], float angle, float output[3]) {
+	float sinT = sin(degToRad(angle));
+	float cosT = cos(degToRad(angle));
+	output[0] = vector[0];
+	output[1] = vector[1] * cosT - vector[2] * sinT;
+	output[2] = vector[1] * sinT + vector[2] * cosT;
+}
+
+void Utility::rotateAroundYaxis(float vector[3], float angle, float output[3]) {
+	float sinT = sin(degToRad(angle));
+	float cosT = cos(degToRad(angle));
+	output[0] = vector[0] * cosT + vector[2] * sinT;
+	output[1] = vector[1];
+	output[2] = -vector[0] * sinT + vector[2] * cosT;
+}
+
+void Utility::rotateAroundZaxis(float vector[3], float angle, float output[3]) {
+	float sinT = sin(degToRad(angle));
+	float cosT = cos(degToRad(angle));
+	output[0] = vector[0] * cosT - vector[1] * sinT;
+	output[1] = vector[0] * sinT + vector[1] * cosT;
+	output[2] = vector[2];
 }
 
 
@@ -630,25 +825,17 @@ void Utility::orthogonalBasis(float vector[3], float basisA[3], float basisB[3])
 	float zAxis[3] = { 0, 0, 1 };
 	float yAxis[3] = { 0, 1, 0 };
 	float xAxis[3] = { 1, 0, 0 };
+	float tempAxis[3] = {-1, -1, -1};
 	float temp[3];
 
 	// Normalize the vector V
 	normalizeVector(normNormal);
 
-	// Get dot product between V and X-axis
-
-
-	// If dot product is too small, then the cross product between them must be parallel to the X-axis
-	// If this happens, use another axis (Y-axis) to obtain vectorA
-	if (!isParallelVector(normNormal, xAxis)) {
-		crossProduct(normNormal, xAxis, basisA);
-	}
-	else if (!isParallelVector(normNormal, yAxis)) {
-		crossProduct(normNormal, yAxis, basisA);
-	}
-	else {
-		crossProduct(normNormal, zAxis, basisA);
-	}
+	// Obtain the first orthogonal basis
+	// For some reason when normNormal is parallel to zAxis, the entire tube gets shrinked to infinity
+	// Tried to use crossproduct with other axes but still doesn't work. 
+	// This problem has a workaround at drawTube();
+	crossProduct(normNormal, zAxis, basisA);
 
 	// Get cross product between V and vectorA
 	// to obtain the second basis vector, vectorB
@@ -677,6 +864,11 @@ float Utility::distanceBetweenTwoPoints(float p1[3], float p2[3]) {
 	return sqrtf(result);
 }
 
+void Utility::vectorFromTwoPoints(float p1[3], float p2[3], float output[3]) {
+	for (int i = 0; i < 3; i++) {
+		output[i] = p2[i] - p1[i];
+	}
+}
 
 /* Developer Note
 */
