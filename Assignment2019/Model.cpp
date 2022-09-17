@@ -28,6 +28,8 @@ GLUquadricObj* hipBallObj;
 GLUquadricObj* armUpperObj, * armLowerObj, * shoulderObj, * fingerObj;;
 GLUquadricObj* zipLineTubeObj, * zipLineBackpackObj;
 
+GLUquadricObj* barrelObj;
+
 // Animation variables / Model transformation variables
 float Model::headRot[3] = {0, 0, 0};
 float Model::RLegUpperRot[3] = { 0, 0, 0 };
