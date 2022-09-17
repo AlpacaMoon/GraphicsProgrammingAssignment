@@ -1,4 +1,5 @@
 #include "CoordinateSet.h"
+#include "Utility.h"
 
 /*	Constructor
 */
@@ -67,7 +68,7 @@ bool CoordinateSet::removeCoordinate(int pos) {
 	this->yCoords[numberOfCoords] = 0;
 	this->zCoords[numberOfCoords] = 0;
 	numberOfCoords--;
-	return false;
+	return true;
 }
 
 /*	Returns the xyz coordinates, given its position in the set
@@ -116,6 +117,10 @@ void CoordinateSet::combineCoords(CoordinateSet anotherSet) {
 	}
 
 	this->numberOfCoords += anotherSet.numberOfCoords;
+
+	// Dealloc current memory before assigning new
+	destroy();
+
 	this->xCoords = newX;
 	this->yCoords = newY;
 	this->zCoords = newZ;
@@ -132,12 +137,21 @@ CoordinateSet CoordinateSet::copy() {
 }
 
 
-CoordinateSet CoordinateSet::reverse() {
-	CoordinateSet another(this->size);
+void CoordinateSet::reverse() {
+	float* newX = new float[size];
+	float* newY = new float[size];
+	float* newZ = new float[size];
+	int j = 0;
 	for (int i = this->numberOfCoords - 1; i >= 0; i--) {
-		another.addCoordinate(this->xCoords[i], this->yCoords[i], this->zCoords[i]);
+		newX[j] = xCoords[i];
+		newY[j] = yCoords[i];
+		newZ[j] = zCoords[i];
+		j++;
 	}
-	return another;
+	destroy();
+	this->xCoords = newX;
+	this->yCoords = newY;
+	this->zCoords = newZ;
 }
 
 /*	Translate all coordinates based on the given translation
@@ -156,6 +170,28 @@ void CoordinateSet::translate(float x, float y, float z) {
 	}
 }
 
+/* Rotates all coordinates around a given axis
+*/
+void CoordinateSet::rotate(float angleX, float angleY, float angleZ) {
+	float temp[3], temp2[3];
+
+	for (int i = 0; i < numberOfCoords; i++) {
+		temp[0] = xCoords[i];
+		temp[1] = yCoords[i];
+		temp[2] = zCoords[i];
+
+		// Apply rotations in this order: Zaxis -> Yaxis -> Xaxis
+		// For some reason only this order works
+		Utility::rotateAroundZaxis(temp, angleZ, temp2);
+		Utility::rotateAroundYaxis(temp2, angleY, temp);
+		Utility::rotateAroundXaxis(temp, angleX, temp2);
+
+		xCoords[i] = temp2[0];
+		yCoords[i] = temp2[1];
+		zCoords[i] = temp2[2];
+	}
+}
+
 void CoordinateSet::expandSize(int newSize) {
 	this->size = newSize;
 	float* newX, * newY, * newZ;
@@ -168,6 +204,10 @@ void CoordinateSet::expandSize(int newSize) {
 		newY[i] = this->yCoords[i];
 		newZ[i] = this->zCoords[i];
 	}
+
+	// Dealloc current memory before assigning new memory
+	destroy();
+
 	this->xCoords = newX;
 	this->yCoords = newY;
 	this->zCoords = newZ;
@@ -176,7 +216,17 @@ void CoordinateSet::expandSize(int newSize) {
 void CoordinateSet::clear(int size) {
 	this->size = size;
 	this->numberOfCoords = 0;
+	
+	// Dealloc current memory before assigning new memory
+	destroy();
+
 	xCoords = new float[size];
 	yCoords = new float[size];
 	zCoords = new float[size];
+}
+
+void CoordinateSet::destroy() {
+	delete[] xCoords;
+	delete[] yCoords;
+	delete[] zCoords;
 }

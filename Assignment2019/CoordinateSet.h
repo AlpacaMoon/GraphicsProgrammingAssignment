@@ -20,10 +20,13 @@ public:
 
 	void translate(float translation[3]);
 	void translate(float x, float y, float z);
+	void rotate(float angleX, float angleY, float angleZ);
 
 	void expandSize(int newSize);
 
 	void clear(int size);
 
-	CoordinateSet reverse();
+	void reverse();
+
+	void destroy();
 };

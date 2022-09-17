@@ -18,7 +18,9 @@ const int Y_AXIS[3] = { 0, 1, 0 };
 const int Z_AXIS[3] = { 0, 0, 1 };
 
 float camRotation[3] = { 0, 0, 0 };
-float camRotateSpeed = 2.0f;
+float camRotateSpeed = 5.0f;
+
+bool showGrid = true;
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -61,6 +63,36 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				camRotation[0] = 0;
 				camRotation[1] = 0;
 				camRotation[2] = 0;
+				break;
+
+			case VK_NUMPAD2:
+				camRotation[0] = 0;
+				camRotation[1] = 0;
+				camRotation[2] = 0;
+				break;
+			case VK_NUMPAD8:
+				camRotation[0] = 0;
+				camRotation[1] = 180;
+				camRotation[2] = 0;
+				break;
+			case VK_NUMPAD4:
+				camRotation[0] = 0;
+				camRotation[1] = 270;
+				camRotation[2] = 0;
+				break;
+			case VK_NUMPAD6:
+				camRotation[0] = 0;
+				camRotation[1] = 90;
+				camRotation[2] = 0;
+				break;
+			case VK_NUMPAD5:
+				camRotation[0] = -90;
+				camRotation[1] = 0;
+				camRotation[2] = 0;
+				break;
+
+			case 'G':
+				showGrid = !showGrid;
 				break;
 			}
 		}
@@ -115,7 +147,7 @@ void display()
 	//	OpenGL drawing
 	//--------------------------------
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.69, 0.69, 0.69, 1.0);
+	glClearColor(1, 1, 1, 1);
 
 	glLoadIdentity();
 
@@ -124,7 +156,8 @@ void display()
 	glRotatef(camRotation[2], 0, 0, 1);
 
 	glScalef(0.8, 0.8, 0.8);
-	
+
+	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	{
 		Model::r99();
@@ -133,15 +166,16 @@ void display()
 
 
 	// Gridlines
-	glColor3f(0.78, 0.78, 0.78);
-	Utility::drawGrids();
+	if (showGrid) {
+		glColor3f(0.9,0.9, 0.9);
+		Utility::drawGrids();
+	}
 
 	//--------------------------------
 	//	End of OpenGL drawing
 	//--------------------------------
 }
 //--------------------------------------------------------------------
-
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 {

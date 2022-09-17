@@ -7,10 +7,21 @@ void Color::lightBlue() {
 	glColor3f(121 / 255.0f, 144 / 255.0f, 160 / 255.0f);
 }
 
+void Color::lightBlue2() {
+	glColor3f(111 / 255.0f, 131 / 255.0f, 152 / 255.0f);
+}
+
 void Color::lightGray() {
 	glColor3f(168 / 255.0f, 168 / 255.0f, 168 / 255.0f);
 }
 
+void Color::darkGray() {
+	glColor3f(80 / 255.0f, 80 / 255.0f, 80 / 255.0f);
+}
+
+void Color::gold() {
+	glColor3f(255 / 255.0f, 215 / 255.0f, 0);
+}
 
 void Color::red() {
 	glColor3f(1, 0, 0);
