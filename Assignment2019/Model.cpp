@@ -20,6 +20,8 @@ GLUquadricObj* legPlateObj;
 
 GLUquadricObj* armUpperObj;
 
+GLUquadricObj* barrelObj;
+
 void Model::RightLeg() {
 	glPushMatrix();
 	{
@@ -331,6 +333,11 @@ void Model::Hand() {
 }
 
 void Model::r99() {
+
+	if (barrelObj == NULL) {
+		barrelObj = gluNewQuadric();
+	}
+
 	float centre1[3] = { 0,0,0 };
 	float centre2[3] = { 0,0,0 };
 	float zAxis[3] = { 0,0,1 };
@@ -377,18 +384,35 @@ void Model::r99() {
 	handle1.addCoordinate(0.05, 0, 0);
 	handle1.addCoordinate(-0.05, 0, 0);
 
+	CoordinateSet magazine(10);
+	magazine.addCoordinate(-0.08,-0.15,0);
+	magazine.addCoordinate(-0.06,-0.2 ,0);
+	magazine.addCoordinate(0.06,-0.2, 0);
+	magazine.addCoordinate(0.08,-0.15, 0);
+	magazine.addCoordinate(0.08, 0.15, 0);
+	magazine.addCoordinate(-0.08,0.15, 0);
+
+	CoordinateSet handle2(10);
+	handle2.addCoordinate(-0.06,-0.12,0);
+	handle2.addCoordinate(0.06, -0.12, 0);
+	handle2.addCoordinate(0.03, 0.12, 0);
+	handle2.addCoordinate(-0.03, 0.12, 0);
+	
 	glPushMatrix();
-	Utility::extrudePolygon(barrelCoors, centre1, zAxis, 0.6f, true, true);
+	glTranslatef(0, 0, -0.5f);
+
+	glPushMatrix();
+	Utility::extrudePolygon(barrelCoors, centre1, zAxis, 1.0f, true, true);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0.069, 0, 0);
-	Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
+	//Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(-0.069, 0, 0);
-	Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
+	//Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -398,23 +422,46 @@ void Model::r99() {
 
 	glPushMatrix();
 	glTranslatef(0, 0.07, 0.07);
-	Utility::extrudePolygon(barrelTop, centre1, zAxis, 0.48f, true, true);
+	//Utility::extrudePolygon(barrelTop, centre1, zAxis, 0.48f, true, true);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0, -0.1, 0.05);
-	Utility::extrudePolygon(handle1, centre1, zAxis, 0.03f, true, true);
+	//Utility::extrudePolygon(handle1, centre1, zAxis, 0.03f, true, true);
 	glPopMatrix();
 
 	//barrel head
 	glPushMatrix();
-	centre1[0] = 0;
-	centre1[1] = 0;
-	normal1[2] = 1;
+	glTranslatef(0, 0, -0.1f);
+	glRotatef(90,0, 0, 1);
+	//gluCylinder(barrelObj, 0.02f, 0.02f, 0.1f,20,20);
+	//gluPartialDisk(barrelObj, 0, 0.02f, 20, 20, 0, 360);
+	glPopMatrix();
 
-	centre2[2] = 0.08;
-	normal2[2] = 1;
-	//Utility::drawTube(centre1, normal1, 0.02, centre2, normal2, 0.02, 20);
+	//lower barrel head
+	glPushMatrix();
+	glTranslatef(0, -0.075f, -0.15f);
+	glRotatef(90, 0, 0, 1);
+	//gluCylinder(barrelObj, 0.025f, 0.025f, 0.2f, 20, 20);
+	//gluPartialDisk(barrelObj, 0, 0.025f, 20, 20, 0, 360);
+	glPopMatrix();
+
+	//magazine
+	glPushMatrix();
+	glTranslatef(-0.03, -0.15, 0.5);
+	glRotatef(-30, 1, 0, 0);
+	glRotatef(90, 0, 1, 0);
+	Utility::extrudePolygon(magazine, centre1, zAxis, 0.06, true,true);
+	glPopMatrix();
+
+	//handle2
+	glPushMatrix();
+	glTranslatef(-0.03, -0.10, 0.9);
+	glRotatef(-30, 1, 0, 0);
+	glRotatef(90, 0, 1, 0);
+	Utility::extrudePolygon(handle2, centre1, zAxis, 0.07, true, true);
+	glPopMatrix();
+
 	glPopMatrix();
 
 
