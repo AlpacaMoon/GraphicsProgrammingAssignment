@@ -105,11 +105,11 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				camRotation[2] = 0;
 				break;
 
-			case 'O':
+			case VK_F1:
 				onLightning=!onLightning;
 				break;
 
-			case 'P':
+			case VK_F2:
 				showGrid = !showGrid;
 				break;
 

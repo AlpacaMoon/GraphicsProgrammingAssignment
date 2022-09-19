@@ -76,6 +76,22 @@ float Model::LFingerRot[5][3] = {
 	{10, 10, 10}
 };
 
+float Model::openedFingerRot[5][3] = {
+	{15, 15, 15},
+	{10, 10, 10},
+	{10, 10, 10},
+	{10, 10, 10},
+	{10, 10, 10}
+};
+
+float Model::closedFingerRot[5][3] = {
+	{30, 37, 45},
+	{80, 80, 80},
+	{80, 80, 80},
+	{80, 80, 80},
+	{80, 80, 80}
+};
+
 void Model::Pathfinder() {
 	glPushMatrix();
 	{
@@ -1832,7 +1848,7 @@ void Model::RightHand() {
 		// Pinky Finger
 		glPushMatrix();
 		{
-			glTranslatef(0.145, -0.155, 0.005);
+			glTranslatef(0.2, -0.155, 0.005);
 			glRotatef(5, 0, 0, 1);
 			Finger(RFingerRot[4][0], RFingerRot[4][1], RFingerRot[4][2]);
 		}
