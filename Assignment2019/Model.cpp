@@ -2501,5 +2501,11 @@ void Model::r99() {
 	}
 	glPopMatrix();
 
-
+	barrelCoors.destroy();
+	barrelSide.destroy();
+	barrelBottom.destroy();
+	barrelTop.destroy();
+	handle1.destroy();
+	magazine.destroy();
+	handle2.destroy();
 }

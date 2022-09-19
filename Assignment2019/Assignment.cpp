@@ -205,7 +205,8 @@ void display()
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	{
-		Model::Pathfinder();
+		Model::LeftHand();
+		Model::RightHand();
 	}
 	glPopMatrix();
 
