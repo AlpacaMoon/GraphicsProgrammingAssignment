@@ -463,7 +463,8 @@ void Utility::drawConcavePolygon(CoordinateSet polygonLeft, CoordinateSet polygo
 void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float direction[3], float amount, bool drawTop, bool drawBottom) {
 	// Obtain CoordinateSet for second polygon
 	CoordinateSet another = face.copy();
-	another.translate(new float[3]{ amount * direction[0], amount * direction[1], amount * direction[2] });
+	float newTranslation[3] = { amount * direction[0], amount * direction[1], amount * direction[2] };
+	another.translate(newTranslation);
 	float anotherCenter[3];
 	for (int i = 0; i < 3; i++) {
 		anotherCenter[i] = faceCenter[i] + amount * direction[i];
@@ -515,8 +516,9 @@ void Utility::extrudeConcavePolygon(CoordinateSet faceLeft, CoordinateSet faceRi
 	// Obtain CoordinateSet for second polygon
 	CoordinateSet anotherLeft = faceLeft.copy();
 	CoordinateSet anotherRight = faceRight.copy();
-	anotherLeft.translate(new float[3]{ amount * direction[0], amount * direction[1], amount * direction[2] });
-	anotherRight.translate(new float[3]{ amount * direction[0], amount * direction[1], amount * direction[2] });
+	float newTranslation[3] = { amount * direction[0], amount * direction[1], amount * direction[2] };
+	anotherLeft.translate(newTranslation);
+	anotherRight.translate(newTranslation);
 
 	// Draw top face
 	if (drawTop) {
@@ -536,7 +538,8 @@ void Utility::extrudeConcavePolygon(CoordinateSet faceLeft, CoordinateSet faceRi
 	face.combineCoords(faceRightTemp);
 
 	CoordinateSet another = face.copy();
-	another.translate(new float[3]{ amount * direction[0], amount * direction[1], amount * direction[2] });
+	float newTranslation2[3] = { amount * direction[0], amount * direction[1], amount * direction[2] };
+	another.translate(newTranslation2);
 	for (int i = 0; i < face.numberOfCoords - 1; i++) {
 		glBegin(GL_QUADS);
 		// Point #1 and #2 (lies on first polygon)
