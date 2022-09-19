@@ -9,6 +9,7 @@
 #include "Animation.h"
 #include "Color.h"
 #include "Controls.h"
+#include "Lightning.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 
@@ -28,13 +29,8 @@ bool onLightning = false;
 //lighting test
 GLfloat ambientLight[4] = { 1,1,1,1 }; //RGBA
 //if want diffuse light change to all 1
-GLfloat diffuseLight[4] = { 0,0,0,1 }; //RGBA
+GLfloat diffuseLight[4] = { 1,1,1,1 }; //RGBA
 GLfloat positionLight[4] = { 0,10,0,0 }; //x,y,z,0
-
-// ambient = no direction (apply to every model seperately based on color)
-GLfloat materialAmbient[4] = { 64/255.0,95/255.0,107/255.0,1 }; //default value
-//diffuse = directioned light (light of bulb)
-GLfloat materialDiffuse[4] = { 64 / 255.0,95 / 255.0,107 / 255.0,1 }; //default value
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -183,9 +179,6 @@ void display()
 		glEnable(GL_LIGHT0);
 		//enable lighting
 		glEnable(GL_LIGHTING);
-		//GL_FRONT_AND_BACK = outside and inside of polygon
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialAmbient);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialDiffuse);
 	}
 	else {
 		//enable which type of light
@@ -205,8 +198,7 @@ void display()
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	{
-		Model::LeftHand();
-		Model::RightHand();
+		Model::Pathfinder();
 	}
 	glPopMatrix();
 

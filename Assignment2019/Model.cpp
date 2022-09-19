@@ -6,6 +6,7 @@
 #include "Utility.h"
 #include "CoordinateSet.h"
 #include "Color.h"
+#include "Lightning.h"
 
 float xAxis[3] = { 1, 0, 0 };
 float yAxis[3] = { 0, 1, 0 };
@@ -31,7 +32,7 @@ GLUquadricObj* zipLineTubeObj, * zipLineBackpackObj;
 GLUquadricObj* barrelObj;
 
 // Animation variables / Model transformation variables
-float Model::headRot[3] = {0, 0, 0};
+float Model::headRot[3] = { 0, 0, 0 };
 
 float Model::RLegUpperRot[3] = { 0, 0, 0 };
 float Model::RLegHingeRot = 0;
@@ -146,7 +147,7 @@ void Model::UpperBody() {
 		float Zdisplacement = 0.49f;
 		glPushMatrix();
 		{
-			glTranslatef(0, 0, -Zdisplacement /2.0f);
+			glTranslatef(0, 0, -Zdisplacement / 2.0f);
 			glScalef(0.9, 0.9, 0.9);
 			RightArm();
 		}
@@ -180,7 +181,7 @@ void Model::LowerBody() {
 
 		float gap = 0.115;
 		glTranslatef(0, -0.19, -gap);
-		
+
 		glPushMatrix();
 		{
 			glScalef(legScale, legScale, legScale);
@@ -381,6 +382,7 @@ void Model::Head() {
 		glPushMatrix();
 		{
 			Color::lightBlue();
+			Lightning::blueMaterial();
 
 			// Apply head rotation
 			glRotatef(headRot[0], 1, 0, 0);
@@ -408,6 +410,8 @@ void Model::Head() {
 			glPushMatrix();
 			{
 				Color::lightGray();
+				Lightning::greyMaterial();
+
 				glTranslatef(0.301, 0, 0);
 
 				// Plate at the front
@@ -453,6 +457,8 @@ void Model::Head() {
 			glPushMatrix();
 			{
 				Color::gold();
+				Lightning::goldMaterial();
+
 				glTranslatef(0.28, 0, 0);
 				gluSphere(headObj, eyeBallRadius, 16, 16);
 			}
@@ -465,6 +471,8 @@ void Model::Head() {
 				float barOffset = 0;
 
 				Color::yellow();
+				Lightning::yellowMaterial();
+
 				tempSet.clear(10);
 				tempSet.addCoordinate(0.2, 0.0251, 0);
 				tempSet.addCoordinate(0.2, 0.025, -headWidthHalf + barOffset);
@@ -499,6 +507,8 @@ void Model::Head() {
 				float barOffset = 0;
 
 				Color::yellow();
+				Lightning::yellowMaterial();
+
 				tempSet.clear(10);
 				tempSet.addCoordinate(0.2, -0.0251, 0);
 				tempSet.addCoordinate(0.2, -0.025, -headWidthHalf + barOffset);
@@ -530,6 +540,8 @@ void Model::Head() {
 			glPushMatrix();
 			{
 				Color::lightBlue2();
+				Lightning::darkerBlueMaterial();
+
 				float earRadius = 0.12f;
 				float earExtrude = 0.02f;
 				int earEdges = 16;
@@ -620,10 +632,14 @@ void Model::Torso() {
 			torso.addCoordinate(0.75, -0.25, z1);
 
 			Color::lightBlue();
+			Lightning::blueMaterial();
+
 			float torsoCenter[3] = { 0, 0, z1 };
 			Utility::extrudePolygon(torso, torsoCenter, zAxis, torsoWidth);
 
 			Color::red();
+			Lightning::windRedMaterial();
+
 			// Deco Right
 			glPushMatrix();
 			{
@@ -728,9 +744,11 @@ void Model::Torso() {
 		glPushMatrix();
 		{
 			Color::lightBlue2();
+			Lightning::darkerBlueMaterial();
+
 			float halfTorsoWidth = torsoWidth / 2.0f;
-			float levels[3] = {-0.25, -0.4, -0.6};
-			float radiuses[3] = {1, 0.875, 0.6};
+			float levels[3] = { -0.25, -0.4, -0.6 };
+			float radiuses[3] = { 1, 0.875, 0.6 };
 			CoordinateSet back1(10);
 			back1.addCoordinate(-0.55, levels[0], -halfTorsoWidth);
 			back1.addCoordinate(-0.1, levels[0], -halfTorsoWidth);
@@ -740,14 +758,14 @@ void Model::Torso() {
 			CoordinateSet back2(10);
 			back2.addCoordinate(-0.52, levels[1], -halfTorsoWidth * radiuses[1]);
 			back2.addCoordinate(-0.1, levels[1], -halfTorsoWidth * radiuses[1]);
-			back2.addCoordinate(-0.1, levels[1], halfTorsoWidth* radiuses[1]);
-			back2.addCoordinate(-0.52, levels[1], halfTorsoWidth* radiuses[1]);
+			back2.addCoordinate(-0.1, levels[1], halfTorsoWidth * radiuses[1]);
+			back2.addCoordinate(-0.52, levels[1], halfTorsoWidth * radiuses[1]);
 
 			CoordinateSet back3(10);
 			back3.addCoordinate(-0.35, levels[2], -halfTorsoWidth * radiuses[2]);
 			back3.addCoordinate(-0.1, levels[2], -halfTorsoWidth * radiuses[2]);
-			back3.addCoordinate(-0.1, levels[2], halfTorsoWidth* radiuses[2]);
-			back3.addCoordinate(-0.35, levels[2], halfTorsoWidth* radiuses[2]);
+			back3.addCoordinate(-0.1, levels[2], halfTorsoWidth * radiuses[2]);
+			back3.addCoordinate(-0.35, levels[2], halfTorsoWidth * radiuses[2]);
 
 			Utility::connectTwoFaces(back1, back2);
 			Utility::connectTwoFaces(back2, back3);
@@ -762,8 +780,10 @@ void Model::Torso() {
 		glPushMatrix();
 		{
 			Color::lightBlue2();
-			float radius[2] = {0.2f, 0.12f};
-			float widths[2] = {0.075, 0.15};
+			Lightning::darkerBlueMaterial();
+
+			float radius[2] = { 0.2f, 0.12f };
+			float widths[2] = { 0.075, 0.15 };
 
 			glPushMatrix();
 			{
@@ -789,6 +809,8 @@ void Model::Torso() {
 		glPushMatrix();
 		{
 			Color::lightBlue2();
+			Lightning::darkerBlueMaterial();
+
 			CoordinateSet chest(10);
 			chest.addCoordinate(0.85, 0.1, 0);
 			chest.addCoordinate(0.7, 0.1, 0);
@@ -803,9 +825,9 @@ void Model::Torso() {
 			chest.addCoordinate(0.815, -0.53, 0);
 			chest.addCoordinate(0.815, 0.03, 0);
 			chest.addCoordinate(0.85, 0.05, 0);
-			
+
 			glTranslatef(0, 0, -tvBodyWidth / 2.0f);
-			float chestCenter[3] = {0.55, -0.25, 0};
+			float chestCenter[3] = { 0.55, -0.25, 0 };
 			Utility::extrudePolygon(chest, chestCenter, zAxis, tvBodyWidth);
 
 			chest.destroy();
@@ -834,6 +856,8 @@ void Model::Torso() {
 		glPushMatrix();
 		{
 			Color::lightBlue2();
+			Lightning::darkerBlueMaterial();
+
 			float pWidth = torsoWidth * 0.4f;
 			float gap = torsoWidth * 0.1f;
 			CoordinateSet protection(10);
@@ -852,19 +876,23 @@ void Model::Torso() {
 			bar.addCoordinate(-0.15, 0.15, 0);
 			bar.addCoordinate(-0.15, -0.1, 0);
 			bar.addCoordinate(0, -0.1, 0);
-			bar.addCoordinate(0, 0 ,0);
+			bar.addCoordinate(0, 0, 0);
 			bar.translate(0, -0.05, 0);
-			float barCenter[3] = {-0.1, -0.05, 0};
+			float barCenter[3] = { -0.1, -0.05, 0 };
 			float barWidth = pWidth / 2.0f;
 
 			glTranslatef(0.6, -0.62, 0);
 			glPushMatrix();
 			{
-				glTranslatef(0, 0, -pWidth/2.0f);
+				glTranslatef(0, 0, -pWidth / 2.0f);
 				glRotatef(-10, 0, 0, 1);
 				Color::lightBlue2();
+				Lightning::darkerBlueMaterial();
+
 				Utility::extrudePolygon(protection, protCenter, zAxis, pWidth);
 				Color::lightGray();
+				Lightning::greyMaterial();
+
 				Utility::extrudePolygon(bar, barCenter, zAxis, barWidth);
 			}
 			glPopMatrix();
@@ -873,8 +901,12 @@ void Model::Torso() {
 				glTranslatef(0, 0, -pWidth / 2.0f - gap - pWidth);
 				glRotatef(-10, 0, 0, 1);
 				Color::lightBlue2();
+				Lightning::darkerBlueMaterial();
+
 				Utility::extrudePolygon(protection, protCenter, zAxis, pWidth);
 				Color::lightGray();
+				Lightning::greyMaterial();
+
 				Utility::extrudePolygon(bar, barCenter, zAxis, barWidth);
 			}
 			glPopMatrix();
@@ -883,8 +915,12 @@ void Model::Torso() {
 				glTranslatef(0, 0, gap + pWidth / 2.0f);
 				glRotatef(-10, 0, 0, 1);
 				Color::lightBlue2();
+				Lightning::darkerBlueMaterial();
+
 				Utility::extrudePolygon(protection, protCenter, zAxis, pWidth);
 				Color::lightGray();
+				Lightning::greyMaterial();
+
 				Utility::extrudePolygon(bar, barCenter, zAxis, barWidth);
 			}
 			glPopMatrix();
@@ -898,6 +934,8 @@ void Model::Torso() {
 		glPushMatrix();
 		{
 			Color::yellow();
+			Lightning::yellowMaterial();
+
 			float barRad = 0.02f;
 			float barLen1 = torsoWidth + 0.3f;
 			float barLenHalf = barLen1 / 2.0f;
@@ -921,6 +959,7 @@ void Model::Torso() {
 		glPushMatrix();
 		{
 			Color::lightBlue2();
+			Lightning::darkerBlueMaterial();
 
 			float barRad = 0.02f;
 			float barGap = 0.05f;
@@ -959,6 +998,7 @@ void Model::Torso() {
 		glPushMatrix();
 		{
 			Color::yellow();
+			Lightning::yellowMaterial();
 
 			float barRad = 0.02f;
 			float barGap = 0.05f;
@@ -1001,7 +1041,7 @@ void Model::Torso() {
 			Utility::drawBezierTube(tempSet, 3, 8, barRad);
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.25, 0.2, -barGap2 * 0.1f);
-			tempSet.addCoordinate(-0.25, 0.199, barGap*2);
+			tempSet.addCoordinate(-0.25, 0.199, barGap * 2);
 			Utility::drawBezierTube(tempSet, 3, 8, barRad);
 		}
 		glPopMatrix();
@@ -1010,6 +1050,7 @@ void Model::Torso() {
 		glPushMatrix();
 		{
 			Color::yellow();
+			Lightning::yellowMaterial();
 
 			float barRad = 0.02f;
 			float barGap = 0.05f;
@@ -1047,7 +1088,7 @@ void Model::Torso() {
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.24, 0.215, -barGap2);
 			tempSet.addCoordinate(-0.25, 0.2, -barGap2);
-			tempSet.addCoordinate(-0.25, 0.2, -barGap2 - (barGap2)* 0.9f);
+			tempSet.addCoordinate(-0.25, 0.2, -barGap2 - (barGap2) * 0.9f);
 			Utility::drawBezierTube(tempSet, 3, 8, barRad);
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.25, 0.2, -barGap2 - (barGap2) * 0.9f);
@@ -1078,6 +1119,8 @@ void Model::Torso() {
 		glPushMatrix();
 		{
 			Color::yellow();
+			Lightning::yellowMaterial();
+
 			float stringRad = 0.01f;
 			float stringLen = 0.6f;
 			glTranslatef(-0.675, 0.35, -0.3);
@@ -1109,9 +1152,13 @@ void Model::Waist() {
 			float waistExtrude = 0.02f;
 			float waistGap = 0.07f;
 			Color::lightGray();
+			Lightning::greyMaterial();
+
 			gluSphere(waistObj, waistSize, 20, 16);
 
 			Color::lightBlue2();
+			Lightning::darkerBlueMaterial();
+
 			glTranslatef(0, waistGap / 2.0f, 0);
 			Utility::drawHemisphere(waistSize + waistExtrude, 20, 16);
 			glTranslatef(0, -waistGap, 0);
@@ -1127,6 +1174,8 @@ void Model::Waist() {
 			float hingeRadius = 0.07f;
 
 			Color::lightBlue();
+			Lightning::blueMaterial();
+
 			glTranslatef(0, -0.175f, gap);
 			gluSphere(waistObj, hingeRadius, 8, 8);
 
@@ -1144,6 +1193,8 @@ void Model::Waist() {
 			float gap2 = 0.09f;
 			float bar2Width = barWidth / 4.0f;
 			Color::lightBlue();
+			Lightning::blueMaterial();
+
 			glTranslatef(0, -0.38f, 0);
 			glPushMatrix();
 			{
@@ -1193,6 +1244,8 @@ void Model::Waist() {
 		glPushMatrix();
 		{
 			Color::lightBlue();
+			Lightning::blueMaterial();
+
 			CoordinateSet torso(10);
 			torso.addCoordinate(0, 0, 0);
 			torso.addCoordinate(-0.3, 0, 0);
@@ -1248,6 +1301,8 @@ void Model::Waist() {
 				pipe1.addCoordinate(0.03, 0.1, 0);
 
 				Color::lightGray();
+				Lightning::greyMaterial();
+
 				glPushMatrix();
 				{
 					glTranslatef(-0.43, 0.075, 0.1);
@@ -1278,6 +1333,8 @@ void Model::Buttock() {
 
 		// Main butt
 		Color::lightBlue();
+		Lightning::blueMaterial();
+
 		CoordinateSet butt(10);
 		butt.addCoordinate(0, 0, 0);
 		butt.addCoordinate(0.1, 0.1, 0);
@@ -1285,12 +1342,14 @@ void Model::Buttock() {
 		butt.addCoordinate(0.22, -0.14, 0);
 		butt.addCoordinate(0.09, -0.2, 0);
 		butt.addCoordinate(0.09, -0.11, 0);
-		float buttCenter[3] = {0.11, 0, 0};
+		float buttCenter[3] = { 0.11, 0, 0 };
 		Utility::extrudePolygon(butt, buttCenter, zAxis, buttWidth);
 
 		float ventExtrude = 0.01f;
 		// Vent on butt
 		Color::darkGray();
+		Lightning::darkerGreyMaterial();
+
 		CoordinateSet vent(10);
 		vent.addCoordinate(0, 0, 0);
 		vent.addCoordinate(0.1, 0.1, 0);
@@ -1299,7 +1358,7 @@ void Model::Buttock() {
 		glTranslatef(0.05, 0.05, buttWidth / 2.0f);
 		glScalef(0.75, 0.75, 0.75);
 		glTranslatef(-0.05, -0.05, -buttWidth / 2.0f);
-		float ventCenter[3] = {0, 0.02, 0};
+		float ventCenter[3] = { 0, 0.02, 0 };
 		Utility::extrudePolygon(vent, ventCenter, zAxis, buttWidth);
 
 		butt.destroy();
@@ -1317,19 +1376,22 @@ void Model::ButtockJet() {
 	{
 		float jetRad = 0.05f;
 		float jetExtrude = 0.02f;
-		
+
 		glScalef(2, 2, 2);
 
 		glPushMatrix();
 		{
 			// Hemisphere-shaped jet
 			Color::lightBlue2();
+			Lightning::darkerBlueMaterial();
+
 			glTranslatef(0, -jetRad, 0);
 			glRotatef(22.5, 1, 0, 0);
 			Utility::drawHemisphere(jetRad, 12, 6);
 
 			// Vent
 			Color::black();
+			Lightning::blackMaterial();
 			glRotatef(90, 1, 0, 0);
 			gluCylinder(buttockJetObj, jetRad, jetRad, jetExtrude, 12, 1);
 			glTranslatef(0, 0, jetExtrude);
@@ -1339,6 +1401,8 @@ void Model::ButtockJet() {
 
 		// Support bar
 		Color::lightBlue2();
+		Lightning::darkerBlueMaterial();
+
 		float barRad = 0.015f;
 		glTranslatef(0, -barRad, 0);
 		gluCylinder(buttockJetObj, barRad, barRad, 0.075f, 8, 1);
@@ -1382,11 +1446,14 @@ void Model::LegUpper() {
 		glTranslatef(-center[0], -center[1], -legWidth / 2.0f);
 
 		Color::lightBlue();
+		Lightning::blueMaterial();
 		float polygonCenter[3] = { 0.35, -0.35, 0 };
 		Utility::extrudePolygon(circle, polygonCenter, zAxis, legWidth);
 
 		// Hinge
 		Color::lightGray();
+		Lightning::greyMaterial();
+
 		glPushMatrix();
 		{
 			float hingeThickness = 0.015f;
@@ -1397,7 +1464,7 @@ void Model::LegUpper() {
 			Utility::extrudePolygon(hinge, hingeCenter, zAxis, hingeThickness, true, false);
 			glTranslatef(0, 0, hingeThickness + legWidth);
 			Utility::extrudePolygon(hinge, hingeCenter, zAxis, hingeThickness, false, true);
-			
+
 			hinge.destroy();
 		}
 		glPopMatrix();
@@ -1419,10 +1486,11 @@ void Model::LegLower() {
 	CoordinateSet tempCoordSet2(10);
 
 	Color::lightBlue();
+	Lightning::blueMaterial();
 
 	glPushMatrix();
 	{
-		glTranslatef(-center[0], -center[1], -legWidth/2.0f);
+		glTranslatef(-center[0], -center[1], -legWidth / 2.0f);
 		// Draw Leg part 1
 		CoordinateSet legPart1(10);
 		legPart1.addCoordinate(0.34, -0.22, 0);
@@ -1464,7 +1532,7 @@ void Model::LegLower() {
 		tempCoordSet2 = Utility::bezierCurveCoords(tempCoordSet, 4);
 		longPart.combineCoords(tempCoordSet2);
 
-		float longPartCenter[3] = {0.23, -0.45, 0};
+		float longPartCenter[3] = { 0.23, -0.45, 0 };
 		Utility::extrudePolygon(longPart, longPartCenter, zAxis, legWidth);
 
 		CoordinateSet smallLow(4);
@@ -1472,7 +1540,7 @@ void Model::LegLower() {
 		smallLow.addCoordinate(0.265, -0.8, 0);
 		smallLow.addCoordinate(0.325, -0.8, 0);
 		smallLow.addCoordinate(0.34, -0.75, 0);
-		float smallLowCenter[3] = {0.3, -0.78, 0};
+		float smallLowCenter[3] = { 0.3, -0.78, 0 };
 		Utility::extrudePolygon(smallLow, smallLowCenter, zAxis, legWidth);
 
 		// Red spring at the bottom
@@ -1480,6 +1548,8 @@ void Model::LegLower() {
 			legLowerSpring = gluNewQuadric();
 		}
 		Color::red();
+		Lightning::windRedMaterial();
+
 		{
 			glTranslatef(0.295, -0.8, legWidth / 2.0f);
 			glRotatef(90, 1, 0, 0);
@@ -1512,6 +1582,8 @@ void Model::LegPlate(float r) {
 		{
 			glRotatef(r, 0, 0, 1);
 			Color::lightGray();
+			Lightning::greyMaterial();
+
 			CoordinateSet plate(10);
 			plate.addCoordinate(0, 0, 0);
 			plate.addCoordinate(0, -0.08, 0);
@@ -1529,6 +1601,8 @@ void Model::LegPlate(float r) {
 		{
 			float extrusion = 0.01f;
 			Color::black();
+			Lightning::blackMaterial();
+
 			float ankleCenter[3] = { 0, 0, 0 };
 			CoordinateSet ankle = Utility::circleCoords(ankleCenter, 0.025f, 12);
 			glTranslatef(0, 0, -extrusion);
@@ -1556,6 +1630,8 @@ void Model::LegPlate(float r) {
 			float barCenter[3] = { 0.025, 0.015, 0 };
 
 			Color::lightGray();
+			Lightning::greyMaterial();
+
 			// Right support plate
 			glPushMatrix();
 			{
@@ -1577,6 +1653,7 @@ void Model::LegPlate(float r) {
 			glPushMatrix();
 			{
 				Color::gold();
+				Lightning::goldMaterial();
 				glTranslatef(barSmallCircle[0], barSmallCircle[1], barSmallCircle[2] + inset + barWidth);
 				gluCylinder(legPlateObj, supportBarRadius, supportBarRadius, feetWidth - inset * 2 - barWidth * 2, 6, 1);
 			}
@@ -1586,6 +1663,8 @@ void Model::LegPlate(float r) {
 			glPushMatrix();
 			{
 				Color::black();
+				Lightning::blackMaterial();
+
 				glTranslatef(barSmallCircle[0], barSmallCircle[1], barSmallCircle[2] + feetWidth / 2.0f);
 				glRotatef(-15, 0, 0, 1);
 				glTranslatef(0, supportBarRadius, 0);
@@ -1612,6 +1691,8 @@ void Model::HipJoint() {
 		float jointSize = legWidth * 1.25f;
 		float r1 = 0.18f, r2 = 0.12f;
 		Color::lightGray();
+		Lightning::greyMaterial();
+
 		gluCylinder(hipBallObj, r1, r2, jointSize, 16, 1);
 
 		glTranslatef(0, 0, jointSize);
@@ -1628,6 +1709,8 @@ void Model::ArmUpper() {
 	{
 		glRotatef(90, 0, 0, 1);
 		Color::lightBlue();
+		Lightning::blueMaterial();
+
 		CoordinateSet arm(10);
 		arm.addCoordinate(0, -0.17f, 0);
 		arm.addCoordinate(-0.035f, -0.325f, 0);
@@ -1643,7 +1726,7 @@ void Model::ArmUpper() {
 		arm.addCoordinate(0.28f, -0.025f, 0);
 		arm.addCoordinate(0.2f, -0.1f, 0);
 		arm.addCoordinate(0.05f, -0.135f, 0);
-		float armCenter[3] = {0.5f, -0.3f, 0};
+		float armCenter[3] = { 0.5f, -0.3f, 0 };
 		Utility::extrudePolygon(arm, armCenter, zAxis, armWidth);
 
 		arm.destroy();
@@ -1664,6 +1747,8 @@ void Model::ArmLower() {
 		float sideExtrude = 0.015f;
 		// Large hinge cylinder
 		Color::lightGray();
+		Lightning::greyMaterial();
+
 		gluCylinder(armLowerObj, radius1, radius1, armWidth, 12, 1);
 		gluDisk(armLowerObj, 0, radius1, 12, 1);
 		glPushMatrix();
@@ -1675,6 +1760,8 @@ void Model::ArmLower() {
 
 		//Smaller side cylinders
 		Color::darkGray();
+		Lightning::darkerGreyMaterial();
+
 		glPushMatrix();
 		{
 			glTranslatef(0, 0, -sideExtrude);
@@ -1698,6 +1785,7 @@ void Model::ArmLower() {
 	{
 		glTranslatef(0.1, 0.1, 0);
 		Color::lightBlue();
+		Lightning::blueMaterial();
 
 		// Main body
 		CoordinateSet arm(10);
@@ -1709,8 +1797,8 @@ void Model::ArmLower() {
 		arm.addCoordinate(0.02, -0.08, 0);
 		arm.addCoordinate(-0.01, -0.165, 0);
 		arm.addCoordinate(-0.06, -0.2, 0);
-		float armCenter[3] = {0.4, -0.1, 0};
-		Utility::extrudePolygon(arm, armCenter , zAxis, armWidth);
+		float armCenter[3] = { 0.4, -0.1, 0 };
+		Utility::extrudePolygon(arm, armCenter, zAxis, armWidth);
 
 		// Hinge cover
 		CoordinateSet cover(4);
@@ -1718,13 +1806,15 @@ void Model::ArmLower() {
 		cover.addCoordinate(-0.05, -0.25, 0);
 		cover.addCoordinate(0.05, -0.25, 0);
 		cover.addCoordinate(0.1, -0.2, 0);
-		float coverCenter[3] = {-0.1, -0.22, 0};
+		float coverCenter[3] = { -0.1, -0.22, 0 };
 		Utility::extrudePolygon(cover, coverCenter, zAxis, armWidth);
 
 		// Joint at the end
 		glPushMatrix();
 		{
 			Color::lightGray();
+			Lightning::greyMaterial();
+
 			float jointRadius = 0.05;
 			float plateRadius = 0.065;
 			float plateExtrude = 0.01f;
@@ -1771,6 +1861,8 @@ void Model::Shoulder() {
 	glPushMatrix();
 	{
 		Color::lightGray();
+		Lightning::greyMaterial();
+
 		glRotatef(90, 0, 0, 1);
 		glTranslatef(1.08f, -0.25f, armWidth / 2.0f);
 		gluSphere(shoulderObj, shoulderRad, 8, 8);
@@ -1782,11 +1874,13 @@ void Model::RightHand() {
 	glPushMatrix();
 	{
 		glTranslatef(0, 0.1, 0);
-		
+
 		// Palm
 		glPushMatrix();
 		{
 			Color::lightBlue();
+			Lightning::blueMaterial();
+
 			CoordinateSet palm(10);
 			palm.addCoordinate(0, -0.02, 0);
 			palm.addCoordinate(0, -0.15, 0);
@@ -1866,6 +1960,8 @@ void Model::LeftHand() {
 		glPushMatrix();
 		{
 			Color::lightBlue();
+			Lightning::blueMaterial();
+
 			CoordinateSet palm(10);
 			palm.addCoordinate(0, -0.02, 0);
 			palm.addCoordinate(0, -0.15, 0);
@@ -1943,13 +2039,13 @@ void Model::Finger(float r1, float r2, float r3) {
 		fingerObj = gluNewQuadric();
 	}
 
-	float segLength[3] = {0.7, 0.55, 0.48};
+	float segLength[3] = { 0.7, 0.55, 0.48 };
 	float fingerWidth = 0.25f;
 	float fingerThickness = 0.2f;
 	float jointRadius = fingerThickness / 1.9f;
 	float jointExtrude = 0.025f;
 	float jointGap = jointRadius * 0.1f;
-	
+
 	glScalef(0.2, 0.2, 0.2);
 	glRotatef(r1, 0, -1, 0);
 	// Segment #1
@@ -1957,12 +2053,14 @@ void Model::Finger(float r1, float r2, float r3) {
 	{
 		// Finger segment
 		Color::lightBlue();
+		Lightning::blueMaterial();
+
 		CoordinateSet seg(4);
 		seg.addCoordinate(0, 0, 0);
 		seg.addCoordinate(0, -fingerWidth, 0);
 		seg.addCoordinate(segLength[0], -fingerWidth, 0);
 		seg.addCoordinate(segLength[0], 0, 0);
-		float segCenter[3] = {segLength[0] / 2.0f, -fingerWidth / 2.0f, 0};
+		float segCenter[3] = { segLength[0] / 2.0f, -fingerWidth / 2.0f, 0 };
 		Utility::extrudePolygon(seg, segCenter, zAxis, fingerThickness);
 
 		// Finger deco
@@ -1974,6 +2072,7 @@ void Model::Finger(float r1, float r2, float r3) {
 		glTranslatef(0, 0, -decoExtrude);
 		glPushMatrix();
 		Color::red();
+		Lightning::windRedMaterial();
 		{
 			CoordinateSet deco(10);
 			deco.addCoordinate(indent, -indent, 0);
@@ -1987,7 +2086,7 @@ void Model::Finger(float r1, float r2, float r3) {
 		glPopMatrix();
 		glPushMatrix();
 		{
-			glTranslatef(0, -fingerWidth + indent*2 + decoWidth, 0);
+			glTranslatef(0, -fingerWidth + indent * 2 + decoWidth, 0);
 			CoordinateSet deco(10);
 			deco.addCoordinate(indent, -indent, 0);
 			deco.addCoordinate(indent, -indent - decoWidth, 0);
@@ -2004,7 +2103,7 @@ void Model::Finger(float r1, float r2, float r3) {
 			deco.addCoordinate(middleIndent, -indent - decoWidth, 0);
 			deco.addCoordinate(middleIndent, -fingerWidth + indent + decoWidth, 0);
 			deco.addCoordinate(middleIndent + decoWidth2, -fingerWidth + indent + decoWidth, 0);
-			deco.addCoordinate(middleIndent+ decoWidth2, -indent - decoWidth, 0);
+			deco.addCoordinate(middleIndent + decoWidth2, -indent - decoWidth, 0);
 			float decoCenter[3] = { middleIndent + (decoWidth2 / 2.0f), (-fingerWidth / 2.0f), 0 };
 			Utility::extrudePolygon(deco, decoCenter, zAxis, decoExtrude);
 			deco.destroy();
@@ -2034,6 +2133,8 @@ void Model::Finger(float r1, float r2, float r3) {
 
 	// Joint
 	Color::lightGray();
+	Lightning::greyMaterial();
+
 	glPushMatrix();
 	{
 		glTranslatef(0, jointExtrude, fingerThickness - jointRadius / 2.0f);
@@ -2051,6 +2152,8 @@ void Model::Finger(float r1, float r2, float r3) {
 	// Segment #2 
 	{
 		Color::lightBlue();
+		Lightning::blueMaterial();
+
 		CoordinateSet seg(4);
 		seg.addCoordinate(0, 0, 0);
 		seg.addCoordinate(0, -fingerWidth, 0);
@@ -2064,6 +2167,8 @@ void Model::Finger(float r1, float r2, float r3) {
 		// Finger Deco
 		glTranslatef(0, 0, -decoExtrude);
 		Color::black();
+		Lightning::blackMaterial();
+
 		CoordinateSet deco(10);
 		deco.addCoordinate(indent, -indent, 0);
 		deco.addCoordinate(indent, -fingerWidth + indent, 0);
@@ -2084,6 +2189,8 @@ void Model::Finger(float r1, float r2, float r3) {
 	glPushMatrix();
 	{
 		Color::lightGray();
+		Lightning::greyMaterial();
+
 		glTranslatef(0, jointExtrude, fingerThickness - jointRadius / 2.0f);
 		glRotatef(90, 1, 0, 0);
 		gluCylinder(fingerObj, jointRadius, jointRadius, (double)fingerWidth + (jointExtrude * 2), 8, 1);
@@ -2099,12 +2206,14 @@ void Model::Finger(float r1, float r2, float r3) {
 	glPushMatrix();
 	{
 		Color::lightBlue();
+		Lightning::blueMaterial();
+
 		CoordinateSet seg(4);
 		seg.addCoordinate(0, 0, 0);
 		seg.addCoordinate(0, -fingerWidth, 0);
 		seg.addCoordinate(segLength[2], -fingerWidth, 0);
 		seg.addCoordinate(segLength[2], 0, 0);
-		float segCenter[3] = { segLength[2] / 2.0f, -fingerWidth / 2.0f , 0};
+		float segCenter[3] = { segLength[2] / 2.0f, -fingerWidth / 2.0f , 0 };
 		Utility::extrudePolygon(seg, segCenter, zAxis, fingerThickness);
 		seg.destroy();
 	}
@@ -2115,6 +2224,8 @@ void drawZipLineTubeBlackDecoPiece() {
 	glPushMatrix();
 	{
 		Color::black();
+		Lightning::blackMaterial();
+
 		float center[3] = { 0, 0, 0 };
 		float radius1 = 0.05f, radius2 = 0.1005f;
 		float decoThickness = 0.05f;
@@ -2124,7 +2235,7 @@ void drawZipLineTubeBlackDecoPiece() {
 		temp2.combineCoords(temp);
 
 		// 0.2588 = sin(15deg)
-		float polygonCenter[3] = {radius2 - radius1, 0.2588f * (radius2 - radius1), 0};
+		float polygonCenter[3] = { radius2 - radius1, 0.2588f * (radius2 - radius1), 0 };
 		Utility::extrudePolygon(temp2, polygonCenter, zAxis, decoThickness);
 
 		temp.destroy();
@@ -2141,6 +2252,8 @@ void Model::zipLineTube() {
 	glPushMatrix();
 	{
 		Color::lightBlue();
+		Lightning::blueMaterial();
+
 		float tubeRadius = 0.1f;
 		float tubeLength = 0.7f;
 		float tubeRedDecoRadius = 0.05f;
@@ -2148,25 +2261,33 @@ void Model::zipLineTube() {
 		// Tube
 		glTranslatef(0, 0, -tubeLength / 2.0f);
 		gluCylinder(zipLineTubeObj, tubeRadius, tubeRadius, tubeLength, 24, 12);
-		
+
 		// End cover with red deco
 		glPushMatrix();
 		{
 			Color::lightBlue();
+			Lightning::blueMaterial();
+
 			gluDisk(zipLineTubeObj, 0, tubeRadius, 24, 4);
 			Color::red();
+			Lightning::windRedMaterial();
+
 			glTranslatef(0, 0, -0.0001f);
 			gluDisk(zipLineTubeObj, 0, tubeRedDecoRadius, 24, 4);
 		}
 		glPopMatrix();
-		
+
 		// End cover with red deco
 		glPushMatrix();
 		{
 			Color::lightBlue();
+			Lightning::blueMaterial();
+
 			glTranslatef(0, 0, tubeLength);
 			gluDisk(zipLineTubeObj, 0, tubeRadius, 24, 4);
 			Color::red();
+			Lightning::windRedMaterial();
+
 			glTranslatef(0, 0, 0.0001f);
 			gluDisk(zipLineTubeObj, 0, tubeRedDecoRadius, 24, 4);
 		}
@@ -2179,6 +2300,8 @@ void Model::zipLineTube() {
 		glPushMatrix();
 		{
 			Color::lightGray();
+			Lightning::greyMaterial();
+
 			glTranslatef(0, 0, stripIndent);
 			gluCylinder(zipLineTubeObj, stripRadius, stripRadius, stripWidth, 24, 12);
 			glTranslatef(0, 0, tubeLength - 2 * stripIndent - stripWidth);
@@ -2222,6 +2345,8 @@ void Model::zipLineTube() {
 		glTranslatef(0, -0.1, 0);
 		glScalef(1.5, 1.5, 3);
 		Color::lightBlue2();
+		Lightning::darkerBlueMaterial();
+
 		CoordinateSet temp(10);
 		temp.addCoordinate(0, 0.05, -0.01);
 		temp.addCoordinate(0, 0.03, -0.015);
@@ -2237,6 +2362,8 @@ void Model::zipLineTube() {
 
 		// Small red bump
 		Color::red();
+		Lightning::windRedMaterial();
+
 		glTranslatef(0.06, 0.045, 0);
 		glRotatef(90, 0, 1, 0);
 		gluCylinder(zipLineTubeObj, 0.01, 0.01, 0.03, 6, 3);
@@ -2260,6 +2387,7 @@ void Model::zipLineBackTube() {
 		glRotatef(-90, 1, 0, 0);
 
 		Color::lightGray();
+		Lightning::greyMaterial();
 
 		// Tube itself
 		glTranslatef(0, 0, -containerHeight / 2.0f);
@@ -2267,6 +2395,8 @@ void Model::zipLineBackTube() {
 
 		// Lids
 		Color::lightBlue();
+		Lightning::blueMaterial();
+
 		glPushMatrix();
 		{
 			gluDisk(zipLineBackpackObj, 0, lidRadius, 24, 6);
@@ -2318,6 +2448,7 @@ void Model::zipLineBackTube() {
 		glPushMatrix();
 		{
 			Color::lightBlue2();
+			Lightning::darkerBlueMaterial();
 
 			glTranslatef(0, -containerRadius, 0);
 			glPushMatrix();
@@ -2331,15 +2462,21 @@ void Model::zipLineBackTube() {
 			glPushMatrix();
 			{
 				Color::lightBlue2();
+				Lightning::darkerBlueMaterial();
+
 				glRotatef(90, 1, 0, 0);
 				gluDisk(zipLineBackpackObj, 0, cyclerRadius, 12, 3);
 				Color::yellow();
+				Lightning::yellowMaterial();
+
 				gluCylinder(zipLineBackpackObj, cyclerRadius, cyclerRadius, cyclerThickness, 12, 3);
 			}
 			glPopMatrix();
 			glTranslatef(0, -cyclerThickness, 0);
 			glRotatef(90, 1, 0, 0);
 			Color::lightBlue2();
+			Lightning::darkerBlueMaterial();
+
 			gluDisk(zipLineBackpackObj, 0, cyclerRadius, 12, 3);
 		}
 		glPopMatrix();
@@ -2401,19 +2538,19 @@ void Model::r99() {
 	handle1.addCoordinate(-0.05, 0, 0);
 
 	CoordinateSet magazine(10);
-	magazine.addCoordinate(-0.08,-0.15,0);
-	magazine.addCoordinate(-0.06,-0.2 ,0);
-	magazine.addCoordinate(0.06,-0.2, 0);
-	magazine.addCoordinate(0.08,-0.15, 0);
+	magazine.addCoordinate(-0.08, -0.15, 0);
+	magazine.addCoordinate(-0.06, -0.2, 0);
+	magazine.addCoordinate(0.06, -0.2, 0);
+	magazine.addCoordinate(0.08, -0.15, 0);
 	magazine.addCoordinate(0.08, 0.15, 0);
-	magazine.addCoordinate(-0.08,0.15, 0);
+	magazine.addCoordinate(-0.08, 0.15, 0);
 
 	CoordinateSet handle2(10);
-	handle2.addCoordinate(-0.06,-0.12,0);
+	handle2.addCoordinate(-0.06, -0.12, 0);
 	handle2.addCoordinate(0.06, -0.12, 0);
 	handle2.addCoordinate(0.03, 0.12, 0);
 	handle2.addCoordinate(-0.03, 0.12, 0);
-	
+
 	glPushMatrix();
 	{
 		glTranslatef(0, 0, -0.5f);

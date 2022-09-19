@@ -148,6 +148,7 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="CoordinateSet.cpp" />
+    <ClCompile Include="Lightning.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Utility.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="Controls.h" />
     <ClInclude Include="CoordinateSet.h" />
+    <ClInclude Include="Lightning.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Utility.h" />
