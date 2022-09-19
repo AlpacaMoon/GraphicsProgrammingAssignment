@@ -32,22 +32,34 @@ GLUquadricObj* barrelObj;
 
 // Animation variables / Model transformation variables
 float Model::headRot[3] = {0, 0, 0};
+
 float Model::RLegUpperRot[3] = { 0, 0, 0 };
 float Model::RLegHingeRot = 0;
 float Model::RFeetRot = 0;
+
 float Model::LLegUpperRot[3] = { 0, 0, 0 };
 float Model::LLegHingeRot = 0;
 float Model::LFeetRot = 0;
 
+float Model::hipRot[3] = { 0, 0, 0 };
+
+float Model::bodyRot[3] = { 0, 0, 0 };
+
 float Model::RArmRot[3][3] = {
-	{10, -15, 0},
-	{0, 0, 15},
+	{0, 0, 0},
+	{0, 0, 0},
 	{0, 0, 0}
+	//{10, -15, 0},
+	//{0, 0, 15},
+	//{0, 0, 0}
 };
 float Model::LArmRot[3][3] = {
-	{-10, 15, 0},
-	{0, 0, 15},
+	{0, 0, 0},
+	{0, 0, 0},
 	{0, 0, 0}
+	//{-10, 15, 0},
+	//{0, 0, 15},
+	//{0, 0, 0}
 };
 float Model::RFingerRot[5][3] = {
 	{15, 15, 15},
@@ -67,8 +79,24 @@ float Model::LFingerRot[5][3] = {
 void Model::Pathfinder() {
 	glPushMatrix();
 	{
+		glRotatef(bodyRot[0], 1, 0, 0);
+		glRotatef(bodyRot[1], 0, 1, 0);
+		glRotatef(bodyRot[2], 0, 0, 1);
+
+		glRotatef(90, 0, 1, 0);
+
+		// Displacement to rotation pivots
+		float displace = 0.35;
+		float displace2 = 0.15;
 		glPushMatrix();
 		{
+			glTranslatef(0, -displace2, 0);
+			glRotatef(hipRot[0], 1, 0, 0);
+			glRotatef(hipRot[1], 0, 1, 0);
+			glTranslatef(0, displace2, 0);
+			glTranslatef(0, -displace, 0);
+			glRotatef(hipRot[2], 0, 0, 1);
+			glTranslatef(0, displace, 0);
 			glTranslatef(-0.01, 0.275, 0);
 			glScalef(0.75, 0.9, 0.9);
 			UpperBody();
@@ -125,6 +153,11 @@ void Model::LowerBody() {
 		float legScale = 1.1;
 		glPushMatrix();
 		{
+			glRotatef(hipRot[0], 1, 0, 0);
+			glRotatef(hipRot[1], 0, 1, 0);
+			glTranslatef(0, -0.185, 0);
+			glRotatef(hipRot[2], 0, 0, 1);
+			glTranslatef(0, 0.185, 0);
 			Waist();
 		}
 		glPopMatrix();

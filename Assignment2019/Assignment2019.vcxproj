@@ -146,15 +146,19 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Assignment.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Controls.cpp" />
     <ClCompile Include="CoordinateSet.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Controls.h" />
     <ClInclude Include="CoordinateSet.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -8,6 +8,7 @@
 #include "Model.h"
 #include "Animation.h"
 #include "Color.h"
+#include "Controls.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 
@@ -104,13 +105,24 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				camRotation[2] = 0;
 				break;
 
-			case 'G':
-				showGrid = !showGrid;
-				break;
-
 			case 'O':
 				onLightning=!onLightning;
 				break;
+
+			case 'P':
+				showGrid = !showGrid;
+				break;
+
+			case VK_NUMPAD0:
+				Controls::isIndependentControls = !Controls::isIndependentControls;
+				break;
+			}
+
+			if (Controls::isIndependentControls) {
+				Controls::independentControls(wParam);
+			}
+			else {
+				Controls::presetAnimationControls(wParam);
 			}
 		}
 		break;

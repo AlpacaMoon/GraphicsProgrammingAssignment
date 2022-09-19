@@ -55,5 +55,7 @@ public:
 	static float LArmRot[3][3];
 	static float RFingerRot[5][3];
 	static float LFingerRot[5][3];
+	static float hipRot[3];
+	static float bodyRot[3];
 };
 
