@@ -28,9 +28,19 @@ bool onLightning = false;
 
 //lighting test
 GLfloat ambientLight[4] = { 1,1,1,1 }; //RGBA
-//if want diffuse light change to all 1
 GLfloat diffuseLight[4] = { 1,1,1,1 }; //RGBA
 GLfloat positionLight[4] = { 0,10,0,0 }; //x,y,z,0
+
+//lookAt test
+float eye[3] = { 0,0,0 };
+float eyeXAngle = 0;
+float eyeYAngle = 0;
+float eyeZAngle = 0;
+float lookAt[3] = { 0,0,0 };
+float lookAtXAngle = 0;
+float lookAtYAngle = 0;
+float lookAtZAngle = 0;
+float up[3] = { 0,0,0 };
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -45,7 +55,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		if (wParam == VK_ESCAPE) PostQuitMessage(0);
 		else {
 			switch (wParam) {
-			case VK_UP: 
+			case VK_UP:
 				camRotation[0] -= camRotateSpeed;
 				inputting = true;
 				break;
@@ -53,19 +63,19 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				camRotation[0] += camRotateSpeed;
 				inputting = true;
 				break;
-			case VK_LEFT: 
+			case VK_LEFT:
 				camRotation[1] -= camRotateSpeed;
 				inputting = true;
 				break;
-			case VK_RIGHT: 
+			case VK_RIGHT:
 				camRotation[1] += camRotateSpeed;
 				inputting = true;
 				break;
-			case VK_OEM_COMMA: 
+			case VK_OEM_COMMA:
 				camRotation[2] += camRotateSpeed;
 				inputting = true;
 				break;
-			case VK_OEM_PERIOD: 
+			case VK_OEM_PERIOD:
 				camRotation[2] -= camRotateSpeed;
 				inputting = true;
 				break;
@@ -102,7 +112,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				break;
 
 			case VK_F1:
-				onLightning=!onLightning;
+				onLightning = !onLightning;
 				break;
 
 			case VK_F2:
@@ -111,6 +121,15 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 			case VK_NUMPAD0:
 				Controls::isIndependentControls = !Controls::isIndependentControls;
+				break;
+
+				//try eye
+			case 'V':
+				//eyeXAngle += 0.1f;
+				eye[0] += 5.0f;
+				eye[1] += 5.0f;
+				eye[2] += 5.0f;
+				//Utility::rotateAroundXaxis(lookAt, eyeXAngle, lookAt);
 				break;
 			}
 
@@ -198,6 +217,7 @@ void display()
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	{
+		gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
 		Model::Pathfinder();
 	}
 	glPopMatrix();
@@ -205,7 +225,7 @@ void display()
 
 	// Gridlines
 	if (showGrid) {
-		glColor3f(0.9,0.9, 0.9);
+		glColor3f(0.9, 0.9, 0.9);
 		Utility::drawGrids();
 	}
 
@@ -218,6 +238,15 @@ void setupEnvironmentLightning() {
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
 	glLightfv(GL_LIGHT0, GL_POSITION, positionLight);
+}
+
+void setupCamera()
+{
+	//#pragma region View to Project
+	glMatrixMode(GL_PROJECTION);
+	//glOrtho(-7, 7, -7, 7, 1, 10);
+	glFrustum(-7, 7, -7, 7, 1, 10);
+	//# pragma endregion
 }
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
@@ -261,6 +290,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 	//Lightning setup
 	setupEnvironmentLightning();
+	//camera setup
+	setupCamera();
 
 	ShowWindow(hWnd, nCmdShow);
 
