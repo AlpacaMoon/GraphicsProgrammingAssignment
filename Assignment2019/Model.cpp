@@ -2507,6 +2507,20 @@ void Model::r99() {
 	barrelCoors.addCoordinate(-0.07, -0.04, 0);
 	barrelCoors.addCoordinate(-0.06, -0.05, 0);
 
+	CoordinateSet barrelBack(10);
+	barrelBack.addCoordinate(0.01, -0.03, 0);
+	barrelBack.addCoordinate(0.01, 0.03, 0);
+	barrelBack.addCoordinate(-0.01, 0.03, 0);
+	barrelBack.addCoordinate(-0.01, -0.03, 0);
+
+	CoordinateSet shoulderRest(10);
+	shoulderRest.addCoordinate(0.05, -0.1, 0);
+	shoulderRest.addCoordinate(0.05, 0.1, 0);
+	shoulderRest.addCoordinate(-0.05, 0.1, 0);
+	shoulderRest.addCoordinate(-0.05, 0.02, 0);
+	shoulderRest.addCoordinate(-0.01, 0, 0);
+	shoulderRest.addCoordinate(-0.01, -0.08, 0);
+
 	CoordinateSet barrelSide(10);
 	barrelSide.addCoordinate(-0.01, -0.04, 0);
 	barrelSide.addCoordinate(0.01, -0.04, 0);
@@ -2524,10 +2538,16 @@ void Model::r99() {
 	barrelBottom.addCoordinate(-0.05, -0.025, 0);
 
 	CoordinateSet barrelTop(10);
-	barrelTop.addCoordinate(-0.05, -0.02, 0);
-	barrelTop.addCoordinate(0.05, -0.02, 0);
-	barrelTop.addCoordinate(0.05, 0.02, 0);
-	barrelTop.addCoordinate(-0.05, 0.02, 0);
+	barrelTop.addCoordinate(-0.04, -0.02, 0);
+	barrelTop.addCoordinate(0.04, -0.02, 0);
+	barrelTop.addCoordinate(0.04, 0.01, 0);
+	barrelTop.addCoordinate(-0.04, 0.01, 0);
+
+	CoordinateSet barrelTopBack(10);
+	barrelTopBack.addCoordinate(-0.05, -0.02, 0);
+	barrelTopBack.addCoordinate(0.05, -0.02, 0);
+	barrelTopBack.addCoordinate(0.05, 0.02, 0);
+	barrelTopBack.addCoordinate(-0.05, 0.02, 0);
 
 	CoordinateSet handle1(10);
 	handle1.addCoordinate(-0.05, -0.08, 0);
@@ -2546,8 +2566,10 @@ void Model::r99() {
 	magazine.addCoordinate(-0.08, 0.15, 0);
 
 	CoordinateSet handle2(10);
-	handle2.addCoordinate(-0.06, -0.12, 0);
-	handle2.addCoordinate(0.06, -0.12, 0);
+	handle2.addCoordinate(-0.06, -0.10, 0);
+	handle2.addCoordinate(-0.05, -0.12, 0);
+	handle2.addCoordinate(0.05, -0.12, 0);
+	handle2.addCoordinate(0.06, -0.10, 0);
 	handle2.addCoordinate(0.03, 0.12, 0);
 	handle2.addCoordinate(-0.03, 0.12, 0);
 
@@ -2557,26 +2579,55 @@ void Model::r99() {
 
 		glPushMatrix();
 		{
+			glColor3f(1, 0, 0);
 			Utility::extrudePolygon(barrelCoors, centre1, zAxis, 1.0f, true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
+			glColor3f(0.1, 0.1, 0.5);
+			glTranslatef(0.055f, 0, 1.0f);
+			Utility::extrudePolygon(barrelBack, centre1, zAxis, 0.5f, true, true);
+		}
+		glPopMatrix();
+
+		glPushMatrix();
+		{
+			glColor3f(0.1, 0.1, 0.5);
+			glTranslatef(-0.055f, 0, 1.0f);
+			Utility::extrudePolygon(barrelBack, centre1, zAxis, 0.5f, true, true);
+		}
+		glPopMatrix();
+
+		glPushMatrix();
+		{
+			glColor3f(0, 0, 0);
+			glTranslatef(0.07f, -0.05f, 1.5f);
+			glRotatef(-90, 0, 1, 0);
+			Utility::extrudePolygon(shoulderRest, centre1, zAxis, 0.14f, true, true);
+		}
+		glPopMatrix();
+
+		glPushMatrix();
+		{
+			glColor3f(1, 1, 0);
 			glTranslatef(0.069, 0, 0);
-			//Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
+			Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
+			glColor3f(1, 0, 1);
 			glTranslatef(-0.069, 0, 0);
-			//Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
+			Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
+			glColor3f(0, 1, 1);
 			glTranslatef(0, -0.075, 0.05);
 			Utility::extrudePolygon(barrelBottom, centre1, zAxis, 0.2f, true, true);
 		}
@@ -2584,42 +2635,55 @@ void Model::r99() {
 
 		glPushMatrix();
 		{
+			glColor3f(0.5, 0, 0);
 			glTranslatef(0, 0.07, 0.07);
-			//Utility::extrudePolygon(barrelTop, centre1, zAxis, 0.48f, true, true);
+			Utility::extrudePolygon(barrelTop, centre1, zAxis, 0.35f, true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
+			glColor3f(0.5, 0.2, 0.7);
+			glTranslatef(0, 0.07, 0.42);
+			Utility::extrudePolygon(barrelTopBack, centre1, zAxis, 0.53f, true, true);
+		}
+		glPopMatrix();
+
+		glPushMatrix();
+		{
+			glColor3f(0.5, 0, 0.5);
 			glTranslatef(0, -0.1, 0.05);
-			//Utility::extrudePolygon(handle1, centre1, zAxis, 0.03f, true, true);
+			Utility::extrudePolygon(handle1, centre1, zAxis, 0.03f, true, true);
 		}
 		glPopMatrix();
 
 		//barrel head
 		glPushMatrix();
 		{
+			glColor3f(0, 0, 1);
 			glTranslatef(0, 0, -0.1f);
 			glRotatef(90, 0, 0, 1);
-			//gluCylinder(barrelObj, 0.02f, 0.02f, 0.1f,20,20);
-			//gluPartialDisk(barrelObj, 0, 0.02f, 20, 20, 0, 360);
+			gluCylinder(barrelObj, 0.02f, 0.02f, 0.1f, 20, 20);
+			gluPartialDisk(barrelObj, 0, 0.02f, 20, 20, 0, 360);
 		}
 		glPopMatrix();
 
 		//lower barrel head
 		glPushMatrix();
 		{
+			glColor3f(1, 0.5, 0);
 			glTranslatef(0, -0.075f, -0.15f);
 			glRotatef(90, 0, 0, 1);
-			//gluCylinder(barrelObj, 0.025f, 0.025f, 0.2f, 20, 20);
-			//gluPartialDisk(barrelObj, 0, 0.025f, 20, 20, 0, 360);
+			gluCylinder(barrelObj, 0.025f, 0.025f, 0.2f, 20, 20);
+			gluPartialDisk(barrelObj, 0, 0.025f, 20, 20, 0, 360);
 		}
 		glPopMatrix();
 
 		//magazine
 		glPushMatrix();
 		{
-			glTranslatef(-0.03, -0.15, 0.5);
+			glColor3f(0.2, 0, 0.3);
+			glTranslatef(-0.03, -0.13, 0.5);
 			glRotatef(-30, 1, 0, 0);
 			glRotatef(90, 0, 1, 0);
 			Utility::extrudePolygon(magazine, centre1, zAxis, 0.06, true, true);
@@ -2629,12 +2693,15 @@ void Model::r99() {
 		//handle2
 		glPushMatrix();
 		{
+			glColor3f(1, 0.8, 0.1);
 			glTranslatef(-0.03, -0.10, 0.9);
 			glRotatef(-30, 1, 0, 0);
 			glRotatef(90, 0, 1, 0);
-			Utility::extrudePolygon(handle2, centre1, zAxis, 0.07, true, true);
+			Utility::extrudePolygon(handle2, centre1, zAxis, 0.06, true, true);
 		}
 		glPopMatrix();
+
+
 	}
 	glPopMatrix();
 

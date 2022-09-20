@@ -217,8 +217,8 @@ void display()
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	{
-		gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
-		Model::Pathfinder();
+		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
+		Model::r99();
 	}
 	glPopMatrix();
 
