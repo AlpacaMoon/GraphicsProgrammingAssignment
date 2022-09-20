@@ -12,11 +12,17 @@ public:
 	static float rotateSpeed;
 
 	// Variables for preset animation controls
+	static int currentPlayingAnimation;
+
+	static bool pressingWalkKeys[3];	// 'W', 'A', 'D'
+	static bool isPressingWalk();
 
 	// Methods
 	static void initialize();
 	static void reset();
 	static void independentControls(WPARAM wParam);
-	static void presetAnimationControls(WPARAM wParam);
+	static void presetAnimationKeyDown(WPARAM wParam);
+	static void presetAnimationKeyUp(WPARAM wParam);
+
 };
 
