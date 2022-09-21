@@ -7,6 +7,8 @@
 #include "CoordinateSet.h"
 #include "Color.h"
 #include "Lightning.h"
+#include "Texture.h"
+#include "TextureMap.h"
 
 float xAxis[3] = { 1, 0, 0 };
 float yAxis[3] = { 0, 1, 0 };
@@ -49,17 +51,11 @@ float Model::hipRot[3] = { 0, 0, 0 };
 float Model::bodyRot[3] = { 0, 0, 0 };
 
 float Model::RArmRot[3][3] = {
-	//{0, 0, 0},
-	//{0, 0, 0},
-	//{0, 0, 0}
 	{20, -10, 15},
 	{0, 0, 90},
 	{0, 0, 0}
 };
 float Model::LArmRot[3][3] = {
-	//{0, 0, 0},
-	//{0, 0, 0},
-	//{0, 0, 0}
 	{-20, 10, 15},
 	{0, 0, 90},
 	{0, 0, 0}
@@ -406,7 +402,8 @@ void Model::Head() {
 				tempSet2.addCoordinate(0.3, -0.12, 0);
 
 				float center[3] = { 0, 0, 0 };
-				Utility::extrudePolygon(tempSet2, center, zAxis, headWidth);
+
+				Utility::extrudePolygon(tempSet2, center, zAxis, headWidth, TextureMap::allBlue());
 			}
 			glPopMatrix();
 
@@ -552,8 +549,12 @@ void Model::Head() {
 				float center[3] = { 0, 0, 0 };
 
 				// Right ear drum
+				Texture::on();
+				Texture::use(Texture::_blue);
+				gluQuadricTexture(headObj, GL_TRUE);
 				glTranslatef(0, 0.02, -headWidthHalf - earExtrude);
 				gluDisk(headObj, 0, earRadius, earEdges, 4);
+				Texture::off();
 
 				// Right ear extrusion
 				tempSet.destroy();
@@ -561,15 +562,19 @@ void Model::Head() {
 				tempSet2.destroy();
 				tempSet2 = tempSet.copy();
 				tempSet2.translate(0, 0, earExtrude);
-				Utility::connectTwoFaces(tempSet, tempSet2);
+				Utility::connectTwoFaces(tempSet, tempSet2, Texture::_blue);
 
 				// Left ear extrusion
 				glTranslatef(0, 0, headWidth + earExtrude);
-				Utility::connectTwoFaces(tempSet, tempSet2);
+				Utility::connectTwoFaces(tempSet, tempSet2, Texture::_blue);
 
 				// Left ear drum
 				glTranslatef(0, 0, earExtrude);
+				Texture::on();
+				Texture::use(Texture::_blue);
+				gluQuadricTexture(headObj, GL_TRUE);
 				gluDisk(headObj, 0, earRadius, earEdges, 4);
+				Texture::off();
 			}
 			glPopMatrix();
 		}
@@ -639,7 +644,8 @@ void Model::Torso() {
 			Lightning::blueMaterial();
 
 			float torsoCenter[3] = { 0, 0, z1 };
-			Utility::extrudePolygon(torso, torsoCenter, zAxis, torsoWidth);
+			
+			Utility::extrudePolygon(torso, torsoCenter, zAxis, torsoWidth, TextureMap::allBlue());
 
 			Color::red();
 			Lightning::windRedMaterial();
@@ -771,8 +777,8 @@ void Model::Torso() {
 			back3.addCoordinate(-0.1, levels[2], halfTorsoWidth * radiuses[2]);
 			back3.addCoordinate(-0.35, levels[2], halfTorsoWidth * radiuses[2]);
 
-			Utility::connectTwoFaces(back1, back2);
-			Utility::connectTwoFaces(back2, back3);
+			Utility::connectTwoFaces(back1, back2, Texture::_blue);
+			Utility::connectTwoFaces(back2, back3, Texture::_blue);
 
 			back1.destroy();
 			back2.destroy();
@@ -788,7 +794,9 @@ void Model::Torso() {
 
 			float radius[2] = { 0.2f, 0.12f };
 			float widths[2] = { 0.075, 0.15 };
-
+			Texture::on();
+			Texture::use(Texture::_blue);
+			gluQuadricTexture(torsoObj, GL_TRUE);
 			glPushMatrix();
 			{
 				glTranslatef(0, 0, -torsoWidth / 2.0f - widths[0]);
@@ -805,6 +813,7 @@ void Model::Torso() {
 				gluCylinder(torsoObj, radius[0], radius[1], widths[1], 16, 1);
 			}
 			glPopMatrix();
+			Texture::off();
 		}
 		glPopMatrix();
 
@@ -832,7 +841,7 @@ void Model::Torso() {
 
 			glTranslatef(0, 0, -tvBodyWidth / 2.0f);
 			float chestCenter[3] = { 0.55, -0.25, 0 };
-			Utility::extrudePolygon(chest, chestCenter, zAxis, tvBodyWidth);
+			Utility::extrudePolygon(chest, chestCenter, zAxis, tvBodyWidth, TextureMap::allBlue());
 
 			chest.destroy();
 		}
@@ -892,11 +901,10 @@ void Model::Torso() {
 				glRotatef(-10, 0, 0, 1);
 				Color::lightBlue2();
 				Lightning::darkerBlueMaterial();
+				Utility::extrudePolygon(protection, protCenter, zAxis, pWidth, TextureMap::allBlue());
 
-				Utility::extrudePolygon(protection, protCenter, zAxis, pWidth);
 				Color::lightGray();
 				Lightning::greyMaterial();
-
 				Utility::extrudePolygon(bar, barCenter, zAxis, barWidth);
 			}
 			glPopMatrix();
@@ -906,11 +914,10 @@ void Model::Torso() {
 				glRotatef(-10, 0, 0, 1);
 				Color::lightBlue2();
 				Lightning::darkerBlueMaterial();
+				Utility::extrudePolygon(protection, protCenter, zAxis, pWidth, TextureMap::allBlue());
 
-				Utility::extrudePolygon(protection, protCenter, zAxis, pWidth);
 				Color::lightGray();
 				Lightning::greyMaterial();
-
 				Utility::extrudePolygon(bar, barCenter, zAxis, barWidth);
 			}
 			glPopMatrix();
@@ -920,11 +927,10 @@ void Model::Torso() {
 				glRotatef(-10, 0, 0, 1);
 				Color::lightBlue2();
 				Lightning::darkerBlueMaterial();
+				Utility::extrudePolygon(protection, protCenter, zAxis, pWidth, TextureMap::allBlue());
 
-				Utility::extrudePolygon(protection, protCenter, zAxis, pWidth);
 				Color::lightGray();
 				Lightning::greyMaterial();
-
 				Utility::extrudePolygon(bar, barCenter, zAxis, barWidth);
 			}
 			glPopMatrix();
@@ -973,12 +979,12 @@ void Model::Torso() {
 			tempSet.addCoordinate(-0.15, 0.37, 0);
 			tempSet.addCoordinate(0.7, 0.37, 0);
 			tempSet.addCoordinate(0.75, 0.05, 0);
-			Utility::drawBezierTube(tempSet, 12, 8, barRad);
+			Utility::drawBezierTube(tempSet, 12, 8, barRad, Texture::_blue);
 
 			glPushMatrix();
 			{
 				glTranslatef(0, 0, torsoWidth + (barGap + barRad) * 2);
-				Utility::drawBezierTube(tempSet, 12, 8, barRad);
+				Utility::drawBezierTube(tempSet, 12, 8, barRad, Texture::_blue);
 			}
 			glPopMatrix();
 
@@ -987,14 +993,14 @@ void Model::Torso() {
 			tempSet.addCoordinate(-0.25, 0.1, barGap);
 			tempSet.addCoordinate(-0.25, 0.1, -barGap);
 			tempSet.addCoordinate(-0.2, 0.15, -barGap);
-			Utility::drawBezierTube(tempSet, 4, 8, barRad);
+			Utility::drawBezierTube(tempSet, 4, 8, barRad, Texture::_blue);
 
 			glTranslatef(0, 0, torsoWidth + barRad * 2);
 			tempSet.clear(10);
 			tempSet.addCoordinate(-0.25, 0.1, -barGap);
 			tempSet.addCoordinate(-0.25, 0.1, barGap);
 			tempSet.addCoordinate(-0.2, 0.15, barGap);
-			Utility::drawBezierTube(tempSet, 4, 8, barRad);
+			Utility::drawBezierTube(tempSet, 4, 8, barRad, Texture::_blue);
 		}
 		glPopMatrix();
 
@@ -1164,10 +1170,10 @@ void Model::Waist() {
 			Lightning::darkerBlueMaterial();
 
 			glTranslatef(0, waistGap / 2.0f, 0);
-			Utility::drawHemisphere(waistSize + waistExtrude, 20, 16);
+			Utility::drawHemisphere(waistSize + waistExtrude, 20, 16, Texture::_blue);
 			glTranslatef(0, -waistGap, 0);
 			glRotatef(180, 1, 0, 0);
-			Utility::drawHemisphere(waistSize + waistExtrude, 20, 16);
+			Utility::drawHemisphere(waistSize + waistExtrude, 20, 16, Texture::_blue);
 		}
 		glPopMatrix();
 
@@ -1180,11 +1186,15 @@ void Model::Waist() {
 			Color::lightBlue();
 			Lightning::blueMaterial();
 
+			Texture::on();
+			Texture::use(Texture::_blue);
+			gluQuadricTexture(waistObj, GL_TRUE);
 			glTranslatef(0, -0.175f, gap);
 			gluSphere(waistObj, hingeRadius, 8, 8);
 
 			glTranslatef(0, 0, -2.0f * gap);
 			gluSphere(waistObj, hingeRadius, 8, 8);
+			Texture::off();
 		}
 		glPopMatrix();
 
@@ -1199,6 +1209,9 @@ void Model::Waist() {
 			Color::lightBlue();
 			Lightning::blueMaterial();
 
+			Texture::on();
+			Texture::use(Texture::_blue);
+			gluQuadricTexture(waistObj, GL_TRUE);
 			glTranslatef(0, -0.38f, 0);
 			glPushMatrix();
 			{
@@ -1241,6 +1254,7 @@ void Model::Waist() {
 				glPopMatrix();
 			}
 			glPopMatrix();
+			Texture::off();
 		}
 		glPopMatrix();
 
@@ -1262,7 +1276,7 @@ void Model::Waist() {
 			glScalef(2, 2, 1);
 
 			float torsoCenter[3] = { -0.1, 0.1 , 0 };
-			Utility::extrudePolygon(torso, torsoCenter, zAxis, waistWidth);
+			Utility::extrudePolygon(torso, torsoCenter, zAxis, waistWidth, TextureMap::allBlue());
 			torso.destroy();
 		}
 		glPopMatrix();
@@ -1347,7 +1361,7 @@ void Model::Buttock() {
 		butt.addCoordinate(0.09, -0.2, 0);
 		butt.addCoordinate(0.09, -0.11, 0);
 		float buttCenter[3] = { 0.11, 0, 0 };
-		Utility::extrudePolygon(butt, buttCenter, zAxis, buttWidth);
+		Utility::extrudePolygon(butt, buttCenter, zAxis, buttWidth, TextureMap::allBlue());
 
 		float ventExtrude = 0.01f;
 		// Vent on butt
@@ -1391,7 +1405,7 @@ void Model::ButtockJet() {
 
 			glTranslatef(0, -jetRad, 0);
 			glRotatef(22.5, 1, 0, 0);
-			Utility::drawHemisphere(jetRad, 12, 6);
+			Utility::drawHemisphere(jetRad, 12, 6, Texture::_blue);
 
 			// Vent
 			Color::black();
@@ -1409,7 +1423,11 @@ void Model::ButtockJet() {
 
 		float barRad = 0.015f;
 		glTranslatef(0, -barRad, 0);
+		Texture::on();
+		Texture::use(Texture::_blue);
+		gluQuadricTexture(buttockJetObj, GL_TRUE);
 		gluCylinder(buttockJetObj, barRad, barRad, 0.075f, 8, 1);
+		Texture::off();
 	}
 	glPopMatrix();
 }
@@ -1452,7 +1470,7 @@ void Model::LegUpper() {
 		Color::lightBlue();
 		Lightning::blueMaterial();
 		float polygonCenter[3] = { 0.35, -0.35, 0 };
-		Utility::extrudePolygon(circle, polygonCenter, zAxis, legWidth);
+		Utility::extrudePolygon(circle, polygonCenter, zAxis, legWidth, TextureMap::allBlue());
 
 		// Hinge
 		Color::lightGray();
@@ -1513,7 +1531,7 @@ void Model::LegLower() {
 		legPart1.addCoordinate(0.16, -0.19, 0);
 
 		float legP1Center[3] = { 0.25, -0.15, 0 };
-		Utility::extrudePolygon(legPart1, legP1Center, zAxis, legWidth);
+		Utility::extrudePolygon(legPart1, legP1Center, zAxis, legWidth, TextureMap::allBlue());
 
 		// Draw Leg Part 2
 		tempCoordSet.clear(3);
@@ -1537,7 +1555,7 @@ void Model::LegLower() {
 		longPart.combineCoords(tempCoordSet2);
 
 		float longPartCenter[3] = { 0.23, -0.45, 0 };
-		Utility::extrudePolygon(longPart, longPartCenter, zAxis, legWidth);
+		Utility::extrudePolygon(longPart, longPartCenter, zAxis, legWidth, TextureMap::allBlue());
 
 		CoordinateSet smallLow(4);
 		smallLow.addCoordinate(0.27, -0.76, 0);
@@ -1545,7 +1563,7 @@ void Model::LegLower() {
 		smallLow.addCoordinate(0.325, -0.8, 0);
 		smallLow.addCoordinate(0.34, -0.75, 0);
 		float smallLowCenter[3] = { 0.3, -0.78, 0 };
-		Utility::extrudePolygon(smallLow, smallLowCenter, zAxis, legWidth);
+		Utility::extrudePolygon(smallLow, smallLowCenter, zAxis, legWidth, TextureMap::allBlue());
 
 		// Red spring at the bottom
 		if (legLowerSpring == NULL) {
@@ -1731,7 +1749,7 @@ void Model::ArmUpper() {
 		arm.addCoordinate(0.2f, -0.1f, 0);
 		arm.addCoordinate(0.05f, -0.135f, 0);
 		float armCenter[3] = { 0.5f, -0.3f, 0 };
-		Utility::extrudePolygon(arm, armCenter, zAxis, armWidth);
+		Utility::extrudePolygon(arm, armCenter, zAxis, armWidth, TextureMap::allBlue());
 
 		arm.destroy();
 	}
@@ -1802,7 +1820,7 @@ void Model::ArmLower() {
 		arm.addCoordinate(-0.01, -0.165, 0);
 		arm.addCoordinate(-0.06, -0.2, 0);
 		float armCenter[3] = { 0.4, -0.1, 0 };
-		Utility::extrudePolygon(arm, armCenter, zAxis, armWidth);
+		Utility::extrudePolygon(arm, armCenter, zAxis, armWidth, TextureMap::allBlue());
 
 		// Hinge cover
 		CoordinateSet cover(4);
@@ -1811,7 +1829,7 @@ void Model::ArmLower() {
 		cover.addCoordinate(0.05, -0.25, 0);
 		cover.addCoordinate(0.1, -0.2, 0);
 		float coverCenter[3] = { -0.1, -0.22, 0 };
-		Utility::extrudePolygon(cover, coverCenter, zAxis, armWidth);
+		Utility::extrudePolygon(cover, coverCenter, zAxis, armWidth, TextureMap::allBlue());
 
 		// Joint at the end
 		glPushMatrix();
@@ -1894,13 +1912,13 @@ void Model::RightHand() {
 			palm.addCoordinate(0.285, -0.1, 0);
 			palm.addCoordinate(0.225, 0.04, 0);
 			float palmCenter[3] = { 0.1, -0.1, 0 };
-			Utility::extrudePolygon(palm, palmCenter, zAxis, handThickness);
+			Utility::extrudePolygon(palm, palmCenter, zAxis, handThickness, TextureMap::allBlue());
 
 			float palmDetailExtrude = 0.01f;
 			glTranslatef(0.15, -0.1, -palmDetailExtrude);
 			glScalef(0.65, 0.65, 1);
 			glTranslatef(-0.15, 0.1, 0);
-			Utility::extrudePolygon(palm, palmCenter, zAxis, palmDetailExtrude, true, false);
+			Utility::extrudePolygon(palm, palmCenter, zAxis, palmDetailExtrude, TextureMap::allBlue(), true, false);
 
 			palm.destroy();
 		}
@@ -1975,13 +1993,13 @@ void Model::LeftHand() {
 			palm.addCoordinate(-0.285, -0.1, 0);
 			palm.addCoordinate(-0.225, 0.04, 0);
 			float palmCenter[3] = { -0.1, -0.1, 0 };
-			Utility::extrudePolygon(palm, palmCenter, zAxis, handThickness);
+			Utility::extrudePolygon(palm, palmCenter, zAxis, handThickness, TextureMap::allBlue());
 
 			float palmDetailExtrude = 0.01f;
 			glTranslatef(-0.15, -0.1, -palmDetailExtrude);
 			glScalef(-0.65, 0.65, 1);
 			glTranslatef(0.15, 0.1, 0);
-			Utility::extrudePolygon(palm, palmCenter, zAxis, palmDetailExtrude, true, false);
+			Utility::extrudePolygon(palm, palmCenter, zAxis, palmDetailExtrude, TextureMap::allBlue(), true, false);
 
 			palm.destroy();
 		}
@@ -2065,7 +2083,7 @@ void Model::Finger(float r1, float r2, float r3) {
 		seg.addCoordinate(segLength[0], -fingerWidth, 0);
 		seg.addCoordinate(segLength[0], 0, 0);
 		float segCenter[3] = { segLength[0] / 2.0f, -fingerWidth / 2.0f, 0 };
-		Utility::extrudePolygon(seg, segCenter, zAxis, fingerThickness);
+		Utility::extrudePolygon(seg, segCenter, zAxis, fingerThickness, TextureMap::allBlue());
 
 		// Finger deco
 		float indent = 0.035f;
@@ -2164,7 +2182,7 @@ void Model::Finger(float r1, float r2, float r3) {
 		seg.addCoordinate(segLength[1], -fingerWidth, 0);
 		seg.addCoordinate(segLength[1], 0, 0);
 		float segCenter[3] = { segLength[1] / 2.0f, -fingerWidth / 2.0f , 0 };
-		Utility::extrudePolygon(seg, segCenter, zAxis, fingerThickness);
+		Utility::extrudePolygon(seg, segCenter, zAxis, fingerThickness, TextureMap::allBlue());
 
 		float indent = 0.08f;
 		float decoExtrude = 0.01f;
@@ -2218,7 +2236,7 @@ void Model::Finger(float r1, float r2, float r3) {
 		seg.addCoordinate(segLength[2], -fingerWidth, 0);
 		seg.addCoordinate(segLength[2], 0, 0);
 		float segCenter[3] = { segLength[2] / 2.0f, -fingerWidth / 2.0f , 0 };
-		Utility::extrudePolygon(seg, segCenter, zAxis, fingerThickness);
+		Utility::extrudePolygon(seg, segCenter, zAxis, fingerThickness, TextureMap::allBlue());
 		seg.destroy();
 	}
 	glPopMatrix();
@@ -2263,8 +2281,12 @@ void Model::zipLineTube() {
 		float tubeRedDecoRadius = 0.05f;
 
 		// Tube
+		Texture::on();
+		Texture::use(Texture::_blue);
+		gluQuadricTexture(zipLineTubeObj, GL_TRUE);
 		glTranslatef(0, 0, -tubeLength / 2.0f);
 		gluCylinder(zipLineTubeObj, tubeRadius, tubeRadius, tubeLength, 24, 12);
+		Texture::off();
 
 		// End cover with red deco
 		glPushMatrix();
@@ -2272,7 +2294,12 @@ void Model::zipLineTube() {
 			Color::lightBlue();
 			Lightning::blueMaterial();
 
+			Texture::on();
+			Texture::use(Texture::_blue);
+			gluQuadricTexture(zipLineTubeObj, GL_TRUE);
 			gluDisk(zipLineTubeObj, 0, tubeRadius, 24, 4);
+			Texture::off();
+
 			Color::red();
 			Lightning::windRedMaterial();
 
@@ -2287,8 +2314,13 @@ void Model::zipLineTube() {
 			Color::lightBlue();
 			Lightning::blueMaterial();
 
+			Texture::on();
+			Texture::use(Texture::_blue);
+			gluQuadricTexture(zipLineTubeObj, GL_TRUE);
 			glTranslatef(0, 0, tubeLength);
 			gluDisk(zipLineTubeObj, 0, tubeRadius, 24, 4);
+			Texture::off();
+
 			Color::red();
 			Lightning::windRedMaterial();
 
@@ -2361,7 +2393,7 @@ void Model::zipLineTube() {
 		temp.addCoordinate(0, 0.03, 0.015);
 		temp.addCoordinate(0, 0.05, 0.01);
 		float faceCenter[3] = { 0, 0.015, 0 };
-		Utility::extrudePolygon(temp, faceCenter, xAxis, 0.1);
+		Utility::extrudePolygon(temp, faceCenter, xAxis, 0.1, TextureMap::allBlue());
 		temp.destroy();
 
 		// Small red bump
@@ -2401,6 +2433,9 @@ void Model::zipLineBackTube() {
 		Color::lightBlue();
 		Lightning::blueMaterial();
 
+		Texture::on();
+		Texture::use(Texture::_blue);
+		gluQuadricTexture(zipLineBackpackObj, GL_TRUE);
 		glPushMatrix();
 		{
 			gluDisk(zipLineBackpackObj, 0, lidRadius, 24, 6);
@@ -2418,6 +2453,7 @@ void Model::zipLineBackTube() {
 			gluDisk(zipLineBackpackObj, 0, lidRadius, 24, 6);
 		}
 		glPopMatrix();
+		Texture::off();
 
 		// Handle
 		float handleExtrude = 0.03f, handleExtrudeTopBottom = 0.1f;
@@ -2431,7 +2467,7 @@ void Model::zipLineBackTube() {
 			temp.addCoordinate(handleWidthHalf, containerRadius + handleExtrude, 0);
 			temp.addCoordinate(-handleWidthHalf, containerRadius + handleExtrude, 0);
 			float tempCenter[3] = { 0, containerRadius / 2.0f, 0 };
-			Utility::extrudePolygon(temp, tempCenter, zAxis, containerHeight + handleExtrudeTopBottom * 2);
+			Utility::extrudePolygon(temp, tempCenter, zAxis, containerHeight + handleExtrudeTopBottom * 2, TextureMap::allBlue());
 			temp.destroy();
 		}
 		glPopMatrix();
@@ -2439,8 +2475,12 @@ void Model::zipLineBackTube() {
 		// Connecter from bottom
 		glPushMatrix();
 		{
+			Texture::on();
+			Texture::use(Texture::_blue);
+			gluQuadricTexture(zipLineBackpackObj, GL_TRUE);
 			glRotatef(180, 1, 0, 0);
 			gluCylinder(zipLineBackpackObj, 0.035, 0.035, containerHeight * 0.5, 8, 8);
+			Texture::off();
 		}
 		glPopMatrix();
 
@@ -2454,6 +2494,9 @@ void Model::zipLineBackTube() {
 			Color::lightBlue2();
 			Lightning::darkerBlueMaterial();
 
+			Texture::on();
+			Texture::use(Texture::_blue);
+			gluQuadricTexture(zipLineBackpackObj, GL_TRUE);
 			glTranslatef(0, -containerRadius, 0);
 			glPushMatrix();
 			{
@@ -2470,6 +2513,8 @@ void Model::zipLineBackTube() {
 
 				glRotatef(90, 1, 0, 0);
 				gluDisk(zipLineBackpackObj, 0, cyclerRadius, 12, 3);
+				Texture::off();
+
 				Color::yellow();
 				Lightning::yellowMaterial();
 
@@ -2478,10 +2523,15 @@ void Model::zipLineBackTube() {
 			glPopMatrix();
 			glTranslatef(0, -cyclerThickness, 0);
 			glRotatef(90, 1, 0, 0);
+
 			Color::lightBlue2();
 			Lightning::darkerBlueMaterial();
 
+			Texture::on();
+			Texture::use(Texture::_blue);
+			gluQuadricTexture(zipLineBackpackObj, GL_TRUE);
 			gluDisk(zipLineBackpackObj, 0, cyclerRadius, 12, 3);
+			Texture::off();
 		}
 		glPopMatrix();
 	}

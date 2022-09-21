@@ -3,12 +3,17 @@
 #include <gl/GL.h>
 class TextureMap
 {
+public:
 	TextureMap();
 
-	bool addedTextures[6];
-	GLuint textures[6];
+	bool addedTextures[3];
+	GLuint textures[3];
 
-	void addTexture(GLuint texture, int face);
+	void add(GLuint texture, int face);
+	bool has(int face);
+	GLuint get(int face);
 
+	// Static
+	static TextureMap allBlue();
 };
 

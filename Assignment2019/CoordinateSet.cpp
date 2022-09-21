@@ -278,3 +278,5 @@ float CoordinateSet::getSmallestY() {
 	}
 	return result;
 }
+
+	

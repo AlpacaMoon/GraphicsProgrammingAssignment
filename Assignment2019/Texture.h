@@ -6,11 +6,16 @@ class Texture
 {
 public:
 	// Texture GLuint
-	static GLuint _blue1;
+	static GLuint _blue;
 	static GLuint _blue2;
+	static GLuint _brick;
 
 	// Change current using texture to the given texture
 	static void use(GLuint texture);
+
+	// Enable / Disable texture
+	static void on();
+	static void off();
 
 	// Initialize all textures at once
 	static void setupTextures();
