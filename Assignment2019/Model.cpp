@@ -2631,6 +2631,12 @@ void Model::r99() {
 	handle2.addCoordinate(0.03, 0.12, 0);
 	handle2.addCoordinate(-0.03, 0.12, 0);
 
+	CoordinateSet sight(10);
+	sight.addCoordinate(-0.05, -0.02, 0);
+	sight.addCoordinate(-0.05, -0.02, 0);
+	sight.addCoordinate(-0.05, -0.02, 0);
+	sight.addCoordinate(-0.05, -0.02, 0);
+	sight.addCoordinate(-0.05, -0.02, 0);
 	glPushMatrix();
 	{
 		glTranslatef(0, 0, -0.5f);
@@ -2789,7 +2795,10 @@ void Model::bullet() {
 	glPushMatrix();
 	{
 		glTranslatef(bulletPos[0], bulletPos[1], bulletPos[2]);
-		gluSphere(weaponObj, 0.02f, 10, 10);
+		gluCylinder(weaponObj, 0.001f, 0.02f, 0.05f, 10, 10);
+		glTranslatef(0, 0, 0.1f);
+		gluCylinder(weaponObj, 0.02f, 0.02f, 0.05f, 10, 10);
+		//gluSphere(weaponObj, 0.02f, 10, 10);
 	}
 	glPopMatrix();
 

@@ -8,7 +8,9 @@ public:
 	// Texture GLuint
 	static GLuint _blue;
 	static GLuint _blue2;
-	static GLuint _brick;
+	static GLuint _gunYellow;
+	static GLuint _gunBlack;
+	static GLuint _gunGrey;
 
 	// Change current using texture to the given texture
 	static void use(GLuint texture);
