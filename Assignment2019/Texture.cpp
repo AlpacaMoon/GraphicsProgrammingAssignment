@@ -3,6 +3,16 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
+// Static variables
+int Texture::magFilter = GL_LINEAR;
+int Texture::minFilter = GL_LINEAR;
+int Texture::wrapS = GL_REPEAT;
+int Texture::wrapT = GL_REPEAT;
+
+// Static textures
+GLuint Texture::_blue1;
+GLuint Texture::_blue2;
+
 // Change current using texture to the given texture
 void Texture::use(GLuint texture) {
 	glBindTexture(GL_TEXTURE_2D, texture);

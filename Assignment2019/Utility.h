@@ -1,5 +1,7 @@
 #pragma once
-
+#include <Windows.h>
+#include <gl/GL.h>
+class TextureMap;
 class CoordinateSet;
 class Utility {
 
@@ -18,12 +20,18 @@ public:
 	static void drawBezierTube(CoordinateSet coordSet, int lineSmoothness, int faces, float radius);
 	static void drawAlternatingBezierTube(CoordinateSet coordSet, int lineSmoothness, int faces, float radius1, float radius2);
 	static void drawStraightTubes(CoordinateSet points, int smoothnessStraight, int smoothnessTurn, int faces, float radius, float turnMultiplier);
+	
 	static void drawPolygon(CoordinateSet coordSet, float center[3]);
+	static void drawPolygon(CoordinateSet coordSet, float center[3], GLuint texture);
+
 	static void drawConcavePolygon(CoordinateSet polygonLeft, CoordinateSet polygonRight, float middleLine);
 	static void extrudePolygon(CoordinateSet face, float faceCenter[3], float direction[3], float amount, bool drawTop = true, bool drawBottom = true);
 	static void extrudeConcavePolygon(CoordinateSet faceLeft, CoordinateSet faceRight, float middleLine, float direction[3], float amount, bool drawTop = true, bool drawBottom = true);
 	static void drawHemisphere(float radius, int slices, int stack);
+	
 	static void connectTwoFaces(CoordinateSet f1, CoordinateSet f2);
+	static void connectTwoFaces(CoordinateSet f1, CoordinateSet f2, TextureMap textureMap);
+	
 	static void rotateAroundXaxis(float vector[3], float angle, float output[3]);
 	static void rotateAroundYaxis(float vector[3], float angle, float output[3]);
 	static void rotateAroundZaxis(float vector[3], float angle, float output[3]);

@@ -7,6 +7,7 @@
 
 #include "Utility.h"
 #include "CoordinateSet.h"
+#include "TextureMap.h"
 
 using namespace std;
 
@@ -430,6 +431,16 @@ void Utility::drawPolygon(CoordinateSet coordSet, float center[3]) {
 	glEnd();
 }
 
+void Utility::drawPolygon(CoordinateSet coordSet, float center[3], GLuint texture) {
+
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex3f(center[0], center[1], center[2]);
+	for (int i = 0; i < coordSet.numberOfCoords; i++) {
+		glVertex3f(coordSet.xCoords[i], coordSet.yCoords[i], coordSet.zCoords[i]);
+	}
+	glVertex3f(coordSet.xCoords[0], coordSet.yCoords[0], coordSet.zCoords[0]);
+	glEnd();
+}
 
 void Utility::drawConcavePolygon(CoordinateSet polygonLeft, CoordinateSet polygonRight, float middleLine) {
 	// Quad strips for polygonLeft
@@ -607,6 +618,33 @@ void Utility::drawHemisphere(float radius, int slices, int stacks) {
 *	f1 must be in same rotational direction with f2
 */
 void Utility::connectTwoFaces(CoordinateSet f1, CoordinateSet f2) {
+	if (f1.numberOfCoords != f2.numberOfCoords) {
+		throw exception("Vertices mismatch: Utility::connectTwoFaces()");
+		return;
+	}
+
+	int n = f1.numberOfCoords;
+
+	// Draw connection faces
+	for (int i = 0; i < n - 1; i++) {
+		glBegin(GL_QUADS);
+		glVertex3f(f1.xCoords[i], f1.yCoords[i], f1.zCoords[i]);
+		glVertex3f(f2.xCoords[i], f2.yCoords[i], f2.zCoords[i]);
+		glVertex3f(f2.xCoords[i + 1], f2.yCoords[i + 1], f2.zCoords[i + 1]);
+		glVertex3f(f1.xCoords[i + 1], f1.yCoords[i + 1], f1.zCoords[i + 1]);
+		glEnd();
+	}
+
+	// Draw connection faces between end and start vertices
+	glBegin(GL_QUADS);
+	glVertex3f(f1.xCoords[n - 1], f1.yCoords[n - 1], f1.zCoords[n - 1]);
+	glVertex3f(f2.xCoords[n - 1], f2.yCoords[n - 1], f2.zCoords[n - 1]);
+	glVertex3f(f2.xCoords[0], f2.yCoords[0], f2.zCoords[0]);
+	glVertex3f(f1.xCoords[0], f1.yCoords[0], f1.zCoords[0]);
+	glEnd();
+}
+
+void Utility::connectTwoFaces(CoordinateSet f1, CoordinateSet f2, TextureMap textureMap) {
 	if (f1.numberOfCoords != f2.numberOfCoords) {
 		throw exception("Vertices mismatch: Utility::connectTwoFaces()");
 		return;

@@ -386,15 +386,17 @@ void Controls::presetAnimationKeyDown(WPARAM wParam) {
 		pressingWalkKeys[2] = true;
 		break;
 		// Walking
-		break;
 
 	case VK_OEM_PERIOD:
 		Animation::stopWalking();
-		Animation::reset(2.0f);
+		Animation::hardReset();
+		break;
+
+	default:
 		break;
 	}
 
-	if (isPressingWalk) {
+	if (isPressingWalk()) {
 		if (Animation::walkSteps == 0)
 			Animation::startWalking();
 		else
@@ -414,6 +416,8 @@ void Controls::presetAnimationKeyUp(WPARAM wParam) {
 	case 'D':
 		pressingWalkKeys[2] = false;
 		break;
+	default:
+		break;
 	}
 	if (!isPressingWalk()) {
 		Animation::stopWalking();
@@ -422,7 +426,7 @@ void Controls::presetAnimationKeyUp(WPARAM wParam) {
 
 bool Controls::isPressingWalk() {
 	for (int i = 0; i < 3; i++) {
-		if (pressingWalkKeys[i]) {
+		if (pressingWalkKeys[i] == true) {
 			return true;
 		}
 	}
