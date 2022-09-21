@@ -28,19 +28,22 @@ bool onLightning = false;
 
 //lighting test
 GLfloat ambientLight[4] = { 1,1,1,1 }; //RGBA
-GLfloat diffuseLight[4] = { 1,1,1,1 }; //RGBA
-GLfloat positionLight[4] = { 0,10,0,0 }; //x,y,z,0
+GLfloat diffuseLight[4] = { 0.2,0.2,0.2,1 }; //RGBA
+GLfloat positionLight[4] = { 0,5,0,0 }; //x,y,z,0
 
 //lookAt test
-float eye[3] = { 0,0,0 };
+float eye[3] = { 0,0,-3 };
+float tempEye[3] = { 0,0,0 };
 float eyeXAngle = 0;
+float cumEyeXAngle = 0;
+
 float eyeYAngle = 0;
 float eyeZAngle = 0;
 float lookAt[3] = { 0,0,0 };
 float lookAtXAngle = 0;
 float lookAtYAngle = 0;
 float lookAtZAngle = 0;
-float up[3] = { 0,0,0 };
+float up[3] = { 0,1,0 };
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -125,11 +128,27 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 				//try eye
 			case 'V':
-				//eyeXAngle += 0.1f;
-				eye[0] += 5.0f;
-				eye[1] += 5.0f;
-				eye[2] += 5.0f;
-				//Utility::rotateAroundXaxis(lookAt, eyeXAngle, lookAt);
+				eyeXAngle = 5.0f;
+				cumEyeXAngle += eyeXAngle;
+
+				if (cumEyeXAngle ==90) {
+					//Utility::rotateAroundYaxis(tempEye, 180, eye);
+					//Utility::rotateAroundXaxis(eye, 180, tempEye);
+					Utility::rotateAroundZaxis(eye, 180, tempEye);
+					//Utility::rotateAroundXaxis(eye, -eyeXAngle, tempEye);
+				}
+				else {
+					Utility::rotateAroundXaxis(eye, eyeXAngle, tempEye);
+
+				}
+				eye[0] = tempEye[0];
+				eye[1] = tempEye[1];
+				eye[2] = tempEye[2];
+
+				if (cumEyeXAngle == 360) {
+					cumEyeXAngle -= 360;
+				}
+
 				break;
 			}
 
@@ -205,20 +224,18 @@ void display()
 		//enable lighting
 		glDisable(GL_LIGHTING);
 	}
-
+	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	glRotatef(camRotation[0], 1, 0, 0);
-	glRotatef(camRotation[1], 0, 1, 0);
-	glRotatef(camRotation[2], 0, 0, 1);
-
 	glScalef(0.8, 0.8, 0.8);
 
-	glMatrixMode(GL_MODELVIEW);
+
 	glPushMatrix();
 	{
-		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
-		Model::r99();
+		gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
+		glRotatef(camRotation[0], 1, 0, 0);
+		glRotatef(camRotation[1], 0, 1, 0);
+		glRotatef(camRotation[2], 0, 0, 1);
+		Model::Pathfinder();
 	}
 	glPopMatrix();
 
@@ -244,8 +261,9 @@ void setupCamera()
 {
 	//#pragma region View to Project
 	glMatrixMode(GL_PROJECTION);
-	//glOrtho(-7, 7, -7, 7, 1, 10);
-	glFrustum(-7, 7, -7, 7, 1, 10);
+	//glOrtho(-2, 2, -2, 2, 1, 10);
+	//glFrustum(-1, 1, -1, 1, 1, 10);
+	gluPerspective(60, 1, 1, 10);
 	//# pragma endregion
 }
 
