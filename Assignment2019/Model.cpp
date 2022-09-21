@@ -2646,10 +2646,10 @@ void Model::r99() {
 
 	CoordinateSet sight(10);
 	sight.addCoordinate(-0.05, -0.02, 0);
-	sight.addCoordinate(-0.05, -0.02, 0);
-	sight.addCoordinate(-0.05, -0.02, 0);
-	sight.addCoordinate(-0.05, -0.02, 0);
-	sight.addCoordinate(-0.05, -0.02, 0);
+	sight.addCoordinate(0.05, -0.02, 0);
+	sight.addCoordinate(0.03, 0.02, 0);
+	sight.addCoordinate(0, 0, 0);
+	sight.addCoordinate(-0.04, 0, 0);
 	glPushMatrix();
 	{
 		glTranslatef(0, 0, -0.5f);
@@ -2775,6 +2775,12 @@ void Model::r99() {
 			glRotatef(-30, 1, 0, 0);
 			glRotatef(90, 0, 1, 0);
 			Utility::extrudePolygon(handle2, centre1, zAxis, 0.06, true, true);
+		}
+		glPopMatrix();
+
+		glPushMatrix();
+		{
+			Utility::extrudePolygon(sight, centre1, zAxis, 0.2, true, true);
 		}
 		glPopMatrix();
 
