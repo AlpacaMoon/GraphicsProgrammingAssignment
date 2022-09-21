@@ -13,6 +13,7 @@
 using namespace std;
 
 const float PI = 3.1415926f;
+float worldOrigin[3] = { 0, 0, 0 };
 
 GLUquadricObj* hemiSphereObj;
 
@@ -548,31 +549,31 @@ void Utility::drawStraightTubes(CoordinateSet points, int smoothnessStraight, in
 *	Draw polygon vertices in the order that the coordinates are given
 *		*DOESN'T check if the polygon is flat, use with caution
 */
-void Utility::drawPolygon(CoordinateSet coordSet, float center[3]) {
+void Utility::drawPolygon(CoordinateSet coordSet, float center[3], float volumeCenter[3]) {
 	glBegin(GL_TRIANGLE_FAN);
-	glVertex3f(center[0], center[1], center[2]);
+	drawVertex(center[0], center[1], center[2], volumeCenter);
 	for (int i = 0; i < coordSet.numberOfCoords; i++) {
-		glVertex3f(coordSet.xCoords[i], coordSet.yCoords[i], coordSet.zCoords[i]);
+		drawVertex(coordSet.xCoords[i], coordSet.yCoords[i], coordSet.zCoords[i], volumeCenter);
 	}
-	glVertex3f(coordSet.xCoords[0], coordSet.yCoords[0], coordSet.zCoords[0]);
+	drawVertex(coordSet.xCoords[0], coordSet.yCoords[0], coordSet.zCoords[0], volumeCenter);
 	glEnd();
 }
 
-void Utility::drawPolygon(CoordinateSet coordSet, float center[3], GLuint texture) {
+void Utility::drawPolygon(CoordinateSet coordSet, float center[3], float volumeCenter[3], GLuint texture) {
 	glPushMatrix();
 	{
 		Texture::use(texture);
 		Texture::on();
 		glBegin(GL_TRIANGLE_FAN);
 		glTexCoord2f(center[0], center[1]);
-		glVertex3f(center[0], center[1], center[2]);
+		drawVertex(center[0], center[1], center[2], volumeCenter);
 
 		for (int i = 0; i < coordSet.numberOfCoords; i++) {
 			glTexCoord2f(coordSet.xCoords[i], coordSet.yCoords[i]);
-			glVertex3f(coordSet.xCoords[i], coordSet.yCoords[i], coordSet.zCoords[i]);
+			drawVertex(coordSet.xCoords[i], coordSet.yCoords[i], coordSet.zCoords[i], volumeCenter);
 		}
 		glTexCoord2f(coordSet.xCoords[0], coordSet.yCoords[0]);
-		glVertex3f(coordSet.xCoords[0], coordSet.yCoords[0], coordSet.zCoords[0]);
+		drawVertex(coordSet.xCoords[0], coordSet.yCoords[0], coordSet.zCoords[0], volumeCenter);
 		glEnd();
 		Texture::off();
 	}
@@ -586,7 +587,7 @@ void Utility::drawPolygon(CoordinateSet coordSet, float center[3], GLuint textur
 *		The "bool drawTop" variable determines whether to draw the given polygon / first polygon
 *		The "bool drawBottom" variable determines whether to draw the extruded polygon / second polygon
 */
-void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float direction[3], float amount, bool drawTop, bool drawBottom) {
+void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float direction[3], float amount, bool drawTop, bool drawBottom, float volumeCenter[3]) {
 	// Obtain CoordinateSet for second polygon
 	CoordinateSet another = face.copy();
 	float newTranslation[3] = { amount * direction[0], amount * direction[1], amount * direction[2] };
@@ -596,26 +597,37 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 		anotherCenter[i] = faceCenter[i] + amount * direction[i];
 	}
 
+	// Calculate Center of the volume to calculate vertex normals for lighting
+	bool volCenterGiven = true;
+	if (volumeCenter == NULL) {
+		volCenterGiven = false;
+		volumeCenter = new float[3];
+		for (int i = 0; i < 3; i++) {
+			volumeCenter[i] = faceCenter[i] + direction[i] * amount;
+		}
+	}
+
+
 	// Draw top face
 	if (drawTop) {
-		drawPolygon(face, faceCenter);
+		drawPolygon(face, faceCenter, volumeCenter);
 	}
 
 	// Draw bottom face (In reverse direction)
 	if (drawBottom) {
-		drawPolygon(another, anotherCenter);
+		drawPolygon(another, anotherCenter, volumeCenter);
 	}
 
 	// Draw quad strips in between
 	for (int i = 0; i < face.numberOfCoords - 1; i++) {
 		glBegin(GL_QUADS);
 		// Point #1 and #2 (lies on first polygon)
-		glVertex3f(face.xCoords[i], face.yCoords[i], face.zCoords[i]);
-		glVertex3f(face.xCoords[i + 1], face.yCoords[i + 1], face.zCoords[i + 1]);
+		drawVertex(face.xCoords[i], face.yCoords[i], face.zCoords[i], volumeCenter);
+		drawVertex(face.xCoords[i + 1], face.yCoords[i + 1], face.zCoords[i + 1], volumeCenter);
 
 		// Point #3 and #4 (lies on second polygon)
-		glVertex3f(another.xCoords[i + 1], another.yCoords[i + 1], another.zCoords[i + 1]);
-		glVertex3f(another.xCoords[i], another.yCoords[i], another.zCoords[i]);
+		drawVertex(another.xCoords[i + 1], another.yCoords[i + 1], another.zCoords[i + 1], volumeCenter);
+		drawVertex(another.xCoords[i], another.yCoords[i], another.zCoords[i], volumeCenter);
 
 		glEnd();
 	}
@@ -625,8 +637,8 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 		int n = face.numberOfCoords - 1;
 		glBegin(GL_QUADS);
 		// Point #1 and #2 (lies on first polygon)
-		glVertex3f(face.xCoords[n], face.yCoords[n], face.zCoords[n]);
-		glVertex3f(face.xCoords[0], face.yCoords[0], face.zCoords[0]);
+		drawVertex(face.xCoords[n], face.yCoords[n], face.zCoords[n], volumeCenter);
+		drawVertex(face.xCoords[0], face.yCoords[0], face.zCoords[0], volumeCenter);
 
 		// Point #3 and #4 (lies on second polygon)
 		glVertex3f(another.xCoords[0], another.yCoords[0], another.zCoords[0]);
@@ -636,9 +648,12 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 
 	// Dealloc unused memory
 	another.destroy();
+	if (!volCenterGiven) {
+		delete[] volumeCenter;
+	}
 }
 
-void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float direction[3], float amount, TextureMap tMap, bool drawTop, bool drawBottom) {
+void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float direction[3], float amount, TextureMap tMap, bool drawTop, bool drawBottom, float volumeCenter[3]) {
 	// Obtain CoordinateSet for second polygon
 	CoordinateSet another = face.copy();
 	float newTranslation[3] = { amount * direction[0], amount * direction[1], amount * direction[2] };
@@ -648,20 +663,30 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 		anotherCenter[i] = faceCenter[i] + amount * direction[i];
 	}
 
+	// Calculate Center of the volume to calculate vertex normals for lighting
+	bool volCenterGiven = true;
+	if (volumeCenter == NULL) {
+		volCenterGiven = false;
+		volumeCenter = new float[3];
+		for (int i = 0; i < 3; i++) {
+			volumeCenter[i] = faceCenter[i] + direction[i] * amount;
+		}
+	}
+
 	// Draw top face
 	if (drawTop) {
 		if (tMap.has(1))
-			drawPolygon(face, faceCenter, tMap.get(1));
+			drawPolygon(face, faceCenter, volumeCenter, tMap.get(1));
 		else
-			drawPolygon(face, faceCenter);
+			drawPolygon(face, faceCenter, volumeCenter);
 	}
 
 	// Draw bottom face (In reverse direction)
 	if (drawBottom) {
 		if (tMap.has(2))
-			drawPolygon(another, anotherCenter, tMap.get(2));
+			drawPolygon(another, anotherCenter, volumeCenter, tMap.get(2));
 		else
-			drawPolygon(another, anotherCenter);
+			drawPolygon(another, anotherCenter, volumeCenter);
 	}
 
 	// Draw quad strips in between
@@ -690,7 +715,7 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 			yCum[0] += yCumDiff;
 			glTexCoord2f(xCum[0], yCum[0]);
 		}
-		glVertex3f(face.xCoords[i], face.yCoords[i], face.zCoords[i]);
+		drawVertex(face.xCoords[i], face.yCoords[i], face.zCoords[i], volumeCenter);
 
 		if (useTexture) {
 			xCumDiff = -(face.zCoords[i + 1] - face.zCoords[i]);
@@ -699,7 +724,7 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 			yCum[0] += yCumDiff;
 			glTexCoord2f(xCum[0], yCum[0]);
 		}
-		glVertex3f(face.xCoords[i + 1], face.yCoords[i + 1], face.zCoords[i + 1]);
+		drawVertex(face.xCoords[i + 1], face.yCoords[i + 1], face.zCoords[i + 1], volumeCenter);
 		if (useTexture) {
 			xCum[0] -= xCumDiff;
 			yCum[0] -= yCumDiff;
@@ -723,13 +748,13 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 			yCum[1] += yCumDiff;
 			glTexCoord2f(xCum[1], yCum[1]);
 		}
-		glVertex3f(another.xCoords[i + 1], another.yCoords[i + 1], another.zCoords[i + 1]);
+		drawVertex(another.xCoords[i + 1], another.yCoords[i + 1], another.zCoords[i + 1], volumeCenter);
 		if (useTexture) {
 			xCum[1] -= xCumDiff;
 			yCum[1] -= yCumDiff;
 			glTexCoord2f(xCum[1], yCum[1]);
 		}
-		glVertex3f(another.xCoords[i], another.yCoords[i], another.zCoords[i]);
+		drawVertex(another.xCoords[i], another.yCoords[i], another.zCoords[i], volumeCenter);
 
 		glEnd();
 	}
@@ -746,7 +771,7 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 			yCum[0] += yCumDiff;
 			glTexCoord2f(xCum[0], yCum[0]);
 		}
-		glVertex3f(face.xCoords[n], face.yCoords[n], face.zCoords[n]);
+		drawVertex(face.xCoords[n], face.yCoords[n], face.zCoords[n], volumeCenter);
 		if (useTexture) {
 			xCumDiff = -(face.zCoords[0] - face.zCoords[n]);
 			yCumDiff = -(sqrtf(pow((face.xCoords[0] - face.xCoords[n]), 2) + pow((face.yCoords[0] - face.yCoords[n]), 2)));
@@ -754,7 +779,7 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 			yCum[0] += yCumDiff;
 			glTexCoord2f(-face.zCoords[0], -face.xCoords[0]);
 		}
-		glVertex3f(face.xCoords[0], face.yCoords[0], face.zCoords[0]);
+		drawVertex(face.xCoords[0], face.yCoords[0], face.zCoords[0], volumeCenter);
 
 		// Point #3 and #4 (lies on second polygon)
 		if (useTexture) {
@@ -768,13 +793,13 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 			yCum[1] += yCumDiff;
 			glTexCoord2f(xCum[1], yCum[1]);
 		}
-		glVertex3f(another.xCoords[0], another.yCoords[0], another.zCoords[0]);
+		drawVertex(another.xCoords[0], another.yCoords[0], another.zCoords[0], volumeCenter);
 		if (useTexture) {
 			xCum[1] -= xCumDiff;
 			yCum[1] -= yCumDiff;
 			glTexCoord2f(xCum[1], yCum[1]);
 		}
-		glVertex3f(another.xCoords[n], another.yCoords[n], another.zCoords[n]);
+		drawVertex(another.xCoords[n], another.yCoords[n], another.zCoords[n], volumeCenter);
 		glEnd();
 	}
 	if (useTexture)
@@ -782,6 +807,9 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 
 	// Dealloc unused memory
 	another.destroy();
+	if (!volCenterGiven) {
+		delete[] volumeCenter;
+	}
 }
 
 
@@ -846,7 +874,7 @@ void Utility::drawHemisphere(float radius, int slices, int stacks, GLuint textur
 *	The amount of vertices in both faces must be the same
 *	f1 must be in same rotational direction with f2
 */
-void Utility::connectTwoFaces(CoordinateSet f1, CoordinateSet f2) {
+void Utility::connectTwoFaces(CoordinateSet f1, float centerF1[3], CoordinateSet f2, float centerF2[3]) {
 	if (f1.numberOfCoords != f2.numberOfCoords) {
 		throw exception("Vertices mismatch: Utility::connectTwoFaces()");
 		return;
@@ -854,59 +882,65 @@ void Utility::connectTwoFaces(CoordinateSet f1, CoordinateSet f2) {
 
 	int n = f1.numberOfCoords;
 
+	float volumeCenter[3];
+	midpointBetweenTwoPoints(centerF1, centerF2, volumeCenter);
+
 	// Draw connection faces
 	for (int i = 0; i < n - 1; i++) {
 		glBegin(GL_QUADS);
-		glVertex3f(f1.xCoords[i], f1.yCoords[i], f1.zCoords[i]);
-		glVertex3f(f2.xCoords[i], f2.yCoords[i], f2.zCoords[i]);
-		glVertex3f(f2.xCoords[i + 1], f2.yCoords[i + 1], f2.zCoords[i + 1]);
-		glVertex3f(f1.xCoords[i + 1], f1.yCoords[i + 1], f1.zCoords[i + 1]);
+		drawVertex(f1.xCoords[i], f1.yCoords[i], f1.zCoords[i], volumeCenter);
+		drawVertex(f2.xCoords[i], f2.yCoords[i], f2.zCoords[i], volumeCenter);
+		drawVertex(f2.xCoords[i + 1], f2.yCoords[i + 1], f2.zCoords[i + 1], volumeCenter);
+		drawVertex(f1.xCoords[i + 1], f1.yCoords[i + 1], f1.zCoords[i + 1], volumeCenter);
 		glEnd();
 	}
 
 	// Draw connection faces between end and start vertices
 	glBegin(GL_QUADS);
-	glVertex3f(f1.xCoords[n - 1], f1.yCoords[n - 1], f1.zCoords[n - 1]);
-	glVertex3f(f2.xCoords[n - 1], f2.yCoords[n - 1], f2.zCoords[n - 1]);
-	glVertex3f(f2.xCoords[0], f2.yCoords[0], f2.zCoords[0]);
-	glVertex3f(f1.xCoords[0], f1.yCoords[0], f1.zCoords[0]);
+	drawVertex(f1.xCoords[n - 1], f1.yCoords[n - 1], f1.zCoords[n - 1], volumeCenter);
+	drawVertex(f2.xCoords[n - 1], f2.yCoords[n - 1], f2.zCoords[n - 1], volumeCenter);
+	drawVertex(f2.xCoords[0], f2.yCoords[0], f2.zCoords[0], volumeCenter);
+	drawVertex(f1.xCoords[0], f1.yCoords[0], f1.zCoords[0], volumeCenter);
 	glEnd();
 }
 
-void Utility::connectTwoFaces(CoordinateSet f1, CoordinateSet f2, GLuint texture) {
+void Utility::connectTwoFaces(CoordinateSet f1, float centerF1[3], CoordinateSet f2, float centerF2[3], GLuint texture) {
 	if (f1.numberOfCoords != f2.numberOfCoords) {
 		throw exception("Vertices mismatch: Utility::connectTwoFaces()");
 		return;
 	}
 
 	int n = f1.numberOfCoords;
-	
+
+	float volumeCenter[3];
+	midpointBetweenTwoPoints(centerF1, centerF2, volumeCenter);
+
 	Texture::use(texture);
 	Texture::on();
 	// Draw connection faces
 	for (int i = 0; i < n - 1; i++) {
 		glBegin(GL_QUADS);
 		glTexCoord2f(-f1.zCoords[i], -f1.xCoords[i]);
-		glVertex3f(f1.xCoords[i], f1.yCoords[i], f1.zCoords[i]);
+		drawVertex(f1.xCoords[i], f1.yCoords[i], f1.zCoords[i], volumeCenter);
 		glTexCoord2f(-f2.zCoords[i], -f2.xCoords[i]);
-		glVertex3f(f2.xCoords[i], f2.yCoords[i], f2.zCoords[i]);
+		drawVertex(f2.xCoords[i], f2.yCoords[i], f2.zCoords[i], volumeCenter);
 		glTexCoord2f(-f2.zCoords[i + 1], -f2.xCoords[i + 1]);
-		glVertex3f(f2.xCoords[i + 1], f2.yCoords[i + 1], f2.zCoords[i + 1]);
+		drawVertex(f2.xCoords[i + 1], f2.yCoords[i + 1], f2.zCoords[i + 1], volumeCenter);
 		glTexCoord2f(-f1.zCoords[i + 1], -f1.xCoords[i + 1]);
-		glVertex3f(f1.xCoords[i + 1], f1.yCoords[i + 1], f1.zCoords[i + 1]);
+		drawVertex(f1.xCoords[i + 1], f1.yCoords[i + 1], f1.zCoords[i + 1], volumeCenter);
 		glEnd();
 	}
 
 	// Draw connection faces between end and start vertices
 	glBegin(GL_QUADS);
 	glTexCoord2f(-f1.zCoords[n - 1], -f1.xCoords[n - 1]);
-	glVertex3f(f1.xCoords[n - 1], f1.yCoords[n - 1], f1.zCoords[n - 1]);
+	drawVertex(f1.xCoords[n - 1], f1.yCoords[n - 1], f1.zCoords[n - 1], volumeCenter);
 	glTexCoord2f(-f2.zCoords[n - 1], -f2.xCoords[n - 1]);
-	glVertex3f(f2.xCoords[n - 1], f2.yCoords[n - 1], f2.zCoords[n - 1]);
+	drawVertex(f2.xCoords[n - 1], f2.yCoords[n - 1], f2.zCoords[n - 1], volumeCenter);
 	glTexCoord2f(-f2.zCoords[0], -f2.xCoords[0]);
-	glVertex3f(f2.xCoords[0], f2.yCoords[0], f2.zCoords[0]);
+	drawVertex(f2.xCoords[0], f2.yCoords[0], f2.zCoords[0], volumeCenter);
 	glTexCoord2f(-f1.zCoords[0], -f1.xCoords[0]);
-	glVertex3f(f1.xCoords[0], f1.yCoords[0], f1.zCoords[0]);
+	drawVertex(f1.xCoords[0], f1.yCoords[0], f1.zCoords[0], volumeCenter);
 	glEnd();
 
 	Texture::off();
@@ -989,6 +1023,32 @@ CoordinateSet Utility::bezierCurveCoords(CoordinateSet points, int divisions) {
 	return output;
 }
 
+void Utility::drawVertex(float vertex[3], float origin[3]) {
+	float normal[3];
+	if (origin == NULL) {
+		for (int i = 0; i < 3; i++)
+			origin[i] = worldOrigin[i];
+	}
+	vectorFromTwoPoints(origin, vertex, normal);
+	glNormal3f(normal[0], normal[1], normal[2]);
+	glVertex3f(vertex[0], vertex[1], vertex[2]);
+}
+
+void Utility::drawVertex(float vector[3], float q1, float q2, float q3) {
+	float temp[3] = {q1, q2, q3};
+	drawVertex(vector, temp);
+}
+
+void Utility::drawVertex(float p1, float p2, float p3, float origin[3]) {
+	float temp[3] = {p1, p2, p3};
+	drawVertex(temp, origin);
+}
+
+void Utility::drawVertex(float p1, float p2, float p3, float q1, float q2, float q3) {
+	float temp1[3] = { p1, p2, p3 };
+	float temp2[3] = { q1, q2, q3 };
+	drawVertex(temp1, temp2);
+}
 
 /*	Bezier Curve formula:
 *		2 Points curve: P = (1-t)a + (t)b
@@ -1150,6 +1210,12 @@ float Utility::distanceBetweenTwoPoints(float p1[3], float p2[3]) {
 void Utility::vectorFromTwoPoints(float p1[3], float p2[3], float output[3]) {
 	for (int i = 0; i < 3; i++) {
 		output[i] = p2[i] - p1[i];
+	}
+}
+
+void Utility::midpointBetweenTwoPoints(float p1[3], float p2[3], float output[3]) {
+	for (int i = 0; i < 3; i++) {
+		output[i] = (p1[i] + p2[i]) / 2.0f;
 	}
 }
 
