@@ -259,7 +259,7 @@ void display()
 		glRotatef(camRotation[0], 1, 0, 0);
 		glRotatef(camRotation[1], 0, 1, 0);
 		glRotatef(camRotation[2], 0, 0, 1);
-		
+
 
 		glPushMatrix();
 		{
@@ -269,30 +269,31 @@ void display()
 		}
 		glPopMatrix();
 
-	glRotatef(camRotation[0], 1, 0, 0);
-	glRotatef(camRotation[1], 0, 1, 0);
-	glRotatef(camRotation[2], 0, 0, 1);
+		glRotatef(camRotation[0], 1, 0, 0);
+		glRotatef(camRotation[1], 0, 1, 0);
+		glRotatef(camRotation[2], 0, 0, 1);
 
-	glScalef(0.8, 0.8, 0.8);
+		glScalef(0.8, 0.8, 0.8);
 
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	{
-		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
-		Model::Pathfinder();
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		{
+			//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
+			Model::Pathfinder();
+		}
+		glPopMatrix();
+
+
+		// Gridlines
+		if (showGrid) {
+			glColor3f(0.9, 0.9, 0.9);
+			Utility::drawGrids();
+		}
+
+		//--------------------------------
+		//	End of OpenGL drawing
+		//--------------------------------
 	}
-	glPopMatrix();
-
-
-	// Gridlines
-	if (showGrid) {
-		glColor3f(0.9, 0.9, 0.9);
-		Utility::drawGrids();
-	}
-
-	//--------------------------------
-	//	End of OpenGL drawing
-	//--------------------------------
 }
 //--------------------------------------------------------------------
 void setupEnvironmentLightning() {
