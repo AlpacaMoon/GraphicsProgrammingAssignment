@@ -261,9 +261,9 @@ void display()
 
 		glPushMatrix();
 		{
-			//Animation::shootBullet();
-			//Model::r99();
-			Model::Pathfinder();
+			Animation::shootBullet();
+			Model::r99();
+			//Model::Pathfinder();
 		}
 		glPopMatrix();
 
