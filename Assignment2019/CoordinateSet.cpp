@@ -230,3 +230,53 @@ void CoordinateSet::destroy() {
 	delete[] yCoords;
 	delete[] zCoords;
 }
+
+float CoordinateSet::getLargestX() {
+	if (numberOfCoords < 1) {
+		return 0;
+	}
+	float result = xCoords[0];
+	for (int i = 1; i < numberOfCoords; i++) {
+		if (xCoords[i] > result)
+			result = xCoords[i];
+	}
+	return result;
+}
+
+float CoordinateSet::getLargestY() {
+	if (numberOfCoords < 1) {
+		return 0;
+	}
+	float result = yCoords[0];
+	for (int i = 1; i < numberOfCoords; i++) {
+		if (yCoords[i] > result)
+			result = yCoords[i];
+	}
+	return result;
+}
+
+float CoordinateSet::getSmallestX() {
+	if (numberOfCoords < 1) {
+		return 0;
+	}
+	float result = xCoords[0];
+	for (int i = 1; i < numberOfCoords; i++) {
+		if (xCoords[i] < result)
+			result = xCoords[i];
+	}
+	return result;
+}
+
+float CoordinateSet::getSmallestY() {
+	if (numberOfCoords < 1) {
+		return 0;
+	}
+	float result = yCoords[0];
+	for (int i = 1; i < numberOfCoords; i++) {
+		if (yCoords[i] < result)
+			result = yCoords[i];
+	}
+	return result;
+}
+
+	

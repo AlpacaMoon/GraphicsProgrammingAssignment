@@ -1,5 +1,7 @@
 #pragma once
-
+#include <Windows.h>
+#include <gl/GL.h>
+class TextureMap;
 class CoordinateSet;
 class Utility {
 
@@ -14,16 +16,28 @@ public:
 	static void drawCircle(float center[3], float normal[3], float radius, int edges);
 	static void drawBezierLine(CoordinateSet coordSet, int divisions);
 	static void drawCirclesAroundBezier(CoordinateSet coordSet, int divisions, float radius);
+	
 	static void drawTube(float centerA[3], float normalA[3], float radiusA, float centerB[3], float normalB[3], float radiusB, int faces);
+	static void drawTube(float centerA[3], float normalA[3], float radiusA, float centerB[3], float normalB[3], float radiusB, int faces, GLuint texture);
+	
 	static void drawBezierTube(CoordinateSet coordSet, int lineSmoothness, int faces, float radius);
+	static void drawBezierTube(CoordinateSet coordSet, int lineSmoothness, int faces, float radius, GLuint texture);
+	
 	static void drawAlternatingBezierTube(CoordinateSet coordSet, int lineSmoothness, int faces, float radius1, float radius2);
 	static void drawStraightTubes(CoordinateSet points, int smoothnessStraight, int smoothnessTurn, int faces, float radius, float turnMultiplier);
+	
 	static void drawPolygon(CoordinateSet coordSet, float center[3]);
-	static void drawConcavePolygon(CoordinateSet polygonLeft, CoordinateSet polygonRight, float middleLine);
+	static void drawPolygon(CoordinateSet coordSet, float center[3], GLuint texture);
+	
 	static void extrudePolygon(CoordinateSet face, float faceCenter[3], float direction[3], float amount, bool drawTop = true, bool drawBottom = true);
-	static void extrudeConcavePolygon(CoordinateSet faceLeft, CoordinateSet faceRight, float middleLine, float direction[3], float amount, bool drawTop = true, bool drawBottom = true);
-	static void drawHemisphere(float radius, int slices, int stack);
+	static void extrudePolygon(CoordinateSet face, float faceCenter[3], float direction[3], float amount, TextureMap tMap, bool drawTop = true, bool drawBottom = true);
+	
+	static void drawHemisphere(float radius, int slices, int stacks);
+	static void drawHemisphere(float radius, int slices, int stacks, GLuint texture);
+	
 	static void connectTwoFaces(CoordinateSet f1, CoordinateSet f2);
+	static void connectTwoFaces(CoordinateSet f1, CoordinateSet f2, GLuint texture);
+	
 	static void rotateAroundXaxis(float vector[3], float angle, float output[3]);
 	static void rotateAroundYaxis(float vector[3], float angle, float output[3]);
 	static void rotateAroundZaxis(float vector[3], float angle, float output[3]);
@@ -31,6 +45,7 @@ public:
 	// Coordinate calculations
 	static CoordinateSet circleCoords(float center[3], float radius, int edges, float startDegree = 0.0f, float endDegree = 360.0f);
 	static CoordinateSet bezierCurveCoords(CoordinateSet points, int divisions);
+
 
 private:	
 	// Bezier curve functions

@@ -7,12 +7,14 @@
 
 #include "Utility.h"
 #include "CoordinateSet.h"
+#include "TextureMap.h"
+#include "Texture.h"
 
 using namespace std;
 
 const float PI = 3.1415926f;
 
-GLUquadricObj* obj;
+GLUquadricObj* hemiSphereObj;
 
 // Convert degrees to radians
 float Utility::degToRad(float deg) {
@@ -249,6 +251,93 @@ void Utility::drawTube(float centerA[3], float normalA[3], float radiusA, float 
 	glPopMatrix();
 }
 
+void Utility::drawTube(float centerA[3], float normalA[3], float radiusA, float centerB[3], float normalB[3], float radiusB, int faces, GLuint texture) {
+	// Error handling
+	if (faces >= -2 && faces <= 2) return;
+
+	float basisA1[3], basisA2[3], basisB1[3], basisB2[3];
+	float thisCenterA[3], thisCenterB[3];
+	glPushMatrix();
+
+	// For some reason the tube will get shrinked to infinity when it is parallel to Z-axis (the bug is probably in orthogonalBasis())
+	// So instead of solving the bug, here I just rotate the tube 90 degrees so that it isn't parallel to Z-axis
+	float zAxis[3] = { 0, 0, 1 };
+	if (isParallelVector(normalA, zAxis) || isParallelVector(normalB, zAxis)) {
+		glRotatef(-90, 0, 1, 0);
+
+		float newNormalA[3], newNormalB[3], newCenterA[3], newCenterB[3];
+		rotateAroundYaxis(normalA, 90, newNormalA);
+		rotateAroundYaxis(normalB, 90, newNormalB);
+		rotateAroundYaxis(centerA, 90, newCenterA);
+		rotateAroundYaxis(centerB, 90, newCenterB);
+
+		// Calculate the orthogonal basis vectors of normalA and normalB
+		orthogonalBasis(newNormalA, basisA1, basisA2);
+		orthogonalBasis(newNormalB, basisB1, basisB2);
+
+		for (int i = 0; i < 3; i++) {
+			thisCenterA[i] = newCenterA[i];
+			thisCenterB[i] = newCenterB[i];
+		}
+	}
+	// Doesn't need to rotate if it isn't parallel to Z-axis
+	else {
+		// Calculate the orthogonal basis vectors of normalA and normalB
+		orthogonalBasis(normalA, basisA1, basisA2);
+		orthogonalBasis(normalB, basisB1, basisB2);
+
+		for (int i = 0; i < 3; i++) {
+			thisCenterA[i] = centerA[i];
+			thisCenterB[i] = centerB[i];
+		}
+	}
+
+	// Calculate rotation increment between faces
+	float increment = 360.0f / faces;
+	float rot = 0.0f;
+	float temp[3];
+
+	// Draw n amount of faces, where n = the int variable "faces"
+	// Each face have 4 points, #1, #2, #3 and #4
+	for (int i = 0; i < faces; i++) {
+		Texture::on();
+		Texture::use(texture);
+		glBegin(GL_QUADS);
+
+		// Draw #1 that lies on first circle, with angle = rot
+		for (int i = 0; i < 3; i++)
+			temp[i] = thisCenterA[i] + radiusA * (basisA1[i] * cos(degToRad(rot)) + basisA2[i] * sin(degToRad(rot)));
+		glTexCoord2f(0, 0);
+		glVertex3f(temp[0], temp[1], temp[2]);
+
+		// Draw #2 that lines on first circle, with angle = rot + increment
+		for (int i = 0; i < 3; i++)
+			temp[i] = thisCenterA[i] + radiusA * (basisA1[i] * cos(degToRad(rot + increment)) + basisA2[i] * sin(degToRad(rot + increment)));
+		glTexCoord2f(0, 1);
+		glVertex3f(temp[0], temp[1], temp[2]);
+
+		// Draw #3 that lines on second circle, with angle = rot + increment
+		for (int i = 0; i < 3; i++)
+			temp[i] = thisCenterB[i] + radiusB * (basisB1[i] * cos(degToRad(rot + increment)) + basisB2[i] * sin(degToRad(rot + increment)));
+		glTexCoord2f(1, 1);
+		glVertex3f(temp[0], temp[1], temp[2]);
+
+		// Draw #4 that lines on second circle, with angle = rot
+		for (int i = 0; i < 3; i++)
+			temp[i] = thisCenterB[i] + radiusB * (basisB1[i] * cos(degToRad(rot)) + basisB2[i] * sin(degToRad(rot)));
+		glTexCoord2f(1, 0);
+		glVertex3f(temp[0], temp[1], temp[2]);
+
+		glEnd();
+		Texture::off();
+
+		// Increment rotation / theta
+		rot += increment;
+	}
+
+	glPopMatrix();
+}
+
 /*	Given the bezier line coords,
 *	Draw a cylindrical tube that follows the bezier line
 *		- All radii on the tube are the same
@@ -293,6 +382,45 @@ void Utility::drawBezierTube(CoordinateSet coordSet, int lineSmoothness, int fac
 
 	// Draw the last tube and voila!
 	drawTube(pointA, tangentA, radius, pointB, tangentB, radius, faces);
+}
+
+void Utility::drawBezierTube(CoordinateSet coordSet, int lineSmoothness, int faces, float radius, GLuint texture) {
+	// Error handling
+	if (lineSmoothness < 1) return;
+
+	float pointA[3], pointB[3], tangentA[3], tangentB[3];
+	float t;
+	float control = 0.001f;
+
+	// Calculate first point's coordinate and its tangent
+	//	* Note that we're using 0.0001f instead of 0.0f to avoid the tangent = 0, which results in tangent = Z-axis
+	bezier3d(control, coordSet, pointA);
+	bezierDerivative3d(control, coordSet, tangentA);
+
+	for (int i = 1; i < lineSmoothness; i++) {
+		t = (float)i / lineSmoothness;
+
+		// Calculate second point's coordinate and its tangent
+		bezier3d(t, coordSet, pointB);
+		bezierDerivative3d(t, coordSet, tangentB);
+
+		// Draw tube segment
+		drawTube(pointA, tangentA, radius, pointB, tangentB, radius, faces, texture);
+
+		// Copy second point to first point (to be used in the next loop & save resources)
+		for (int i = 0; i < 3; i++) {
+			pointA[i] = pointB[i];
+			tangentA[i] = tangentB[i];
+		}
+	}
+
+	// Calculate last point's coordinate and its tangent
+	//	* Note that we're using 0.9999f instead of 1.0f to avoid the tangent = 0, which results in tangent = Z-axis
+	bezier3d(1.0f - control, coordSet, pointB);
+	bezierDerivative3d(1.0f - control, coordSet, tangentB);
+
+	// Draw the last tube and voila!
+	drawTube(pointA, tangentA, radius, pointB, tangentB, radius, faces, texture);
 }
 
 /*	Given the bezier line coords,
@@ -430,29 +558,27 @@ void Utility::drawPolygon(CoordinateSet coordSet, float center[3]) {
 	glEnd();
 }
 
+void Utility::drawPolygon(CoordinateSet coordSet, float center[3], GLuint texture) {
+	glPushMatrix();
+	{
+		Texture::use(texture);
+		Texture::on();
+		glBegin(GL_TRIANGLE_FAN);
+		glTexCoord2f(center[0], center[1]);
+		glVertex3f(center[0], center[1], center[2]);
 
-void Utility::drawConcavePolygon(CoordinateSet polygonLeft, CoordinateSet polygonRight, float middleLine) {
-	// Quad strips for polygonLeft
-	for (int i = 0; i < polygonLeft.numberOfCoords - 1; i++) {
-		glBegin(GL_QUADS);
-		glVertex3f(polygonLeft.xCoords[i], polygonLeft.yCoords[i], polygonLeft.zCoords[i]);
-		glVertex3f(polygonLeft.xCoords[i + 1], polygonLeft.yCoords[i + 1], polygonLeft.zCoords[i + 1]);
-		glVertex3f(middleLine, polygonLeft.yCoords[i + 1], polygonLeft.zCoords[i + 1]);
-		glVertex3f(middleLine, polygonLeft.yCoords[i], polygonLeft.zCoords[i]);
+		for (int i = 0; i < coordSet.numberOfCoords; i++) {
+			glTexCoord2f(coordSet.xCoords[i], coordSet.yCoords[i]);
+			glVertex3f(coordSet.xCoords[i], coordSet.yCoords[i], coordSet.zCoords[i]);
+		}
+		glTexCoord2f(coordSet.xCoords[0], coordSet.yCoords[0]);
+		glVertex3f(coordSet.xCoords[0], coordSet.yCoords[0], coordSet.zCoords[0]);
 		glEnd();
+		Texture::off();
 	}
-
-	// Quad strips for polygonRight
-	for (int i = 0; i < polygonRight.numberOfCoords - 1; i++) {
-		glBegin(GL_QUADS);
-		glVertex3f(polygonRight.xCoords[i], polygonRight.yCoords[i], polygonRight.zCoords[i]);
-		glVertex3f(middleLine, polygonRight.yCoords[i], polygonRight.zCoords[i]);
-		glVertex3f(middleLine, polygonRight.yCoords[i + 1], polygonRight.zCoords[i + 1]);
-		glVertex3f(polygonRight.xCoords[i + 1], polygonRight.yCoords[i + 1], polygonRight.zCoords[i + 1]);
-		glEnd();
-	}
-
+	glPopMatrix();
 }
+
 
 /*	Extrudes a polygon towards a given direction
 *	Will draw a cylindrical shape with the given poygon as the top and bottom
@@ -512,42 +638,97 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 	another.destroy();
 }
 
-void Utility::extrudeConcavePolygon(CoordinateSet faceLeft, CoordinateSet faceRight, float middleLine, float direction[3], float amount, bool drawTop, bool drawBottom) {
+void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float direction[3], float amount, TextureMap tMap, bool drawTop, bool drawBottom) {
 	// Obtain CoordinateSet for second polygon
-	CoordinateSet anotherLeft = faceLeft.copy();
-	CoordinateSet anotherRight = faceRight.copy();
+	CoordinateSet another = face.copy();
 	float newTranslation[3] = { amount * direction[0], amount * direction[1], amount * direction[2] };
-	anotherLeft.translate(newTranslation);
-	anotherRight.translate(newTranslation);
+	another.translate(newTranslation);
+	float anotherCenter[3];
+	for (int i = 0; i < 3; i++) {
+		anotherCenter[i] = faceCenter[i] + amount * direction[i];
+	}
 
 	// Draw top face
 	if (drawTop) {
-		drawConcavePolygon(faceLeft, faceRight, middleLine);
+		if (tMap.has(1))
+			drawPolygon(face, faceCenter, tMap.get(1));
+		else
+			drawPolygon(face, faceCenter);
 	}
 
 	// Draw bottom face (In reverse direction)
 	if (drawBottom) {
-		drawConcavePolygon(anotherLeft, anotherRight, middleLine);
+		if (tMap.has(2))
+			drawPolygon(another, anotherCenter, tMap.get(2));
+		else
+			drawPolygon(another, anotherCenter);
 	}
 
 	// Draw quad strips in between
-	CoordinateSet face(10);
-	face.combineCoords(faceLeft);
-	CoordinateSet faceRightTemp = faceRight.copy();
-	faceRightTemp.reverse();
-	face.combineCoords(faceRightTemp);
-
-	CoordinateSet another = face.copy();
-	float newTranslation2[3] = { amount * direction[0], amount * direction[1], amount * direction[2] };
-	another.translate(newTranslation2);
+	boolean useTexture = tMap.has(3);
+	if (useTexture) {
+		Texture::use(tMap.get(3));
+		Texture::on();
+	}
+	float xCum[2] = { 0, 0 };
+	float yCum[2] = { 0, 0 };
+	float xCumDiff, yCumDiff;
 	for (int i = 0; i < face.numberOfCoords - 1; i++) {
+		
 		glBegin(GL_QUADS);
 		// Point #1 and #2 (lies on first polygon)
+		if (useTexture) {
+			if (i == 0) {
+				xCumDiff = -face.zCoords[i];
+				yCumDiff = -face.xCoords[i];
+			}
+			else {
+				xCumDiff = -(face.zCoords[i] - face.zCoords[i - 1]);
+				yCumDiff = -(sqrtf(pow((face.xCoords[i] - face.xCoords[i - 1]), 2) + pow((face.yCoords[i] - face.yCoords[i - 1]), 2)));
+			}
+			xCum[0] += xCumDiff;
+			yCum[0] += yCumDiff;
+			glTexCoord2f(xCum[0], yCum[0]);
+		}
 		glVertex3f(face.xCoords[i], face.yCoords[i], face.zCoords[i]);
+
+		if (useTexture) {
+			xCumDiff = -(face.zCoords[i + 1] - face.zCoords[i]);
+			yCumDiff = -(sqrtf(pow((face.xCoords[i + 1] - face.xCoords[i]), 2) + pow((face.yCoords[i + 1] - face.yCoords[i]), 2)));
+			xCum[0] += xCumDiff;
+			yCum[0] += yCumDiff;
+			glTexCoord2f(xCum[0], yCum[0]);
+		}
 		glVertex3f(face.xCoords[i + 1], face.yCoords[i + 1], face.zCoords[i + 1]);
+		if (useTexture) {
+			xCum[0] -= xCumDiff;
+			yCum[0] -= yCumDiff;
+		}
 
 		// Point #3 and #4 (lies on second polygon)
+		if (useTexture) {
+			if (i == 0) {
+				xCumDiff = -another.zCoords[i];
+				yCumDiff = -another.xCoords[i];
+			}
+			else {
+				xCumDiff = -(another.zCoords[i] - another.zCoords[i - 1]);
+				yCumDiff = -(sqrtf(pow((another.xCoords[i] - another.xCoords[i - 1]), 2) + pow((another.yCoords[i] - another.yCoords[i - 1]), 2)));
+			}
+			xCum[1] += xCumDiff;
+			yCum[1] += yCumDiff;
+			xCumDiff = -(another.zCoords[i + 1] - another.zCoords[i]);
+			yCumDiff = -(sqrtf(pow((another.xCoords[i + 1] - another.xCoords[i]), 2) + pow((another.yCoords[i + 1] - another.yCoords[i]), 2)));
+			xCum[1] += xCumDiff;
+			yCum[1] += yCumDiff;
+			glTexCoord2f(xCum[1], yCum[1]);
+		}
 		glVertex3f(another.xCoords[i + 1], another.yCoords[i + 1], another.zCoords[i + 1]);
+		if (useTexture) {
+			xCum[1] -= xCumDiff;
+			yCum[1] -= yCumDiff;
+			glTexCoord2f(xCum[1], yCum[1]);
+		}
 		glVertex3f(another.xCoords[i], another.yCoords[i], another.zCoords[i]);
 
 		glEnd();
@@ -558,28 +739,57 @@ void Utility::extrudeConcavePolygon(CoordinateSet faceLeft, CoordinateSet faceRi
 		int n = face.numberOfCoords - 1;
 		glBegin(GL_QUADS);
 		// Point #1 and #2 (lies on first polygon)
+		if (useTexture) {
+			xCumDiff = -(face.zCoords[n] - face.zCoords[n - 1]);
+			yCumDiff = -(sqrtf(pow((face.xCoords[n] - face.xCoords[n - 1]), 2) + pow((face.yCoords[n] - face.yCoords[n - 1]), 2)));
+			xCum[0] += xCumDiff;
+			yCum[0] += yCumDiff;
+			glTexCoord2f(xCum[0], yCum[0]);
+		}
 		glVertex3f(face.xCoords[n], face.yCoords[n], face.zCoords[n]);
+		if (useTexture) {
+			xCumDiff = -(face.zCoords[0] - face.zCoords[n]);
+			yCumDiff = -(sqrtf(pow((face.xCoords[0] - face.xCoords[n]), 2) + pow((face.yCoords[0] - face.yCoords[n]), 2)));
+			xCum[0] += xCumDiff;
+			yCum[0] += yCumDiff;
+			glTexCoord2f(-face.zCoords[0], -face.xCoords[0]);
+		}
 		glVertex3f(face.xCoords[0], face.yCoords[0], face.zCoords[0]);
 
 		// Point #3 and #4 (lies on second polygon)
+		if (useTexture) {
+			xCumDiff = -(another.zCoords[n] - another.zCoords[n - 1]);
+			yCumDiff = -(sqrtf(pow((another.xCoords[n] - another.xCoords[n - 1]), 2) + pow((another.yCoords[n] - another.yCoords[n - 1]), 2)));
+			xCum[1] += xCumDiff;
+			yCum[1] += yCumDiff;
+			xCumDiff = -(another.zCoords[0] - another.zCoords[n]);
+			yCumDiff = -(sqrtf(pow((another.xCoords[0] - another.xCoords[n]), 2) + pow((another.yCoords[0] - another.yCoords[n]), 2)));
+			xCum[1] += xCumDiff;
+			yCum[1] += yCumDiff;
+			glTexCoord2f(xCum[1], yCum[1]);
+		}
 		glVertex3f(another.xCoords[0], another.yCoords[0], another.zCoords[0]);
+		if (useTexture) {
+			xCum[1] -= xCumDiff;
+			yCum[1] -= yCumDiff;
+			glTexCoord2f(xCum[1], yCum[1]);
+		}
 		glVertex3f(another.xCoords[n], another.yCoords[n], another.zCoords[n]);
 		glEnd();
 	}
+	if (useTexture)
+		Texture::off();
 
 	// Dealloc unused memory
-	anotherLeft.destroy();
-	anotherRight.destroy();
-	face.destroy();
 	another.destroy();
-	faceRightTemp.destroy();
 }
+
 
 /* Draw hemisphere at location 0, 0, 0
 */
 void Utility::drawHemisphere(float radius, int slices, int stacks) {
-	if (obj == NULL) {
-		obj = gluNewQuadric();
+	if (hemiSphereObj == NULL) {
+		hemiSphereObj = gluNewQuadric();
 	}
 
 	// Draw cylinders stack by stack
@@ -592,13 +802,43 @@ void Utility::drawHemisphere(float radius, int slices, int stacks) {
 			float currentHeight = radius * sin(degToRad(currentStack + stackIncrement));
 			float previousHeight = radius * sin(degToRad(currentStack));
 			float thisHeight = currentHeight - previousHeight;
-			gluCylinder(obj, radius * cos(degToRad(currentStack)), radius * cos(degToRad(currentStack + stackIncrement)), thisHeight, slices, 1);
+			gluCylinder(hemiSphereObj, radius * cos(degToRad(currentStack)), radius * cos(degToRad(currentStack + stackIncrement)), thisHeight, slices, 1);
 			glTranslatef(0, 0, thisHeight);
 			currentStack += stackIncrement;
 		}
 	}
 	glPopMatrix();
 }
+
+void Utility::drawHemisphere(float radius, int slices, int stacks, GLuint texture) {
+	if (hemiSphereObj == NULL) {
+		hemiSphereObj = gluNewQuadric();
+	}
+
+	// Texture
+	Texture::on();
+	Texture::use(texture);
+	gluQuadricTexture(hemiSphereObj, GL_TRUE);
+
+	// Draw cylinders stack by stack
+	glPushMatrix();
+	{
+		float currentStack = 0;
+		float stackIncrement = 90.0f / stacks;
+		glRotatef(-90, 1, 0, 0);
+		for (int i = 0; i < stacks; i++) {
+			float currentHeight = radius * sin(degToRad(currentStack + stackIncrement));
+			float previousHeight = radius * sin(degToRad(currentStack));
+			float thisHeight = currentHeight - previousHeight;
+			gluCylinder(hemiSphereObj, radius * cos(degToRad(currentStack)), radius * cos(degToRad(currentStack + stackIncrement)), thisHeight, slices, 1);
+			glTranslatef(0, 0, thisHeight);
+			currentStack += stackIncrement;
+		}
+	}
+	glPopMatrix();
+	Texture::off();
+}
+
 
 /*	Draw the connections between two faces
 *	Doesn't draw the given faces itself
@@ -631,6 +871,45 @@ void Utility::connectTwoFaces(CoordinateSet f1, CoordinateSet f2) {
 	glVertex3f(f2.xCoords[0], f2.yCoords[0], f2.zCoords[0]);
 	glVertex3f(f1.xCoords[0], f1.yCoords[0], f1.zCoords[0]);
 	glEnd();
+}
+
+void Utility::connectTwoFaces(CoordinateSet f1, CoordinateSet f2, GLuint texture) {
+	if (f1.numberOfCoords != f2.numberOfCoords) {
+		throw exception("Vertices mismatch: Utility::connectTwoFaces()");
+		return;
+	}
+
+	int n = f1.numberOfCoords;
+	
+	Texture::use(texture);
+	Texture::on();
+	// Draw connection faces
+	for (int i = 0; i < n - 1; i++) {
+		glBegin(GL_QUADS);
+		glTexCoord2f(-f1.zCoords[i], -f1.xCoords[i]);
+		glVertex3f(f1.xCoords[i], f1.yCoords[i], f1.zCoords[i]);
+		glTexCoord2f(-f2.zCoords[i], -f2.xCoords[i]);
+		glVertex3f(f2.xCoords[i], f2.yCoords[i], f2.zCoords[i]);
+		glTexCoord2f(-f2.zCoords[i + 1], -f2.xCoords[i + 1]);
+		glVertex3f(f2.xCoords[i + 1], f2.yCoords[i + 1], f2.zCoords[i + 1]);
+		glTexCoord2f(-f1.zCoords[i + 1], -f1.xCoords[i + 1]);
+		glVertex3f(f1.xCoords[i + 1], f1.yCoords[i + 1], f1.zCoords[i + 1]);
+		glEnd();
+	}
+
+	// Draw connection faces between end and start vertices
+	glBegin(GL_QUADS);
+	glTexCoord2f(-f1.zCoords[n - 1], -f1.xCoords[n - 1]);
+	glVertex3f(f1.xCoords[n - 1], f1.yCoords[n - 1], f1.zCoords[n - 1]);
+	glTexCoord2f(-f2.zCoords[n - 1], -f2.xCoords[n - 1]);
+	glVertex3f(f2.xCoords[n - 1], f2.yCoords[n - 1], f2.zCoords[n - 1]);
+	glTexCoord2f(-f2.zCoords[0], -f2.xCoords[0]);
+	glVertex3f(f2.xCoords[0], f2.yCoords[0], f2.zCoords[0]);
+	glTexCoord2f(-f1.zCoords[0], -f1.xCoords[0]);
+	glVertex3f(f1.xCoords[0], f1.yCoords[0], f1.zCoords[0]);
+	glEnd();
+
+	Texture::off();
 }
 
 /*	[ Rotation in 3D space ]
@@ -709,6 +988,7 @@ CoordinateSet Utility::bezierCurveCoords(CoordinateSet points, int divisions) {
 	}
 	return output;
 }
+
 
 /*	Bezier Curve formula:
 *		2 Points curve: P = (1-t)a + (t)b

@@ -29,4 +29,9 @@ public:
 	void reverse();
 
 	void destroy();
+
+	float getLargestX();
+	float getLargestY();
+	float getSmallestX();
+	float getSmallestY();
 };

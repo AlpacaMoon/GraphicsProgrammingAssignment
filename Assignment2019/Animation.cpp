@@ -2,7 +2,7 @@
 #include "Model.h"
 #include "Time.h"
 
-void Animation::reset(float seconds) {
+void Animation::hardReset() {
 	for (int i = 0; i < 3; i++) {
 		Model::headRot[i] = 0;
 		Model::RLegUpperRot[i] = 0;
@@ -31,7 +31,34 @@ void Animation::reset(float seconds) {
 	Model::LArmRot[0][0] = -10;
 	Model::LArmRot[0][1] = 15;
 	Model::LArmRot[1][2] = 15;
+}
 
+bool Animation::softResetClamping(float* target, float min, float frustum, float max, float speed) {
+	bool stopped = true;
+	if (*target > frustum) {
+		*target -= speed;
+		*target = clampFloat(*target, frustum, max);
+		if (*target != frustum)
+			stopped = false;
+	}
+	else if (*target < frustum) {
+		*target += speed;
+		*target = clampFloat(*target, min, frustum);
+		if (*target != frustum)
+			stopped = false;
+	}
+	return stopped;
+}
+
+// Resets animation to original rotation and position, 
+// But translates/rotates them instead of displacing them like hardReset()
+// Returns true if softReset is finished, false if not. 
+bool Animation::softReset(float speed) {
+	boolean stopped = true;
+
+	// Ltr do
+
+	return stopped;
 }
 
 void Animation::runAnimations() {
@@ -62,6 +89,7 @@ void Animation::startWalking() {
 
 void Animation::stopWalking() {
 	walkSteps = 5;
+
 }
 
 void Animation::walk() {
@@ -71,101 +99,37 @@ void Animation::walk() {
 	if (walkSteps == 0)
 		return;
 	else if (walkSteps == 5) {
-		boolean stopped = true;
-		if (Model::RLegUpperRot[2] > 0) {
-			Model::RLegUpperRot[2] -= speed;
-			Model::RLegUpperRot[2] = clampFloat(Model::RLegUpperRot[2], 0, 180);
-			if (Model::RLegUpperRot[2] != 0)
-				stopped = false;
-		}
-		else if (Model::RLegUpperRot[2] < 0) {
-			Model::RLegUpperRot[2] += speed;
-			Model::RLegUpperRot[2] = clampFloat(Model::RLegUpperRot[2], -180, 0);
-			if (Model::RLegUpperRot[2] != 0)
-				stopped = false;
-		}
+		bool stopped = true;
 
-		if (Model::LLegUpperRot[2] > 0) {
-			Model::LLegUpperRot[2] -= speed;
-			Model::LLegUpperRot[2] = clampFloat(Model::LLegUpperRot[2], 0, 180);
-			if (Model::LLegUpperRot[2] != 0)
-				stopped = false;
-		}
-		else if (Model::LLegUpperRot[2] < 0) {
-			Model::LLegUpperRot[2] += speed;
-			Model::LLegUpperRot[2] = clampFloat(Model::LLegUpperRot[2], -180, 0);
-			if (Model::LLegUpperRot[2] != 0)
-				stopped = false;
-		}
+		openRightHand(speed);
+		openLeftHand(speed);
 
-		if (Model::RLegHingeRot > 0) {
-			Model::RLegHingeRot -= 0.3 * speed;
-			Model::RLegHingeRot = clampFloat(Model::RLegHingeRot, 0, 180);
-			if (Model::RLegHingeRot != 0)
-				stopped = false;
-		}
-		else if (Model::RLegHingeRot < 0) {
-			Model::RLegHingeRot += 0.3 * speed;
-			Model::RLegHingeRot = clampFloat(Model::RLegHingeRot, -180, 0);
-			if (Model::RLegHingeRot != 0)
-				stopped = false;
-		}
+		if (softResetClamping(&Model::RArmRot[0][2], -360, 15, 360, speed) == false)
+			stopped = false;
+		if (softResetClamping(&Model::LArmRot[0][2], -360, 15, 360, speed) == false)
+			stopped = false;
 
-		if (Model::LLegHingeRot > 0) {
-			Model::LLegHingeRot -= 0.3 * speed;
-			Model::LLegHingeRot = clampFloat(Model::LLegHingeRot, 0, 180);
-			if (Model::LLegHingeRot != 0)
-				stopped = false;
-		}
-		else if (Model::LLegHingeRot < 0) {
-			Model::LLegHingeRot += 0.3 * speed;
-			Model::LLegHingeRot = clampFloat(Model::LLegHingeRot, -180, 0);
-			if (Model::LLegHingeRot != 0)
-				stopped = false;
-		}
+		if (softResetClamping(&Model::RLegUpperRot[2], -360, 0, 360, speed) == false)
+			stopped = false;
+		if (softResetClamping(&Model::LLegUpperRot[2], -360, 0, 360, speed) == false)
+			stopped = false;
 
-		if (Model::RFeetRot > 0) {
-			Model::RFeetRot -= 0.25 * speed;
-			Model::RFeetRot = clampFloat(Model::RFeetRot, 0, 180);
-			if (Model::RFeetRot != 0)
-				stopped = false;
-		}
-		else if (Model::RFeetRot < 0) {
-			Model::RFeetRot += 0.25 * speed;
-			Model::RFeetRot = clampFloat(Model::RFeetRot, -180, 0);
-			if (Model::RFeetRot != 0)
-				stopped = false;
-		}
+		if (softResetClamping(&Model::RLegHingeRot, -360, 0, 360, speed) == false)
+			stopped = false;
+		if (softResetClamping(&Model::LLegHingeRot, -360, 0, 360, speed) == false)
+			stopped = false;
 
-		if (Model::LFeetRot > 0) {
-			Model::LFeetRot -= 0.25 * speed;
-			Model::LFeetRot = clampFloat(Model::LFeetRot, 0, 180);
-			if (Model::LFeetRot != 0)
-				stopped = false;
-		}
-		else if (Model::LFeetRot < 0) {
-			Model::LFeetRot += 0.25 * speed;
-			Model::LFeetRot = clampFloat(Model::LFeetRot, -180, 0);
-			if (Model::LFeetRot != 0)
-				stopped = false;
-		}
+		if (softResetClamping(&Model::RFeetRot, -360, 0, 360, speed) == false)
+			stopped = false;
+		if (softResetClamping(&Model::LFeetRot, -360, 0, 360, speed) == false)
+			stopped = false;
 
-		if (Model::bodyPos[1] > 0) {
-			Model::bodyPos[1] -= walkBodyShifting * speed;
-			Model::bodyPos[1] = clampFloat(Model::bodyPos[1], 0, 10);
-			if (Model::bodyPos[1] != 0)
-				stopped = false;
-		}
-		else if (Model::bodyPos[1] < 0) {
-			Model::bodyPos[1] += walkBodyShifting * speed;
-			Model::bodyPos[1] = clampFloat(Model::bodyPos[1], -10, 0);
-			if (Model::bodyPos[1] != 0)
-				stopped = false;
-		}
-
-		Model::bodyRot[0] += 0.1 * speed;
-		Model::bodyRot[0] = clampFloat(Model::bodyRot[0], -180, 0);
-		if (Model::bodyRot[0] != 0)
+		if (softResetClamping(&Model::bodyPos[1], -10, 0, 10, speed) == false)
+			stopped = false;
+	
+		if (softResetClamping(&Model::bodyRot[0], -360, 0, 360, 0.1 * speed) == false)
+			stopped = false;
+		if (softResetClamping(&Model::bodyRot[2], -360, 0, 360, 0.05 * speed) == false)
 			stopped = false;
 
 		if (stopped) {
@@ -174,29 +138,43 @@ void Animation::walk() {
 		return;
 	}
 
+	// Close hands
+	closeRightHand(speed);
+	closeLeftHand(speed);
+
 	// Walking animation loop
 	if (walkDir == 0) {
 		if (walkSteps == 1) {
 			Model::RLegUpperRot[2] += speed;
-			Model::bodyRot[0] -= 0.1 * speed;
-			Model::RLegHingeRot -= 0.2 * speed;
+			Model::bodyRot[0] -= 0.2 * speed;
+			Model::RLegHingeRot -= 0.3 * speed;
 			Model::RFeetRot += 0.1 * speed;
+			Model::bodyRot[2] -= 0.01 * speed;
 		}
 		else {
 			Model::RLegUpperRot[2] += speed;
 			Model::LLegUpperRot[2] -= speed;
-			Model::RLegHingeRot += 0.3 * speed;
+			Model::RLegHingeRot += 0.4 * speed;
 			Model::RFeetRot += 0.25 * speed;
+			Model::bodyRot[0] -= 0.05 * speed;
 			if (Model::RLegUpperRot[2] >= 0) {
 				Model::bodyPos[1] += walkBodyShifting * speed;
 			}
 			else {
 				Model::bodyPos[1] -= walkBodyShifting * speed;
 			}
+			Model::bodyPos[1] = clampFloat(Model::bodyPos[1], -0.025, 0.025);
+
+			Model::bodyRot[2] -= 0.02 * speed;
 		}
 
+		Model::RArmRot[0][2] += (-15 - Model::RArmRot[0][2]) * 0.6 * Time::elapsedSeconds * 15;
+		Model::RArmRot[0][2] = clampFloat(Model::RArmRot[0][2], -15, 45);
+		Model::LArmRot[0][2] += (45 - Model::LArmRot[0][2]) * 0.6 * Time::elapsedSeconds * 15;
+		Model::LArmRot[0][2] = clampFloat(Model::LArmRot[0][2], -15, 45);
+
 		Model::LFeetRot -= 0.25 * speed;
-		Model::LLegHingeRot -= 0.3 * speed;
+		Model::LLegHingeRot -= 0.4 * speed;
 		clampRightLeg();
 		clampLeftLeg();
 		if (Model::RLegUpperRot[2] >= 45.0f) {
@@ -211,7 +189,7 @@ void Animation::walk() {
 		if (walkSteps == 2) {
 			Model::RLegUpperRot[2] -= speed;
 			Model::LLegUpperRot[2] += 0.5f * speed;
-			Model::LLegHingeRot -= 0.5f * 0.2 * speed;
+			Model::LLegHingeRot -= 0.5 * 0.3 * speed;
 			Model::LFeetRot += 0.5f * 0.25 * speed;
 			if (Model::RLegUpperRot[2] >= 0) {
 				Model::bodyPos[1] -= 0.5 * walkBodyShifting * speed;
@@ -223,7 +201,7 @@ void Animation::walk() {
 		else {
 			Model::RLegUpperRot[2] -= speed;
 			Model::LLegUpperRot[2] += speed;
-			Model::LLegHingeRot += 0.3 * speed;
+			Model::LLegHingeRot += 0.4 * speed;
 			Model::LFeetRot += 0.25 * speed;
 			if (Model::LLegUpperRot[2] >= 0) {
 				Model::bodyPos[1] += walkBodyShifting * speed;
@@ -231,10 +209,20 @@ void Animation::walk() {
 			else {
 				Model::bodyPos[1] -= walkBodyShifting * speed;
 			}
-		}
-		Model::RFeetRot -= 0.25 * speed;
+			Model::bodyPos[1] = clampFloat(Model::bodyPos[1], -0.025, 0.025);
 
-		Model::RLegHingeRot -= 0.3 * speed;
+		}
+
+		Model::bodyRot[2] += 0.02 * speed;
+		Model::RFeetRot -= 0.25 * speed;
+		Model::RLegHingeRot -= 0.4 * speed;
+		Model::bodyRot[0] += 0.05 * speed;
+
+
+		Model::RArmRot[0][2] += (45 - Model::RArmRot[0][2]) * 0.6 * Time::elapsedSeconds * 15;
+		Model::RArmRot[0][2] = clampFloat(Model::RArmRot[0][2], -15, 45);
+		Model::LArmRot[0][2] += (-15 - Model::LArmRot[0][2]) * 0.6 * Time::elapsedSeconds * 15;
+		Model::LArmRot[0][2] = clampFloat(Model::LArmRot[0][2], -15, 45);
 
 		clampRightLeg();
 		clampLeftLeg();
@@ -257,6 +245,55 @@ void Animation::rotateWalk(WPARAM key) {
 	case 'D':
 		Model::bodyRot[1] += rotSpeed;
 		break;
+	}
+}
+
+
+// General Animations
+
+void Animation::closeRightHand(float fingerSpeed) {
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 3; j++) {
+			Model::RFingerRot[i][j] += fingerSpeed;
+			if (Model::RFingerRot[i][j] > Model::closedFingerRot[i][j])
+				Model::RFingerRot[i][j] = Model::closedFingerRot[i][j];
+		}
+	}
+}
+
+void Animation::closeLeftHand(float fingerSpeed) {
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (Model::LFingerRot[i][j] < Model::closedFingerRot[i][j]) {
+				Model::LFingerRot[i][j] += fingerSpeed;
+				if (Model::LFingerRot[i][j] > Model::closedFingerRot[i][j])
+					Model::LFingerRot[i][j] = Model::closedFingerRot[i][j];
+			}
+		}
+	}
+}
+
+void Animation::openRightHand(float fingerSpeed) {
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (Model::RFingerRot[i][j] > Model::openedFingerRot[i][j]) {
+				Model::RFingerRot[i][j] -= fingerSpeed;
+				if (Model::RFingerRot[i][j] < Model::openedFingerRot[i][j])
+					Model::RFingerRot[i][j] = Model::openedFingerRot[i][j];
+			}
+		}
+	}
+}
+
+void Animation::openLeftHand(float fingerSpeed) {
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (Model::LFingerRot[i][j] > Model::openedFingerRot[i][j]) {
+				Model::LFingerRot[i][j] -= fingerSpeed;
+				if (Model::LFingerRot[i][j] < Model::openedFingerRot[i][j])
+					Model::LFingerRot[i][j] = Model::openedFingerRot[i][j];
+			}
+		}
 	}
 }
 

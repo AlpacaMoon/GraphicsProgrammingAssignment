@@ -12,6 +12,7 @@
 #include "Controls.h"
 #include "Lightning.h"
 #include "Time.h"
+#include "Texture.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 
@@ -30,7 +31,7 @@ bool onLightning = false;
 
 //lighting test
 GLfloat ambientLight[4] = { 1,1,1,1 }; //RGBA
-GLfloat diffuseLight[4] = { 0.2,0.2,0.2,1 }; //RGBA
+GLfloat diffuseLight[4] = { 1,1,1,1 }; //RGBA
 GLfloat positionLight[4] = { 0,5,0,0 }; //x,y,z,0
 
 //lookAt test
@@ -268,6 +269,17 @@ void display()
 		}
 		glPopMatrix();
 
+	glRotatef(camRotation[0], 1, 0, 0);
+	glRotatef(camRotation[1], 0, 1, 0);
+	glRotatef(camRotation[2], 0, 0, 1);
+
+	glScalef(0.8, 0.8, 0.8);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	{
+		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
+		Model::Pathfinder();
 	}
 	glPopMatrix();
 
@@ -295,7 +307,9 @@ void setupCamera()
 	glMatrixMode(GL_PROJECTION);
 	//glOrtho(-2, 2, -2, 2, 1, 10);
 	//glFrustum(-1, 1, -1, 1, 1, 10);
-	gluPerspective(60, 1, 1, 10);
+	
+	//gluPerspective(60, 1, 1, 10);
+	
 	//# pragma endregion
 }
 
@@ -342,6 +356,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 	setupEnvironmentLightning();
 	//camera setup
 	setupCamera();
+
+	// Texture setup
+	Texture::setupTextures();
 
 	ShowWindow(hWnd, nCmdShow);
 

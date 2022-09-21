@@ -8,7 +8,10 @@ public:
 
 	static void runAnimations();
 
-	static void reset(float seconds);
+	static void hardReset();
+	static bool softReset(float speed);
+	static bool softResetClamping(float* target, float min, float frustum, float max, float speed);
+	
 
 	static int walkSteps;
 	static void startWalking();
@@ -16,6 +19,13 @@ public:
 	static void rotateWalk(WPARAM key);
 	static void walk();
 
+
+	// General Animations
+	static float fingerSpeed;
+	static void closeRightHand(float fingerSpeed);
+	static void closeLeftHand(float fingerSpeed);
+	static void openRightHand(float fingerSpeed);
+	static void openLeftHand(float fingerSpeed);
 
 	// Clamping rotations
 	static float clampFloat(float value, float min, float max);
