@@ -47,6 +47,8 @@ float lookAtYAngle = 0;
 float lookAtZAngle = 0;
 float up[3] = { 0,1,0 };
 
+//bullet
+
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	bool inputting = false;
@@ -133,26 +135,41 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				eyeXAngle = 5.0f;
 				cumEyeXAngle += eyeXAngle;
 
-				if (cumEyeXAngle ==90) {
-					//Utility::rotateAroundYaxis(tempEye, 180, eye);
-					//Utility::rotateAroundXaxis(eye, 180, tempEye);
-					Utility::rotateAroundZaxis(eye, 180, tempEye);
-					//Utility::rotateAroundXaxis(eye, -eyeXAngle, tempEye);
-				}
-				else {
+				if (cumEyeXAngle < 90 || cumEyeXAngle > 270) {
 					Utility::rotateAroundXaxis(eye, eyeXAngle, tempEye);
+					eye[0] = tempEye[0];
+					eye[1] = tempEye[1];
+					eye[2] = tempEye[2];
+				}
+				else if (cumEyeXAngle == 90) {
+					Utility::rotateAroundZaxis(eye, 180, tempEye);
+					eye[0] = tempEye[0];
+					eye[1] = tempEye[1];
+					eye[2] = tempEye[2];
+
+					Utility::rotateAroundXaxis(eye, 180, tempEye);
+					eye[0] = tempEye[0];
+					eye[1] = tempEye[1];
+					eye[2] = tempEye[2];
 
 				}
-				eye[0] = tempEye[0];
-				eye[1] = tempEye[1];
-				eye[2] = tempEye[2];
+				if (cumEyeXAngle > 90 && cumEyeXAngle < 270) {
+					Utility::rotateAroundXaxis(eye, -eyeXAngle, tempEye);
+					eye[0] = tempEye[0];
+					eye[1] = tempEye[1];
+					eye[2] = tempEye[2];
+				}
 
 				if (cumEyeXAngle == 360) {
 					cumEyeXAngle -= 360;
 				}
+				break;
 
+			case 'B':
+				Model::isFired = !Model::isFired;
 				break;
 			}
+			
 
 			if (Controls::isIndependentControls) {
 				Controls::independentControls(wParam);
@@ -234,13 +251,23 @@ void display()
 	glScalef(0.8, 0.8, 0.8);
 
 
+
 	glPushMatrix();
 	{
 		gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
 		glRotatef(camRotation[0], 1, 0, 0);
 		glRotatef(camRotation[1], 0, 1, 0);
 		glRotatef(camRotation[2], 0, 0, 1);
-		Model::Pathfinder();
+		
+
+		glPushMatrix();
+		{
+			Animation::shootBullet();
+			Model::bullet();
+			Model::r99();
+		}
+		glPopMatrix();
+
 	}
 	glPopMatrix();
 

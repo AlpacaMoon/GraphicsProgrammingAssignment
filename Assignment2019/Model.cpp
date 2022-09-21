@@ -29,10 +29,10 @@ GLUquadricObj* hipBallObj;
 GLUquadricObj* armUpperObj, * armLowerObj, * shoulderObj, * fingerObj;;
 GLUquadricObj* zipLineTubeObj, * zipLineBackpackObj;
 
-GLUquadricObj* barrelObj;
+GLUquadricObj* weaponObj;
 
 // Animation variables / Model transformation variables
-float Model::bodyPos[3] = {0, 0, 0};
+float Model::bodyPos[3] = { 0, 0, 0 };
 
 float Model::headRot[3] = { 0, 0, 0 };
 
@@ -94,6 +94,10 @@ float Model::closedFingerRot[5][3] = {
 	{80, 80, 80},
 	{80, 80, 80}
 };
+
+float Model::bulletPos[3] = { 0,0,0 };
+boolean Model::isFired = false;
+//float Model::bulletPos[3] = { LArmRot[2][0], LArmRot[2][1], LArmRot[2][2] };
 
 void Model::Pathfinder() {
 	glPushMatrix();
@@ -2491,8 +2495,8 @@ void Model::zipLineBackTube() {
 // Weapon Models
 void Model::r99() {
 
-	if (barrelObj == NULL) {
-		barrelObj = gluNewQuadric();
+	if (weaponObj == NULL) {
+		weaponObj = gluNewQuadric();
 	}
 
 	float centre1[3] = { 0,0,0 };
@@ -2667,8 +2671,8 @@ void Model::r99() {
 			glColor3f(0, 0, 1);
 			glTranslatef(0, 0, -0.1f);
 			glRotatef(90, 0, 0, 1);
-			gluCylinder(barrelObj, 0.02f, 0.02f, 0.1f, 20, 20);
-			gluPartialDisk(barrelObj, 0, 0.02f, 20, 20, 0, 360);
+			gluCylinder(weaponObj, 0.02f, 0.02f, 0.1f, 20, 20);
+			gluPartialDisk(weaponObj, 0, 0.02f, 20, 20, 0, 360);
 		}
 		glPopMatrix();
 
@@ -2678,8 +2682,8 @@ void Model::r99() {
 			glColor3f(1, 0.5, 0);
 			glTranslatef(0, -0.075f, -0.15f);
 			glRotatef(90, 0, 0, 1);
-			gluCylinder(barrelObj, 0.025f, 0.025f, 0.2f, 20, 20);
-			gluPartialDisk(barrelObj, 0, 0.025f, 20, 20, 0, 360);
+			gluCylinder(weaponObj, 0.025f, 0.025f, 0.2f, 20, 20);
+			gluPartialDisk(weaponObj, 0, 0.025f, 20, 20, 0, 360);
 		}
 		glPopMatrix();
 
@@ -2705,15 +2709,38 @@ void Model::r99() {
 		}
 		glPopMatrix();
 
+		glPushMatrix();
+		{
+			bullet();
+		}
+		glPopMatrix();
+
 
 	}
 	glPopMatrix();
 
 	barrelCoors.destroy();
+	barrelBack.destroy();
+	shoulderRest.destroy();
 	barrelSide.destroy();
 	barrelBottom.destroy();
 	barrelTop.destroy();
+	barrelTopBack.destroy();
 	handle1.destroy();
 	magazine.destroy();
 	handle2.destroy();
+}
+
+void Model::bullet() {
+	if (weaponObj == NULL) {
+		weaponObj = gluNewQuadric();
+	}
+	glColor3f(1, 0, 0);
+	glPushMatrix();
+	{
+		glTranslatef(bulletPos[0], bulletPos[1], bulletPos[2]);
+		gluSphere(weaponObj, 0.02f, 10, 10);
+	}
+	glPopMatrix();
+
 }

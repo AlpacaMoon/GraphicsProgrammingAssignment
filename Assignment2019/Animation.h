@@ -29,5 +29,8 @@ public:
 	static void clampLeftArm();
 	static void clampRightFingers();
 	static void clampLeftFingers();
+
+	//weapon
+	static void shootBullet();
 };
 

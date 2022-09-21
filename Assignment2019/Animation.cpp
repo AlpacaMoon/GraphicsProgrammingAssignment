@@ -38,15 +38,16 @@ void Animation::runAnimations() {
 
 	if (Animation::walkSteps != 0)
 		Animation::walk();
+
 }
 
 // WalkSteps values: 
-/*	
+/*
 *	0 - Finish walking / Stopped walking
 *	1 = Start walking loop
 *	2 - First step finished (Move right leg first)
 *	3 - Second step finished (Move left leg second)
-*	4 - Walking loop 
+*	4 - Walking loop
 *	5 - Stop walking loop
 */
 int Animation::walkSteps = 0;
@@ -329,5 +330,16 @@ void Animation::clampLeftFingers() {
 		for (int j = 0; j < 3; j++) {
 			Model::LFingerRot[i][j] = clampFloat(Model::LFingerRot[i][j], Model::openedFingerRot[i][j], Model::closedFingerRot[i][j]);
 		}
+	}
+}
+
+void Animation::shootBullet() {
+	if (Model::isFired && Model::bulletPos[0] > -2 && Model::bulletPos[1] > -2 && Model::bulletPos[2] > -2) {
+		Model::bulletPos[2] -= 0.001f;
+	}
+	else {
+		Model::bulletPos[0] = Model::LArmRot[2][0];
+		Model::bulletPos[1] = Model::LArmRot[2][1];
+		Model::bulletPos[2] = Model::LArmRot[2][2];
 	}
 }
