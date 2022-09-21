@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <gl/GL.h>
 #include <math.h>
+#include <ctime>
 
 #include "Utility.h"
 #include "CoordinateSet.h"
@@ -10,6 +11,7 @@
 #include "Color.h"
 #include "Controls.h"
 #include "Lightning.h"
+#include "Time.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 
@@ -122,7 +124,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				showGrid = !showGrid;
 				break;
 
-			case VK_NUMPAD0:
+			case VK_F3:
 				Controls::isIndependentControls = !Controls::isIndependentControls;
 				break;
 
@@ -156,13 +158,15 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				Controls::independentControls(wParam);
 			}
 			else {
-				Controls::presetAnimationControls(wParam);
+				Controls::presetAnimationKeyDown(wParam);
 			}
 		}
 		break;
 
 	case WM_KEYUP:
-
+		if (!Controls::isIndependentControls) {
+			Controls::presetAnimationKeyUp(wParam);
+		}
 	default:
 		break;
 	}
@@ -210,7 +214,8 @@ void display()
 	//	OpenGL drawing
 	//--------------------------------
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(1, 1, 1, 1);
+	//glClearColor(1, 1, 1, 1);
+	glClearColor(0.8, 0.8, 0.8, 1);
 
 	if (onLightning) {
 		//enable which type of light
@@ -318,6 +323,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 	while (true)
 	{
+		Time::currentTicks = clock();
+
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
@@ -329,6 +336,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 		display();
 
 		SwapBuffers(hdc);
+
+		Time::elapsedTicks = clock() - Time::currentTicks;
+		Time::elapsedSeconds = Time::toSeconds(Time::elapsedTicks);
 	}
 
 	UnregisterClass(WINDOW_TITLE, wc.hInstance);

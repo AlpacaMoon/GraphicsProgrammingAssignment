@@ -46,6 +46,7 @@ public:
 	static void r99();
 
 	// Variables to control animation / Model transformations
+	static float bodyPos[3];
 	static float headRot[3];
 	static float RLegUpperRot[3];
 	static float RLegHingeRot, RFeetRot;

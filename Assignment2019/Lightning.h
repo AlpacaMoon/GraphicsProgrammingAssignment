@@ -1,6 +1,9 @@
 class Lightning {
 #pragma once
 public: 
+
+	static void defaultMaterial();
+
 	static void blueMaterial();
 
 	static void yellowMaterial();
