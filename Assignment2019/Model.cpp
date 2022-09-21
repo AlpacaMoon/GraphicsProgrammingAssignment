@@ -438,7 +438,8 @@ void Model::Head() {
 					tempSet2.destroy();
 					tempSet2 = tempSet.copy();
 					tempSet2.translate(0, 0, eyeBallCircumExtrude);
-					Utility::connectTwoFaces(tempSet, tempSet2);
+					float center2[3] = {center[0], center[1], center[2] + eyeBallCircumExtrude / 2.0f};
+					Utility::connectTwoFaces(tempSet, center, tempSet2, center2);
 				}
 				glPopMatrix();
 
@@ -452,7 +453,8 @@ void Model::Head() {
 					tempSet2.destroy();
 					tempSet2 = tempSet.copy();
 					tempSet2.translate(0, 0, eyeBallCircumExtrude);
-					Utility::connectTwoFaces(tempSet, tempSet2);
+					float center2[3] = { center[0], center[1], center[2] + eyeBallCircumExtrude / 2.0f };
+					Utility::connectTwoFaces(tempSet, center, tempSet2, center2);
 				}
 				glPopMatrix();
 			}
@@ -553,32 +555,41 @@ void Model::Head() {
 				float center[3] = { 0, 0, 0 };
 
 				// Right ear drum
-				Texture::on();
-				Texture::use(Texture::_blue);
-				gluQuadricTexture(headObj, GL_TRUE);
 				glTranslatef(0, 0.02, -headWidthHalf - earExtrude);
-				gluDisk(headObj, 0, earRadius, earEdges, 4);
-				Texture::off();
+				CoordinateSet ear = Utility::circleCoords(center, earRadius, earEdges);
+				Utility::extrudePolygon(ear, center, zAxis, earExtrude, TextureMap::allBlue(), true, false);
 
-				// Right ear extrusion
-				tempSet.destroy();
-				tempSet = Utility::circleCoords(center, earRadius, earEdges);
-				tempSet2.destroy();
-				tempSet2 = tempSet.copy();
-				tempSet2.translate(0, 0, earExtrude);
-				Utility::connectTwoFaces(tempSet, tempSet2, Texture::_blue);
+				//Texture::on();
+				//Texture::use(Texture::_blue);
+				//gluQuadricTexture(headObj, GL_TRUE);
+				//glTranslatef(0, 0.02, -headWidthHalf - earExtrude);
+				//gluDisk(headObj, 0, earRadius, earEdges, 4);
+				//Texture::off();
 
-				// Left ear extrusion
+				//// Right ear extrusion
+				//tempSet.destroy();
+				//tempSet = Utility::circleCoords(center, earRadius, earEdges);
+				//tempSet2.destroy();
+				//tempSet2 = tempSet.copy();
+				//tempSet2.translate(0, 0, earExtrude);
+				//float center2[3] = {center[0], center[1], center[2] + earExtrude / 2.0f}; 
+				//Utility::connectTwoFaces(tempSet, center, tempSet2, center2, Texture::_blue);
+
 				glTranslatef(0, 0, headWidth + earExtrude);
-				Utility::connectTwoFaces(tempSet, tempSet2, Texture::_blue);
+				Utility::extrudePolygon(ear, center, zAxis, earExtrude, TextureMap::allBlue(), false, true);
 
-				// Left ear drum
-				glTranslatef(0, 0, earExtrude);
-				Texture::on();
-				Texture::use(Texture::_blue);
-				gluQuadricTexture(headObj, GL_TRUE);
-				gluDisk(headObj, 0, earRadius, earEdges, 4);
-				Texture::off();
+
+				//// Left ear extrusion
+				//glTranslatef(0, 0, headWidth + earExtrude);
+				//Utility::connectTwoFaces(tempSet, center, tempSet2, center2, Texture::_blue);
+
+				//// Left ear drum
+				//glTranslatef(0, 0, earExtrude);
+				//Texture::on();
+				//Texture::use(Texture::_blue);
+				//gluQuadricTexture(headObj, GL_TRUE);
+				//gluDisk(headObj, 0, earRadius, earEdges, 4);
+				//Texture::off();
 			}
 			glPopMatrix();
 		}
@@ -600,11 +611,11 @@ void Model::Head() {
 			upperNeck.rotate(headRot[0], headRot[1], headRot[2]);
 
 			// Compute lower neck (Stays still no matter the head rotation)
-			center[2] -= neckLength;
-			CoordinateSet lowerNeck = Utility::circleCoords(center, neckRadiusLower, neckEdges);
+			float center2[3] = {center[0], center[1], center[2] - neckLength / 2.0f};
+			CoordinateSet lowerNeck = Utility::circleCoords(center2, neckRadiusLower, neckEdges);
 			lowerNeck.rotate(-90, 0, 0);
 
-			Utility::connectTwoFaces(upperNeck, lowerNeck);
+			Utility::connectTwoFaces(upperNeck, center, lowerNeck, center2);
 
 			upperNeck.destroy();
 			lowerNeck.destroy();
@@ -781,8 +792,9 @@ void Model::Torso() {
 			back3.addCoordinate(-0.1, levels[2], halfTorsoWidth * radiuses[2]);
 			back3.addCoordinate(-0.35, levels[2], halfTorsoWidth * radiuses[2]);
 
-			Utility::connectTwoFaces(back1, back2, Texture::_blue);
-			Utility::connectTwoFaces(back2, back3, Texture::_blue);
+			float volumeCenter[3] = {-0.25, levels[2], 0};
+			Utility::connectTwoFaces(back1, volumeCenter, back2, volumeCenter, Texture::_blue);
+			Utility::connectTwoFaces(back2, volumeCenter, back3, volumeCenter, Texture::_blue);
 
 			back1.destroy();
 			back2.destroy();
@@ -2087,6 +2099,7 @@ void Model::Finger(float r1, float r2, float r3) {
 		seg.addCoordinate(segLength[0], -fingerWidth, 0);
 		seg.addCoordinate(segLength[0], 0, 0);
 		float segCenter[3] = { segLength[0] / 2.0f, -fingerWidth / 2.0f, 0 };
+		
 		Utility::extrudePolygon(seg, segCenter, zAxis, fingerThickness, TextureMap::allBlue());
 
 		// Finger deco

@@ -275,13 +275,22 @@ void display()
 
 		glScalef(0.8, 0.8, 0.8);
 
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		{
-			//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
-			Model::Pathfinder();
-		}
-		glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	{
+		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
+		Model::Pathfinder();
+		//CoordinateSet temp(10);
+		//temp.addCoordinate(-0.5, -0.5, -0.5);
+		//temp.addCoordinate(0.5, -0.5, -0.5);
+		//temp.addCoordinate(0.5, 0.5, -0.5);
+		//temp.addCoordinate(-0.5, 0.5, -0.5);
+		//float cent[3] = {0, 0, -0.5};
+		//float volC[3] = {0, 0, 0};
+		//float zAxis[3] = {0, 0, 1};
+		//Utility::extrudePolygon(temp, cent, zAxis, 1);
+	}
+	glPopMatrix();
 
 
 		// Gridlines
