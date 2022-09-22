@@ -54,6 +54,18 @@ float Model::LFeetRot = 0;
 float Model::hipRot[3] = { 0, 0, 0 };
 float Model::bodyRot[3] = { 0, 0, 0 };
 
+float Model::defaultBodyPos[3] = { 0, 0, 0 };
+float Model::defaultHeadRot[3] = { 0, 0, 0 };
+float Model::defaultRLegUpperRot[3] = { 0, 0, 0 };
+float Model::defaultRLegHingeRot = 0;
+float Model::defaultRFeetRot = 0;
+float Model::defaultLLegUpperRot[3] = { 0, 0, 0 };
+float Model::defaultLLegHingeRot = 0;
+float Model::defaultLFeetRot = 0;
+float Model::defaultHipRot[3] = { 0, 0, 0 };
+float Model::defaultBodyRot[3] = { 0, 0, 0 };
+
+
 float Model::RArmRot[3][3] = {
 	{20, -10, 15},
 	{0, 0, 90},

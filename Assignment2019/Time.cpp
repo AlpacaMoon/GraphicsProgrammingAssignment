@@ -27,3 +27,15 @@ void Time::setTime(clock_t ticks) {
 	startTime = clock();
 	endTime = startTime + ticks;
 }
+
+bool Time::hasPassedEndTime() {
+	return clock() >= endTime;
+}
+
+float Time::timePassedInSeconds() {
+	return toSeconds(clock() - startTime);
+}
+
+float Time::timePassedInRatio() {
+	return (clock() - startTime) / (endTime - startTime);
+}

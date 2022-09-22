@@ -67,6 +67,16 @@ public:
 	static float closedFingerRot[5][3];
 	static float defaultRArmRot[3][3];
 	static float defaultLArmRot[3][3];
+	static float defaultBodyPos[3];
+	static float defaultHeadRot[3];
+	static float defaultRLegUpperRot[3];
+	static float defaultRLegHingeRot;
+	static float defaultRFeetRot;
+	static float defaultLLegUpperRot[3];
+	static float defaultLLegHingeRot;
+	static float defaultLFeetRot;
+	static float defaultHipRot[3];
+	static float defaultBodyRot[3];
 
 	// Variables to control textures
 	static GLuint tvTexture;

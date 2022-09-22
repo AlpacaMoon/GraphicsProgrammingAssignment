@@ -57,7 +57,7 @@ void Texture::setupTextures() {
 	for (int i = 0; i < 11; i++) {
 		initializeTexture(tvTextureFiles[i], &_tvTextures[i]);
 	}
-	Animation::currentTVscreen = 0;
+	Animation::currentTVscreen = 5;
 
 	// Skybox
 	initializeTexture("Textures/skybox.bmp", &_skybox);

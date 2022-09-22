@@ -113,10 +113,10 @@ void Controls::independentControls(WPARAM wParam) {
 			Model::RLegUpperRot[2] -= rotateSpeed;
 			break;
 		case 'A':
-			Model::RLegUpperRot[1] -= rotateSpeed;
+			Model::RLegUpperRot[1] += rotateSpeed;
 			break;
 		case 'D':
-			Model::RLegUpperRot[1] += rotateSpeed;
+			Model::RLegUpperRot[1] -= rotateSpeed;
 			break;
 		case 'Q':
 			Model::RLegUpperRot[0] += rotateSpeed;
@@ -393,7 +393,14 @@ void Controls::presetAnimationKeyDown(WPARAM wParam) {
 	case 'D':
 		pressingWalkKeys[2] = true;
 		break;
-		// Walking
+
+	case VK_SPACE:
+		// Initiate jump if currently is not in the middle of jumping
+		if (!Animation::isJumping()) {
+			Animation::cancelAllAnimations();
+			Animation::startJumping();
+		}
+		break;
 
 	case VK_OEM_PERIOD:
 		Animation::stopWalking();
@@ -404,12 +411,7 @@ void Controls::presetAnimationKeyDown(WPARAM wParam) {
 		break;
 	}
 
-	if (isPressingWalk()) {
-		if (Animation::walkSteps == 0)
-			Animation::startWalking();
-		else
-			Animation::rotateWalk(wParam);
-	}
+
 }
 
 void Controls::presetAnimationKeyUp(WPARAM wParam) {
@@ -427,7 +429,8 @@ void Controls::presetAnimationKeyUp(WPARAM wParam) {
 	default:
 		break;
 	}
-	if (!isPressingWalk()) {
+
+	if (!Animation::isJumping() && !isPressingWalk()) {
 		Animation::stopWalking();
 	}
 }

@@ -82,7 +82,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				camRotation[2] -= camRotateSpeed;
 				inputting = true;
 				break;
-			case VK_SPACE:
+			case VK_BACK:
 				camRotation[0] = 0;
 				camRotation[1] = 0;
 				camRotation[2] = 0;
@@ -226,6 +226,7 @@ void display()
 	glLoadIdentity();
 	gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
 
+
 	glRotatef(camRotation[0], 1, 0, 0);
 	glRotatef(camRotation[1], 0, 1, 0);
 	glRotatef(camRotation[2], 0, 0, 1);
@@ -261,8 +262,8 @@ void setupCamera()
 	//#pragma region View to Project
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//glOrtho(-1, 1, -1, 1, -2, 100);
-	gluPerspective(35, 1, 1, 100);
+	glOrtho(-1.5, 1.5, -1.5, 1.5, -2, 100);
+	//gluPerspective(35, 1, 1, 100);
 	//glOrtho(-2, 2, -2, 2, 1, 10);
 	//glFrustum(-1, 1, -1, 1, 1, 10);
 

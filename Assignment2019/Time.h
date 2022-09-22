@@ -20,4 +20,7 @@ public:
 	void setTime(clock_t ticks);
 	clock_t startTime;
 	clock_t endTime;
+	bool hasPassedEndTime();
+	float timePassedInSeconds();
+	float timePassedInRatio();
 };

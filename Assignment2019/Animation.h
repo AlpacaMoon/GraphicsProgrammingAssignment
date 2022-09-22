@@ -7,17 +7,32 @@ class Animation
 public:
 
 	static void runAnimations();
+	static int playingCutscene;
+
+	static void cancelAllAnimations();
 
 	static void hardReset();
 	static bool softReset(float speed);
 	static bool softResetClamping(float* target, float min, float frustum, float max, float speed);
 	
-
-	static int walkSteps;
+	// Walking Animation
+	static int walkSteps, walkDir;
+	static float walkSpeed, walkBodyShifting;
 	static void startWalking();
 	static void stopWalking();
-	static void rotateWalk(WPARAM key);
+	static void rotateWalk();
 	static void walk();
+
+	// Jumping Animation
+	static int jumpSteps;
+	static float jumpSpeed, movingBodyPartSpeed, jumpHeight;
+	static bool isJumping();
+	static void startJumping();
+	static void jump();
+
+
+	// Cutscene
+	// 1) Zipline away
 
 
 	// General Animations
