@@ -20,10 +20,10 @@ void Texture::use(GLuint texture) {
 }
 
 void Texture::on() {
-	//glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
 }
 void Texture::off() {
-	//glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_2D);
 }
 
 // Initialize all textures at once
