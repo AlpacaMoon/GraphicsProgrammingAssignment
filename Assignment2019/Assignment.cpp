@@ -217,6 +217,7 @@ void display()
 	//glClearColor(1, 1, 1, 1);
 	glClearColor(0.8, 0.8, 0.8, 1);
 
+	// Lighting switch
 	if (onLightning) {
 		//enable which type of light
 		glEnable(GL_LIGHT0);
@@ -229,9 +230,15 @@ void display()
 		//enable lighting
 		glDisable(GL_LIGHTING);
 	}
+
+	// Real thing
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glScalef(0.8, 0.8, 0.8);
+
+	glRotatef(camRotation[0], 1, 0, 0);
+	glRotatef(camRotation[1], 0, 1, 0);
+	glRotatef(camRotation[2], 0, 0, 1);
 
 	Animation::runAnimations();
 	
