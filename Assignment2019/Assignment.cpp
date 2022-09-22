@@ -23,7 +23,7 @@ const int X_AXIS[3] = { 1, 0, 0 };
 const int Y_AXIS[3] = { 0, 1, 0 };
 const int Z_AXIS[3] = { 0, 0, 1 };
 
-float camRotation[3] = {0,0,0};
+float camRotation[3] = { 0,0,0 };
 float camRotateSpeed = 5.0f;
 
 //lighting test
@@ -54,8 +54,8 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		case MK_RBUTTON:
 			int xPos = GET_X_LPARAM(lParam);
 			int yPos = GET_Y_LPARAM(lParam);
-			camRotation[1] += (xPos - lastX)/2;
-			camRotation[0] += (yPos - lastY)/2;
+			camRotation[1] += (xPos - lastX) / 2;
+			camRotation[0] += (yPos - lastY) / 2;
 			lastX = xPos;
 			lastY = yPos;
 			break;
@@ -72,11 +72,17 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 
 	case WM_MOUSEWHEEL:
-		if (eye[2] < 20 && eye[2] > -20) {
+		if (eye[2] <= 20 && eye[2] >= -20) {
 			eye[2] += GET_WHEEL_DELTA_WPARAM(wParam) / 120.0f;
 		}
-		else {
+		else if (eye[2] == 0) {
 			eye[2] = 0.01f;
+		}
+		else if (eye[2] > 20) {
+			eye[2] = 20.0f;
+		}
+		else if (eye[2] < -20) {
+			eye[2] = -20.0f;
 		}
 		break;
 
