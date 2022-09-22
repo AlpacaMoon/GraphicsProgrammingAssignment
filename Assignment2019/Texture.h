@@ -11,6 +11,7 @@ public:
 	static GLuint _gunYellow;
 	static GLuint _gunBlack;
 	static GLuint _gunGrey;
+	static GLuint _skybox;
 	
 	// TV screen textures
 	static GLuint _tvTextures[11];

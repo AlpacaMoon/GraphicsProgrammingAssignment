@@ -3,9 +3,14 @@
 #include <gl/GL.h>
 
 //Lightning variables 
+
+bool Lightning::onLightning;
+
 //blue
-GLfloat blueMaterialAmbient[4] = { (120 / 255.0), (142 / 255.0), (163 / 255.0),1 };
-GLfloat blueMaterialDiffuse[4] = { (120 / 255.0), (142 / 255.0), (163 / 255.0),1 };
+//GLfloat blueMaterialAmbient[4] = { (120 / 255.0), (142 / 255.0), (163 / 255.0),1 };
+//GLfloat blueMaterialDiffuse[4] = { (120 / 255.0), (142 / 255.0), (163 / 255.0),1 };
+GLfloat blueMaterialAmbient[4] = { (152 / 255.0), (168 / 255.0), (184 / 255.0),1 };
+GLfloat blueMaterialDiffuse[4] = { (152 / 255.0), (168 / 255.0), (184 / 255.0),1 };
 //yellow
 GLfloat yellowMaterialAmbient[4] = { (254 / 255.0), (217 / 255.0), (79 / 255.0),1 };
 GLfloat yellowMaterialDiffuse[4] = { (254 / 255.0), (217 / 255.0), (79 / 255.0),1 };
@@ -31,6 +36,21 @@ GLfloat blackMaterialDiffuse[4] = { 0,0,0,1 };
 // Default
 GLfloat defaultMatAmbient[4] = { 0.2, 0.2, 0.2, 1 };
 GLfloat defaultMatDiffuse[4] = { 0.8, 0.8, 0.8, 1 };
+
+void Lightning::lightningSwitch() {
+	if (onLightning) {
+		//enable which type of light
+		glEnable(GL_LIGHT0);
+		//enable lighting
+		glEnable(GL_LIGHTING);
+	}
+	else {
+		//enable which type of light
+		glDisable(GL_LIGHT0);
+		//enable lighting
+		glDisable(GL_LIGHTING);
+	}
+}
 
 void Lightning::defaultMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, defaultMatAmbient);

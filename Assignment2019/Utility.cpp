@@ -27,66 +27,6 @@ float Utility::radToDeg(float rad) {
 	return rad * 180.0f / PI;
 }
 
-void Utility::drawGrids(float interval) {
-	float limit = 2.0f;
-	for (float i = 0.0f; i < limit; i += interval) {
-		// Draw Column lines
-		if (i != 0) {
-			glLineWidth(1);
-			glBegin(GL_LINES);
-			glVertex3f(i, -limit, 0);
-			glVertex3f(i, limit, 0);
-			glVertex3f(-i, -limit, 0);
-			glVertex3f(-i, limit, 0);
-
-			glVertex3f(-limit, i, 0);
-			glVertex3f(limit, i, 0);
-			glVertex3f(-limit, -i, 0);
-			glVertex3f(limit, -i, 0);
-
-			glVertex3f(0, -limit, i);
-			glVertex3f(0, limit, i);
-			glVertex3f(0, -limit, -i);
-			glVertex3f(0, limit, -i);
-
-			glVertex3f(0, i, -limit);
-			glVertex3f(0, i, limit);
-			glVertex3f(0, -i, -limit);
-			glVertex3f(0, -i, limit);
-
-			glVertex3f(i, 0, -limit);
-			glVertex3f(i, 0, limit);
-			glVertex3f(-i, 0, -limit);
-			glVertex3f(-i, 0, limit);
-
-			glVertex3f(-limit, 0, i);
-			glVertex3f(limit, 0, i);
-			glVertex3f(-limit, 0, -i);
-			glVertex3f(limit, 0, -i);
-			glEnd();
-		}
-		else {
-			glLineWidth(3);
-			glBegin(GL_LINES);
-			glVertex3f(i, -limit, 0);
-			glVertex3f(i, limit, 0);
-			glVertex3f(-limit, i, 0);
-			glVertex3f(limit, i, 0);
-
-			glVertex3f(0, -limit, i);
-			glVertex3f(0, limit, i);
-			glVertex3f(0, i, -limit);
-			glVertex3f(0, i, limit);
-
-			glVertex3f(i, 0, -limit);
-			glVertex3f(i, 0, limit);
-			glVertex3f(-limit, 0, i);
-			glVertex3f(limit, 0, i);
-			glEnd();
-		}
-	}
-}
-
 void Utility::drawLine(CoordinateSet coords) {
 	glBegin(GL_LINE_STRIP);
 	for (int i = 0; i < coords.numberOfCoords; i++)
