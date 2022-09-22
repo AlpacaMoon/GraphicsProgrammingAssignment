@@ -230,11 +230,11 @@ void display()
 		glDisable(GL_LIGHTING);
 	}
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	glScalef(0.8, 0.8, 0.8);
 
 	Animation::runAnimations();
 	
-	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	{
 		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
@@ -242,30 +242,22 @@ void display()
 	}
 	glPopMatrix();
 
-		// Gridlines
-		if (showGrid) {
-			glColor3f(0.9, 0.9, 0.9);
-			Utility::drawGrids();
-		}
-		glPopMatrix();
-		//--------------------------------
-		//	End of OpenGL drawing
-		//--------------------------------
-	}
-}
+	// Gridlines
+	if (showGrid) {
 		glColor3f(0.9, 0.9, 0.9);
 		Utility::drawGrids();
 	}
-
 	//--------------------------------
 	//	End of OpenGL drawing
 	//--------------------------------
 }
+
 //--------------------------------------------------------------------
 void setupEnvironmentLightning() {
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
 	glLightfv(GL_LIGHT0, GL_POSITION, positionLight);
+}
 
 void setupCamera()
 {

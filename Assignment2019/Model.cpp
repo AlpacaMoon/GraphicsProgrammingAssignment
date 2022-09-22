@@ -22,6 +22,9 @@ float armWidth = 0.15f;
 float handThickness = 0.075f;
 float buttWidth = 0.1f;
 
+
+GLuint Model::tvTexture;
+
 // GLUquadricObj variables
 GLUquadricObj* headObj;
 GLUquadricObj* torsoObj, * waistObj, * buttockJetObj;
@@ -94,13 +97,6 @@ float Model::closedFingerRot[5][3] = {
 	{80, 80, 80},
 	{80, 80, 80}
 };
-
-float Model::bulletPos[3] = { 0,0,0 };
-boolean Model::isFired = false;
-//float Model::bulletPos[3] = { LArmRot[2][0], LArmRot[2][1], LArmRot[2][2] };
-
-
-GLuint Model::tvTexture;
 
 void Model::Pathfinder() {
 	glPushMatrix();
