@@ -10,11 +10,12 @@ void Animation::hardReset() {
 		Model::hipRot[i] = 0;
 		Model::bodyRot[i] = 0;
 		for (int j = 0; j < 3; j++) {
-			Model::RArmRot[i][j] = 0;
-			Model::LArmRot[i][j] = 0;
+			Model::RArmRot[i][j] = Model::defaultRArmRot[i][j];
+			Model::LArmRot[i][j] = Model::defaultLArmRot[i][j];
 		}
 		for (int j = 0; j < 5; j++) {
 			Model::RFingerRot[j][i] = Model::openedFingerRot[j][i];
+			Model::LFingerRot[j][i] = Model::openedFingerRot[j][i];
 		}
 	}
 
@@ -23,14 +24,6 @@ void Animation::hardReset() {
 
 	Model::LLegHingeRot = 0;
 	Model::LFeetRot = 0;
-
-	Model::RArmRot[0][0] = 10;
-	Model::RArmRot[0][1] = -15;
-	Model::RArmRot[1][2] = 15;
-
-	Model::LArmRot[0][0] = -10;
-	Model::LArmRot[0][1] = 15;
-	Model::LArmRot[1][2] = 15;
 }
 
 bool Animation::softResetClamping(float* target, float min, float frustum, float max, float speed) {
@@ -378,4 +371,22 @@ void Animation::shootBullet() {
 		Model::bulletPos[1] = Model::LArmRot[2][1];
 		Model::bulletPos[2] = Model::LArmRot[2][2];
 	}
+}
+
+/*	Texture files
+	1)	"Textures/tvAngry.bmp",
+	2)	"Textures/tvBlank.bmp",
+	3)	"Textures/tvDead.bmp",
+	4)	"Textures/tvExclamation.bmp",
+	5)	"Textures/tvGlitched.bmp",
+	6)	"Textures/tvHappy.bmp",
+	7)	"Textures/tvKO.bmp",
+	8)	"Textures/tvLove.bmp",
+	9)	"Textures/tvQuestion-mark.bmp",
+	10)	"Textures/tvSad.bmp",
+	11)	"Textures/tvThumbs-Up.bmp",
+*/
+int Animation::currentTVscreen = 0;
+void Animation::switchTVscreen() {
+	currentTVscreen = (currentTVscreen + 1) % 11;
 }

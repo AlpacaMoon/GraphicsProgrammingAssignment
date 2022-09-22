@@ -82,10 +82,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Textures\brick.bmp">
+    <Image Include="Textures\blue.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Textures\blue.bmp">
+    <Image Include="Textures\brick.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

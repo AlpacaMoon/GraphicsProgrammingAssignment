@@ -150,13 +150,9 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				if (cumEyeXAngle == 360) {
 					cumEyeXAngle -= 360;
 				}
-				break;
 
-			case 'B':
-				Model::isFired = !Model::isFired;
 				break;
 			}
-
 
 			if (Controls::isIndependentControls) {
 				Controls::independentControls(wParam);
@@ -221,6 +217,7 @@ void display()
 	//glClearColor(1, 1, 1, 1);
 	glClearColor(0.8, 0.8, 0.8, 1);
 
+	// Lighting switch
 	if (onLightning) {
 		//enable which type of light
 		glEnable(GL_LIGHT0);
@@ -233,47 +230,35 @@ void display()
 		//enable lighting
 		glDisable(GL_LIGHTING);
 	}
+
+	// Real thing
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glScalef(0.8, 0.8, 0.8);
-
 
 	glRotatef(camRotation[0], 1, 0, 0);
 	glRotatef(camRotation[1], 0, 1, 0);
 	glRotatef(camRotation[2], 0, 0, 1);
 
-	glScalef(0.8, 0.8, 0.8);
-
-	glMatrixMode(GL_MODELVIEW);
+	Animation::runAnimations();
+	
 	glPushMatrix();
 	{
-		gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
-		//Animation::shootBullet();
-		//Model::r99();
+		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
 		Model::Pathfinder();
-		//CoordinateSet temp(10);
-		//temp.addCoordinate(-0.5, -0.5, -0.5);
-		//temp.addCoordinate(0.5, -0.5, -0.5);
-		//temp.addCoordinate(0.5, 0.5, -0.5);
-		//temp.addCoordinate(-0.5, 0.5, -0.5);
-		//float cent[3] = {0, 0, -0.5};
-		//float volC[3] = {0, 0, 0};
-		//float zAxis[3] = {0, 0, 1};
-		//Utility::extrudePolygon(temp, cent, zAxis, 1);
 	}
 	glPopMatrix();
-
 
 	// Gridlines
 	if (showGrid) {
 		glColor3f(0.9, 0.9, 0.9);
 		Utility::drawGrids();
 	}
-
 	//--------------------------------
 	//	End of OpenGL drawing
 	//--------------------------------
 }
+
 //--------------------------------------------------------------------
 void setupEnvironmentLightning() {
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
@@ -287,9 +272,9 @@ void setupCamera()
 	glMatrixMode(GL_PROJECTION);
 	//glOrtho(-2, 2, -2, 2, 1, 10);
 	//glFrustum(-1, 1, -1, 1, 1, 10);
-	
+
 	//gluPerspective(60, 1, 1, 10);
-	
+
 	//# pragma endregion
 }
 

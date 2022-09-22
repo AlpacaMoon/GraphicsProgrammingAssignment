@@ -37,8 +37,8 @@ public:
 	static void drawHemisphere(float radius, int slices, int stacks);
 	static void drawHemisphere(float radius, int slices, int stacks, GLuint texture);
 
-	static void connectTwoFaces(CoordinateSet f1, float centerF1[3], CoordinateSet f2, float centerF2[3]);
-	static void connectTwoFaces(CoordinateSet f1, float centerF1[3], CoordinateSet f2, float centerF2[3], GLuint texture);
+	static void connectTwoFaces(CoordinateSet f1, CoordinateSet f2, float volumeCenter[3]);
+	static void connectTwoFaces(CoordinateSet f1, CoordinateSet f2, GLuint texture, float volumeCenter[3]);
 
 	static void rotateAroundXaxis(float vector[3], float angle, float output[3]);
 	static void rotateAroundYaxis(float vector[3], float angle, float output[3]);

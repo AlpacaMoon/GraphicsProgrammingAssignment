@@ -9,17 +9,23 @@
 #include "Lightning.h"
 #include "Texture.h"
 #include "TextureMap.h"
+#include "Animation.h"
 
+// Three main axes
 float xAxis[3] = { 1, 0, 0 };
 float yAxis[3] = { 0, 1, 0 };
 float zAxis[3] = { 0, 0, 1 };
 
+// General values for model
 float torsoWidth = 0.5f;
 float waistWidth = 0.2f;
 float legWidth = 0.125f;
 float armWidth = 0.15f;
 float handThickness = 0.075f;
 float buttWidth = 0.1f;
+
+// Texture Variables
+GLuint Model::tvTexture;
 
 // GLUquadricObj variables
 GLUquadricObj* headObj;
@@ -34,22 +40,18 @@ GLUquadricObj* zipLineTubeObj, * zipLineBackpackObj;
 GLUquadricObj* weaponObj;
 boolean Model::isFired = false;
 float Model::bulletPos[3] = { 0.0f,0.0f,0.0f };
+GLUquadricObj* barrelObj;
 
 // Animation variables / Model transformation variables
-float Model::bodyPos[3] = {0, 0, 0};
-
+float Model::bodyPos[3] = { 0, 0, 0 };
 float Model::headRot[3] = { 0, 0, 0 };
-
 float Model::RLegUpperRot[3] = { 0, 0, 0 };
 float Model::RLegHingeRot = 0;
 float Model::RFeetRot = 0;
-
 float Model::LLegUpperRot[3] = { 0, 0, 0 };
 float Model::LLegHingeRot = 0;
 float Model::LFeetRot = 0;
-
 float Model::hipRot[3] = { 0, 0, 0 };
-
 float Model::bodyRot[3] = { 0, 0, 0 };
 
 float Model::RArmRot[3][3] = {
@@ -58,6 +60,16 @@ float Model::RArmRot[3][3] = {
 	{0, 0, 0}
 };
 float Model::LArmRot[3][3] = {
+	{-20, 10, 15},
+	{0, 0, 90},
+	{0, 0, 0}
+};
+float Model::defaultRArmRot[3][3] = {
+	{20, -10, 15},
+	{0, 0, 90},
+	{0, 0, 0}
+};
+float Model::defaultLArmRot[3][3] = {
 	{-20, 10, 15},
 	{0, 0, 90},
 	{0, 0, 0}
@@ -360,7 +372,6 @@ void Model::LeftArm() {
 }
 
 
-
 // Generic Models (Basic unit models)
 
 void Model::Head() {
@@ -436,8 +447,8 @@ void Model::Head() {
 					tempSet2.destroy();
 					tempSet2 = tempSet.copy();
 					tempSet2.translate(0, 0, eyeBallCircumExtrude);
-					float center2[3] = {center[0], center[1], center[2] + eyeBallCircumExtrude / 2.0f};
-					Utility::connectTwoFaces(tempSet, center, tempSet2, center2);
+					float volumeCenter[3] = { center[0], center[1], center[2] + eyeBallCircumExtrude / 2.0f };
+					Utility::connectTwoFaces(tempSet, tempSet2, volumeCenter);
 				}
 				glPopMatrix();
 
@@ -451,8 +462,8 @@ void Model::Head() {
 					tempSet2.destroy();
 					tempSet2 = tempSet.copy();
 					tempSet2.translate(0, 0, eyeBallCircumExtrude);
-					float center2[3] = { center[0], center[1], center[2] + eyeBallCircumExtrude / 2.0f };
-					Utility::connectTwoFaces(tempSet, center, tempSet2, center2);
+					float volumeCenter[3] = { center[0], center[1], center[2] + eyeBallCircumExtrude / 2.0f };
+					Utility::connectTwoFaces(tempSet, tempSet2, volumeCenter);
 				}
 				glPopMatrix();
 			}
@@ -613,7 +624,9 @@ void Model::Head() {
 			CoordinateSet lowerNeck = Utility::circleCoords(center2, neckRadiusLower, neckEdges);
 			lowerNeck.rotate(-90, 0, 0);
 
-			Utility::connectTwoFaces(upperNeck, center, lowerNeck, center2);
+			float volumeCenter[3] = {0, -headHeightHalf - neckLength / 2.0f, 0};
+
+			Utility::connectTwoFaces(upperNeck, lowerNeck, center2);
 
 			upperNeck.destroy();
 			lowerNeck.destroy();
@@ -791,8 +804,8 @@ void Model::Torso() {
 			back3.addCoordinate(-0.35, levels[2], halfTorsoWidth * radiuses[2]);
 
 			float volumeCenter[3] = {-0.25, levels[2], 0};
-			Utility::connectTwoFaces(back1, volumeCenter, back2, volumeCenter, Texture::_blue);
-			Utility::connectTwoFaces(back2, volumeCenter, back3, volumeCenter, Texture::_blue);
+			Utility::connectTwoFaces(back1, back2, Texture::_blue, volumeCenter);
+			Utility::connectTwoFaces(back2, back3, Texture::_blue, volumeCenter);
 
 			back1.destroy();
 			back2.destroy();
@@ -864,18 +877,28 @@ void Model::Torso() {
 		// Television Screen
 		glPushMatrix();
 		{
-			Color::cyan();
-			glTranslatef(0, -0.025, 0);
+			//Color::cyan();
+			Color::white();
+			glTranslatef(0, -0.01, 0);
 			// 0.68027 : 0.45 = The tv texture ratio
 			float tvWidthHalf = (0.68027f) / 2.0f;
-			float tvHeight = 0.45;
+			float tvHeight = 0.45 * 1.1;
 			float x = 0.8151f;
+			float volumeCenter[3] = {0, 0, 0};
+
+			Texture::on();
+			Texture::use(Texture::_tvTextures[Animation::currentTVscreen]);
 			glBegin(GL_QUADS);
+			glTexCoord2f(0, 1);
 			glVertex3f(x, 0, -tvWidthHalf);
+			glTexCoord2f(0, 0);
 			glVertex3f(x, -tvHeight, -tvWidthHalf);
+			glTexCoord2f(1, 0);
 			glVertex3f(x, -tvHeight, tvWidthHalf);
+			glTexCoord2f(1, 1);
 			glVertex3f(x, 0, tvWidthHalf);
 			glEnd();
+			Texture::off();
 		}
 		glPopMatrix();
 
@@ -2556,8 +2579,8 @@ void Model::zipLineBackTube() {
 // Weapon Models
 void Model::r99() {
 
-	if (weaponObj == NULL) {
-		weaponObj = gluNewQuadric();
+	if (barrelObj == NULL) {
+		barrelObj = gluNewQuadric();
 	}
 
 	float centre1[3] = { 0,0,0 };
@@ -2645,7 +2668,7 @@ void Model::r99() {
 	CoordinateSet sight(10);
 	sight.addCoordinate(-0.05, -0.02, 0);
 	sight.addCoordinate(0.05, -0.02, 0);
-	sight.addCoordinate(0.03, 0.02, 0);
+	sight.addCoordinate(0.03, 0.04, 0);
 	sight.addCoordinate(0, 0, 0);
 	sight.addCoordinate(-0.04, 0, 0);
 	glPushMatrix();
@@ -2738,8 +2761,8 @@ void Model::r99() {
 			glColor3f(0, 0, 1);
 			glTranslatef(0, 0, -0.1f);
 			glRotatef(90, 0, 0, 1);
-			gluCylinder(weaponObj, 0.02f, 0.02f, 0.1f, 20, 20);
-			gluPartialDisk(weaponObj, 0, 0.02f, 20, 20, 0, 360);
+			gluCylinder(barrelObj, 0.02f, 0.02f, 0.1f, 20, 20);
+			gluPartialDisk(barrelObj, 0, 0.02f, 20, 20, 0, 360);
 		}
 		glPopMatrix();
 
@@ -2749,8 +2772,8 @@ void Model::r99() {
 			glColor3f(1, 0.5, 0);
 			glTranslatef(0, -0.075f, -0.15f);
 			glRotatef(90, 0, 0, 1);
-			gluCylinder(weaponObj, 0.025f, 0.025f, 0.2f, 20, 20);
-			gluPartialDisk(weaponObj, 0, 0.025f, 20, 20, 0, 360);
+			gluCylinder(barrelObj, 0.025f, 0.025f, 0.2f, 20, 20);
+			gluPartialDisk(barrelObj, 0, 0.025f, 20, 20, 0, 360);
 		}
 		glPopMatrix();
 
@@ -2778,25 +2801,18 @@ void Model::r99() {
 
 		glPushMatrix();
 		{
-			Utility::extrudePolygon(sight, centre1, zAxis, 0.2, true, true);
-		}
-		glPopMatrix();
-
-		glPushMatrix();
-		{
 			bullet();
 		}
 		glPopMatrix();
+
+
 	}
 	glPopMatrix();
 
 	barrelCoors.destroy();
-	barrelBack.destroy();
-	shoulderRest.destroy();
 	barrelSide.destroy();
 	barrelBottom.destroy();
 	barrelTop.destroy();
-	barrelTopBack.destroy();
 	handle1.destroy();
 	magazine.destroy();
 	handle2.destroy();

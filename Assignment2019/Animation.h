@@ -42,5 +42,9 @@ public:
 
 	//weapon
 	static  void shootBullet();
+
+	// TV screen
+	static int currentTVscreen;
+	static void switchTVscreen();
 };
 

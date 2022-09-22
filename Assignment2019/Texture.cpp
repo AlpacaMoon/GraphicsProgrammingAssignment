@@ -2,6 +2,8 @@
 #include <Windows.h>
 #include <gl/GL.h>
 #include <gl/GLU.h>
+#include "Model.h"
+#include "Animation.h"
 
 // Static variables
 int Texture::magFilter = GL_LINEAR;
@@ -12,7 +14,12 @@ int Texture::wrapT = GL_REPEAT;
 // Static textures
 GLuint Texture::_blue;
 GLuint Texture::_blue2;
-GLuint Texture::_brick;
+GLuint Texture::_gunYellow;
+GLuint Texture::_gunBlack;
+GLuint Texture::_gunGrey;
+
+// TV Screen textures
+GLuint Texture::_tvTextures[11];
 
 // Change current using texture to the given texture
 void Texture::use(GLuint texture) {
@@ -22,14 +29,34 @@ void Texture::use(GLuint texture) {
 void Texture::on() {
 	glEnable(GL_TEXTURE_2D);
 }
+
 void Texture::off() {
 	glDisable(GL_TEXTURE_2D);
 }
 
 // Initialize all textures at once
 void Texture::setupTextures() {
+	// General Pathfinder Textures
 	initializeTexture("Textures/blue.bmp", &_blue);
-	initializeTexture("Textures/brick.bmp", &_brick);
+	
+	// TV Textures
+	LPCSTR tvTextureFiles[11] = {
+		"Textures/tvAngry.bmp",
+		"Textures/tvBlank.bmp",
+		"Textures/tvDead.bmp",
+		"Textures/tvExclamation.bmp",
+		"Textures/tvGlitched.bmp",
+		"Textures/tvHappy.bmp",
+		"Textures/tvKO.bmp",
+		"Textures/tvLove.bmp",
+		"Textures/tvQuestion-mark.bmp",
+		"Textures/tvSad.bmp",
+		"Textures/tvThumbs-Up.bmp",
+	};
+	for (int i = 0; i < 11; i++) {
+		initializeTexture(tvTextureFiles[i], &_tvTextures[i]);
+	}
+	Animation::currentTVscreen = 0;
 }
 
 // Initialize one texture
