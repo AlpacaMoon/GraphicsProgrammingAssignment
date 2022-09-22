@@ -2677,7 +2677,8 @@ void Model::r99() {
 
 		glPushMatrix();
 		{
-			Lightning::yellowMaterial();
+			//Lightning::yellowMaterial();
+			Color::yellow();
 			Utility::extrudePolygon(barrelCoors, centre1, zAxis, 1.0f, TextureMap::gunYellow(), true, true);
 		}
 		glPopMatrix();
@@ -2686,6 +2687,7 @@ void Model::r99() {
 		{
 			glTranslatef(0.055f, 0, 1.0f);
 			Lightning::greyMaterial();
+			Color::grey();
 			Utility::extrudePolygon(barrelBack, centre1, zAxis, 0.5f, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
@@ -2695,6 +2697,7 @@ void Model::r99() {
 			
 			glTranslatef(-0.055f, 0, 1.0f);
 			Lightning::greyMaterial();
+			Color::grey();
 			Utility::extrudePolygon(barrelBack, centre1, zAxis, 0.5f, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
@@ -2704,6 +2707,7 @@ void Model::r99() {
 			glTranslatef(0.07f, -0.05f, 1.5f);
 			glRotatef(-90, 0, 1, 0);
 			Lightning::blackMaterial();
+			Color::black();
 			Utility::extrudePolygon(shoulderRest, centre1, zAxis, 0.14f, TextureMap::gunBlack(), true, true);
 		}
 		glPopMatrix();
@@ -2712,6 +2716,7 @@ void Model::r99() {
 		{
 			glTranslatef(0.069, 0, 0);
 			Lightning::blackMaterial();
+			Color::black();
 			Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, TextureMap::gunBlack(), true, true);
 		}
 		glPopMatrix();
@@ -2720,6 +2725,7 @@ void Model::r99() {
 		{
 			glTranslatef(-0.069, 0, 0);
 			Lightning::blackMaterial();
+			Color::black();
 			Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, TextureMap::gunBlack(), true, true);
 		}
 		glPopMatrix();
@@ -2728,6 +2734,7 @@ void Model::r99() {
 		{
 			glTranslatef(0, -0.075, 0.05);
 			Lightning::greyMaterial();
+			Color::grey();
 			Utility::extrudePolygon(barrelBottom, centre1, zAxis, 0.2f, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
@@ -2736,6 +2743,7 @@ void Model::r99() {
 		{
 			glTranslatef(0, 0.07, 0.07);
 			Lightning::blackMaterial();
+			Color::black();
 			Utility::extrudePolygon(barrelTop, centre1, zAxis, 0.35f, TextureMap::gunBlack(), true, true);
 		}
 		glPopMatrix();
@@ -2744,6 +2752,7 @@ void Model::r99() {
 		{
 			glTranslatef(0, 0.07, 0.42);
 			Lightning::blackMaterial();
+			Color::black();
 			Utility::extrudePolygon(barrelTopBack, centre1, zAxis, 0.53f, TextureMap::gunBlack(), true, true);
 		}
 		glPopMatrix();
@@ -2752,6 +2761,7 @@ void Model::r99() {
 		{
 			glTranslatef(0, -0.1, 0.05);
 			Lightning::greyMaterial();
+			Color::grey();
 			Utility::extrudePolygon(handle1, centre1, zAxis, 0.03f, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
@@ -2763,6 +2773,7 @@ void Model::r99() {
 			glRotatef(-30, 1, 0, 0);
 			glRotatef(90, 0, 1, 0);
 			Lightning::greyMaterial();
+			Color::grey();
 			Utility::extrudePolygon(magazine, centre1, zAxis, 0.06, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
@@ -2774,6 +2785,7 @@ void Model::r99() {
 			glRotatef(-30, 1, 0, 0);
 			glRotatef(90, 0, 1, 0);
 			Lightning::greyMaterial();
+			Color::grey();
 			Utility::extrudePolygon(handle2, centre1, zAxis, 0.06, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
@@ -2784,6 +2796,7 @@ void Model::r99() {
 			glTranslatef(0, 0, -0.1f);
 			glRotatef(90, 0, 0, 1);
 			Lightning::blackMaterial();
+			Color::black();
 			Texture::use(Texture::_gunBlack);
 			Texture::on();
 			gluCylinder(barrelObj, 0.02f, 0.02f, 0.1f, 20, 20);
@@ -2798,6 +2811,7 @@ void Model::r99() {
 			glTranslatef(0, -0.075f, -0.15f);
 			glRotatef(90, 0, 0, 1);
 			Lightning::blackMaterial();
+			Color::black();
 			Texture::use(Texture::_gunBlack);
 			Texture::on();
 			gluCylinder(barrelObj, 0.025f, 0.025f, 0.2f, 20, 20);
@@ -2811,6 +2825,8 @@ void Model::r99() {
 		{
 			glTranslatef(0.05f, 0.11f, 0.88f);
 			glRotatef(-90, 0, 1, 0);
+			Lightning::greyMaterial();
+			Color::grey();
 			Utility::extrudePolygon(sight, centre1, zAxis, 0.1, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
@@ -2829,6 +2845,8 @@ void Model::r99() {
 	barrelSide.destroy();
 	barrelBottom.destroy();
 	barrelTop.destroy();
+	barrelBack.destroy();
+	barrelTopBack.destroy();
 	handle1.destroy();
 	magazine.destroy();
 	handle2.destroy();
@@ -2841,6 +2859,8 @@ void Model::bullet() {
 	glColor3f(0, 0, 0);
 	glPushMatrix();
 	{
+		Color::grey();
+		Lightning::greyMaterial();
 		glTranslatef(bulletPos[0], bulletPos[1], bulletPos[2]);
 		gluCylinder(weaponObj, 0.001f, 0.02f, 0.05f, 10, 10);
 		glTranslatef(0, 0, 0.1f);

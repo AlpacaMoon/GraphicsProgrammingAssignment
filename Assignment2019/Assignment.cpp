@@ -125,7 +125,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			case VK_F3:
 				Controls::isIndependentControls = !Controls::isIndependentControls;
 				break;
-			
+
 			case VK_F4:
 				Environment::showSkybox = !Environment::showSkybox;
 				break;
@@ -133,17 +133,8 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				//try eye
 			case 'V':
 				eyeXAngle = 5.0f;
-				cumEyeXAngle += eyeXAngle;
+				Utility::rotateAroundXaxis(eye, eyeXAngle, tempEye);
 
-				if (cumEyeXAngle == 90) {
-					//Utility::rotateAroundYaxis(tempEye, 180, eye);
-					Utility::rotateAroundXaxis(eye, 180, tempEye);
-					//Utility::rotateAroundZaxis(eye, 180, tempEye);
-					//Utility::rotateAroundXaxis(eye, -eyeXAngle, tempEye);
-				}
-				else {
-					Utility::rotateAroundXaxis(eye, eyeXAngle, tempEye);
-				}
 				eye[0] = tempEye[0];
 				eye[1] = tempEye[1];
 				eye[2] = tempEye[2];

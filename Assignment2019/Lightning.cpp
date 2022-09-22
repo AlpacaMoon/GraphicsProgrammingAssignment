@@ -1,4 +1,5 @@
 #include "Lightning.h";
+#include "Texture.h";
 #include <Windows.h>
 #include <gl/GL.h>
 
@@ -49,6 +50,7 @@ void Lightning::lightningSwitch() {
 		glDisable(GL_LIGHT0);
 		//enable lighting
 		glDisable(GL_LIGHTING);
+		//Texture::off();
 	}
 }
 
