@@ -41,6 +41,6 @@ public:
 	static void clampLeftFingers();
 
 	//weapon
-	static void shootBullet();
+	static  void shootBullet();
 };
 

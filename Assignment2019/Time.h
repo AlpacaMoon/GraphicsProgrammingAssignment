@@ -21,4 +21,3 @@ public:
 	clock_t startTime;
 	clock_t endTime;
 };
-

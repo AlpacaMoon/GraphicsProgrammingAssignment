@@ -6,7 +6,7 @@ float Time::elapsedSeconds;
 
 // Converts ticks (clock_t) to seconds
 float Time::toSeconds(clock_t ticks) {
-	return (float) ticks / CLOCKS_PER_SEC;
+	return (float)ticks / CLOCKS_PER_SEC;
 }
 
 // Convert seconds to ticks (clock_t)

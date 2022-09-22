@@ -12,9 +12,7 @@ int Texture::wrapT = GL_REPEAT;
 // Static textures
 GLuint Texture::_blue;
 GLuint Texture::_blue2;
-GLuint Texture::_gunYellow;
-GLuint Texture::_gunBlack;
-GLuint Texture::_gunGrey;
+GLuint Texture::_brick;
 
 // Change current using texture to the given texture
 void Texture::use(GLuint texture) {
@@ -31,7 +29,7 @@ void Texture::off() {
 // Initialize all textures at once
 void Texture::setupTextures() {
 	initializeTexture("Textures/blue.bmp", &_blue);
-	
+	initializeTexture("Textures/brick.bmp", &_brick);
 }
 
 // Initialize one texture

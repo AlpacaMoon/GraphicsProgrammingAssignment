@@ -65,16 +65,15 @@ void Animation::runAnimations() {
 
 	if (Animation::walkSteps != 0)
 		Animation::walk();
-
 }
 
 // WalkSteps values: 
-/*
+/*	
 *	0 - Finish walking / Stopped walking
 *	1 = Start walking loop
 *	2 - First step finished (Move right leg first)
 *	3 - Second step finished (Move left leg second)
-*	4 - Walking loop
+*	4 - Walking loop 
 *	5 - Stop walking loop
 */
 int Animation::walkSteps = 0;

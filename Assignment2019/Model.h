@@ -45,8 +45,8 @@ public:
 	// Weapon Models
 	static void r99();
 	static void bullet();
-	static float bulletPos[3];
 	static boolean isFired;
+	static float bulletPos[3];
 
 	// Variables to control animation / Model transformations
 	static float bodyPos[3];
