@@ -26,16 +26,18 @@ const int Z_AXIS[3] = { 0, 0, 1 };
 float camRotation[3] = { 0,0,0 };
 float camRotateSpeed = 5.0f;
 
-//lighting test
+//lighting 
 GLfloat ambientLight[4] = { 1,1,1,1 }; //RGBA
 GLfloat diffuseLight[4] = { 1,1,1,1 }; //RGBA
 GLfloat positionLight[4] = { 0,5,0,0 }; //x,y,z,0
 
-//lookAt test
+//lookAt
 float eye[3] = { 0,0,5 };
 float tempEye[3] = { 0,0,0 };
 float lookAt[3] = { 0,0,0 };
 float up[3] = { 0,1,0 };
+
+bool isOrtho = true;
 
 // mouse movement
 float lastX = 0.0f, lastY = 0.0f;
@@ -98,22 +100,31 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				camRotation[0] += camRotateSpeed;
 				inputting = true;
 				break;
+
 			case VK_LEFT:
 				camRotation[1] -= camRotateSpeed;
 				inputting = true;
 				break;
+
 			case VK_RIGHT:
 				camRotation[1] += camRotateSpeed;
 				inputting = true;
 				break;
+
 			case VK_OEM_COMMA:
 				camRotation[2] += camRotateSpeed;
 				inputting = true;
 				break;
+
 			case VK_OEM_PERIOD:
 				camRotation[2] -= camRotateSpeed;
 				inputting = true;
 				break;
+
+			case VK_NUMPAD0:
+				isOrtho = !isOrtho;
+				break;
+
 			case VK_SPACE:
 				camRotation[0] = 0;
 				camRotation[1] = 0;
@@ -221,8 +232,8 @@ void display()
 	glPushMatrix();
 	{
 		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
-		//Model::Pathfinder();
-		Model::r99();
+		Model::Pathfinder();
+		//Model::r99();
 
 	}
 	glPopMatrix();
@@ -243,17 +254,15 @@ void setupEnvironmentLightning() {
 
 void setupCamera()
 {
-	//#pragma region View to Project
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//glOrtho(-1, 1, -1, 1, -2, 100);
-	gluPerspective(35, 1, 1, 100);
-	//glOrtho(-2, 2, -2, 2, 1, 10);
-	//glFrustum(-1, 1, -1, 1, 1, 10);
 
-	//gluPerspective(60, 1, 1, 10);
-
-	//# pragma endregion
+	if (isOrtho) {
+		glOrtho(-1.5f, 1.5f, -1.5f, 1.5f, -2, 100);
+	}
+	else {
+		gluPerspective(35, 1, 1, 100);
+	}
 }
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
@@ -297,9 +306,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 	//Lightning setup
 	setupEnvironmentLightning();
-	//camera setup
-	setupCamera();
-
+	
 	// Texture setup
 	Texture::setupTextures();
 
@@ -310,6 +317,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 	while (true)
 	{
+		//camera setup
+		setupCamera();
+
 		Time::currentTicks = clock();
 
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
