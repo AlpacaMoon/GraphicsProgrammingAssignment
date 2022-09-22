@@ -151,8 +151,6 @@
     <ClCompile Include="Lightning.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TextureMap.cpp" />
-    <ClCompile Include="Time.cpp" />
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -163,8 +161,6 @@
     <ClInclude Include="Lightning.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TextureMap.h" />
-    <ClInclude Include="Time.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>

@@ -7,9 +7,14 @@
 bool Controls::isIndependentControls = true;
 int Controls::currentControlPart = 1;
 float Controls::rotateSpeed = 5;
-int Controls::currentPlayingAnimation = 1;
 
-bool Controls::pressingWalkKeys[3] = {false, false, false};
+float clampFloat(float value, float min, float max) {
+	if (value > max)
+		return max;
+	else if (value < min)
+		return min;
+	return value;
+}
 
 void Controls::initialize() {
 	isIndependentControls = true;
@@ -97,10 +102,15 @@ void Controls::independentControls(WPARAM wParam) {
 			break;
 		}
 
-		// Clamping rotations
-		Animation::clampHead();
-		Animation::clampHip();
-		Animation::clampBody();
+		// Head clamping
+		Model::headRot[2] = clampFloat(Model::headRot[2], -20, 30);
+		Model::headRot[1] = clampFloat(Model::headRot[1], -105, 105);
+		Model::headRot[0] = clampFloat(Model::headRot[0], -30, 30);
+
+		// Hip clamping
+		Model::hipRot[2] = clampFloat(Model::hipRot[2], -60, 60);
+		Model::hipRot[1] = clampFloat(Model::hipRot[1], -35, 35);
+		Model::hipRot[0] = clampFloat(Model::hipRot[0], -5, 5);
 
 		break;
 	// 2) Right leg
@@ -137,7 +147,11 @@ void Controls::independentControls(WPARAM wParam) {
 			Model::RFeetRot -= rotateSpeed;
 			break;
 		}
-		Animation::clampRightLeg();
+		Model::RLegUpperRot[2] = clampFloat(Model::RLegUpperRot[2], -90, 110);
+		Model::RLegUpperRot[1] = clampFloat(Model::RLegUpperRot[1], -30, 30);
+		Model::RLegUpperRot[0] = clampFloat(Model::RLegUpperRot[0], -10, 10);
+		Model::RLegHingeRot = clampFloat(Model::RLegHingeRot, -90, 0);
+		Model::RFeetRot = clampFloat(Model::RFeetRot, -20, 20);
 		break;
 	// 3) Left leg
 	case 3:
@@ -173,7 +187,11 @@ void Controls::independentControls(WPARAM wParam) {
 			Model::LFeetRot -= rotateSpeed;
 			break;
 		}
-		Animation::clampLeftLeg();
+		Model::LLegUpperRot[2] = clampFloat(Model::LLegUpperRot[2], -90, 110);
+		Model::LLegUpperRot[1] = clampFloat(Model::LLegUpperRot[1], -30, 30);
+		Model::LLegUpperRot[0] = clampFloat(Model::LLegUpperRot[0], -10, 10);
+		Model::LLegHingeRot = clampFloat(Model::LLegHingeRot, -100, 0);
+		Model::LFeetRot = clampFloat(Model::LFeetRot, -20, 20);
 		break;
 	// 4) Right arm
 	case 4:
@@ -221,7 +239,13 @@ void Controls::independentControls(WPARAM wParam) {
 			Model::RArmRot[2][0] -= rotateSpeed;
 			break;
 		}
-		Animation::clampRightArm();
+		Model::RArmRot[0][2] = clampFloat(Model::RArmRot[0][2], -180, 180);
+		Model::RArmRot[0][1] = clampFloat(Model::RArmRot[0][1], -75, 75);
+		Model::RArmRot[0][0] = clampFloat(Model::RArmRot[0][0], 0, 180);
+		Model::RArmRot[1][2] = clampFloat(Model::RArmRot[1][2], 0, 160);
+		Model::RArmRot[2][2] = clampFloat(Model::RArmRot[2][2], -60, 60);
+		Model::RArmRot[2][1] = clampFloat(Model::RArmRot[2][1], -90, 90);
+		Model::RArmRot[2][0] = clampFloat(Model::RArmRot[2][0], -90, 90);
 		break;
 	// 5) Left arm
 	case 5:
@@ -269,7 +293,13 @@ void Controls::independentControls(WPARAM wParam) {
 			Model::LArmRot[2][0] -= rotateSpeed;
 			break;
 		}
-		Animation::clampLeftArm();
+		Model::LArmRot[0][2] = clampFloat(Model::LArmRot[0][2], -180, 180);
+		Model::LArmRot[0][1] = clampFloat(Model::LArmRot[0][1], -75, 75);
+		Model::LArmRot[0][0] = clampFloat(Model::LArmRot[0][0], -180, 0);
+		Model::LArmRot[1][2] = clampFloat(Model::LArmRot[1][2], 0, 160);
+		Model::LArmRot[2][2] = clampFloat(Model::LArmRot[2][2], -60, 60);
+		Model::LArmRot[2][1] = clampFloat(Model::LArmRot[2][1], -90, 90);
+		Model::LArmRot[2][0] = clampFloat(Model::LArmRot[2][0], -90, 90);
 		break;
 	// 6) Right and left fingers
 	case 6:
@@ -367,66 +397,25 @@ void Controls::independentControls(WPARAM wParam) {
 				Model::RFingerRot[4][i] += rotateSpeed;
 			break;
 		}
-		Animation::clampRightFingers();
-		Animation::clampLeftFingers();
-		break;
-	}
-}
 
-void Controls::presetAnimationKeyDown(WPARAM wParam) {
-
-	switch (wParam) {
-	case 'W':
-		pressingWalkKeys[0] = true;
-		break;
-	case 'A':
-		pressingWalkKeys[1] = true;
-		break;
-	case 'D':
-		pressingWalkKeys[2] = true;
-		break;
-		// Walking
-
-	case VK_OEM_PERIOD:
-		Animation::stopWalking();
-		Animation::hardReset();
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 3; j++) {
+				Model::LFingerRot[i][j] = clampFloat(Model::LFingerRot[i][j], Model::openedFingerRot[i][j], Model::closedFingerRot[i][j]);
+				Model::RFingerRot[i][j] = clampFloat(Model::RFingerRot[i][j], Model::openedFingerRot[i][j], Model::closedFingerRot[i][j]);
+			}
+		}
 		break;
 
 	default:
 		break;
 	}
-
-	if (isPressingWalk()) {
-		if (Animation::walkSteps == 0)
-			Animation::startWalking();
-		else
-			Animation::rotateWalk(wParam);
-	}
 }
 
-void Controls::presetAnimationKeyUp(WPARAM wParam) {
-	
-	switch (wParam) {
-	case 'W':
-		pressingWalkKeys[0] = false;
-		break;
-	case 'A':
-		pressingWalkKeys[1] = false;
-		break;
-	case 'D':
-		pressingWalkKeys[2] = false;
-		break;
-	default:
-		break;
-	}
-	if (!isPressingWalk()) {
-		Animation::stopWalking();
-	}
-}
+void Controls::presetAnimationControls(WPARAM wParam) {
 
 bool Controls::isPressingWalk() {
 	for (int i = 0; i < 3; i++) {
-		if (pressingWalkKeys[i] == true) {
+		if (pressingWalkKeys[i]) {
 			return true;
 		}
 	}

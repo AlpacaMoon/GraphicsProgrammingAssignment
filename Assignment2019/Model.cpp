@@ -34,8 +34,6 @@ GLUquadricObj* zipLineTubeObj, * zipLineBackpackObj;
 GLUquadricObj* weaponObj;
 
 // Animation variables / Model transformation variables
-float Model::bodyPos[3] = { 0, 0, 0 };
-
 float Model::headRot[3] = { 0, 0, 0 };
 
 float Model::RLegUpperRot[3] = { 0, 0, 0 };
@@ -51,14 +49,20 @@ float Model::hipRot[3] = { 0, 0, 0 };
 float Model::bodyRot[3] = { 0, 0, 0 };
 
 float Model::RArmRot[3][3] = {
-	{20, -10, 15},
-	{0, 0, 90},
+	{0, 0, 0},
+	{0, 0, 0},
 	{0, 0, 0}
+	//{10, -15, 0},
+	//{0, 0, 15},
+	//{0, 0, 0}
 };
 float Model::LArmRot[3][3] = {
-	{-20, 10, 15},
-	{0, 0, 90},
+	{0, 0, 0},
+	{0, 0, 0},
 	{0, 0, 0}
+	//{-10, 15, 0},
+	//{0, 0, 15},
+	//{0, 0, 0}
 };
 float Model::RFingerRot[5][3] = {
 	{15, 15, 15},
@@ -98,10 +102,8 @@ boolean Model::isFired = false;
 void Model::Pathfinder() {
 	glPushMatrix();
 	{
-		glTranslatef(bodyPos[0], bodyPos[1], bodyPos[2]);
-
-		glRotatef(bodyRot[1], 0, 1, 0);
 		glRotatef(bodyRot[0], 1, 0, 0);
+		glRotatef(bodyRot[1], 0, 1, 0);
 		glRotatef(bodyRot[2], 0, 0, 1);
 
 		glRotatef(90, 0, 1, 0);

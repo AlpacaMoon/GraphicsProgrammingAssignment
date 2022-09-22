@@ -28,60 +28,43 @@ GLfloat darkGreyMaterialDiffuse[4] = { (40 / 255.0), (41 / 255.0), (43 / 255.0),
 GLfloat blackMaterialAmbient[4] = { 0,0,0,1 };
 GLfloat blackMaterialDiffuse[4] = { 0,0,0,1 };
 
-// Default
-GLfloat defaultMatAmbient[4] = { 0.2, 0.2, 0.2, 1 };
-GLfloat defaultMatDiffuse[4] = { 0.8, 0.8, 0.8, 1 };
-
-void Lightning::defaultMaterial() {
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, defaultMatAmbient);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, defaultMatDiffuse);
-}
-
 void Lightning::blueMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, blueMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueMaterialDiffuse);
-	defaultMaterial();
 }
 
 void Lightning::goldMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, goldMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, goldMaterialDiffuse);
-	defaultMaterial();
 }
 
 
 void Lightning::yellowMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, yellowMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, yellowMaterialDiffuse);
-	defaultMaterial();
 }
 
 void Lightning::greyMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, greyMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, greyMaterialDiffuse);
-	defaultMaterial();
 }
 
 void Lightning::windRedMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, windRedMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, windRedMaterialDiffuse);
-	defaultMaterial();
 }
 
 void Lightning::darkerBlueMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, darkBlueMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, darkBlueMaterialDiffuse);
-	defaultMaterial();
 }
 
 void Lightning::darkerGreyMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, darkGreyMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, darkGreyMaterialDiffuse);
-	defaultMaterial();
 }
 
 void Lightning::blackMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, blackMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blackMaterialDiffuse);
-	defaultMaterial();
 }

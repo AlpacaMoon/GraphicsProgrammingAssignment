@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <gl/GL.h>
 #include <math.h>
-#include <ctime>
 
 #include "Utility.h"
 #include "CoordinateSet.h"
@@ -11,8 +10,6 @@
 #include "Color.h"
 #include "Controls.h"
 #include "Lightning.h"
-#include "Time.h"
-#include "Texture.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 
@@ -127,7 +124,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				showGrid = !showGrid;
 				break;
 
-			case VK_F3:
+			case VK_NUMPAD0:
 				Controls::isIndependentControls = !Controls::isIndependentControls;
 				break;
 
@@ -176,15 +173,13 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				Controls::independentControls(wParam);
 			}
 			else {
-				Controls::presetAnimationKeyDown(wParam);
+				Controls::presetAnimationControls(wParam);
 			}
 		}
 		break;
 
 	case WM_KEYUP:
-		if (!Controls::isIndependentControls) {
-			Controls::presetAnimationKeyUp(wParam);
-		}
+
 	default:
 		break;
 	}
@@ -232,8 +227,7 @@ void display()
 	//	OpenGL drawing
 	//--------------------------------
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glClearColor(1, 1, 1, 1);
-	glClearColor(0.8, 0.8, 0.8, 1);
+	glClearColor(1, 1, 1, 1);
 
 	if (onLightning) {
 		//enable which type of light
@@ -249,14 +243,12 @@ void display()
 	}
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glScalef(0.8, 0.8, 0.8);
 
-	glPushMatrix();
-	{
-		gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
-		glRotatef(camRotation[0], 1, 0, 0);
-		glRotatef(camRotation[1], 0, 1, 0);
-		glRotatef(camRotation[2], 0, 0, 1);
+	Animation::runAnimations();
+
+	glRotatef(camRotation[0], 1, 0, 0);
+	glRotatef(camRotation[1], 0, 1, 0);
+	glRotatef(camRotation[2], 0, 0, 1);
 
 
 		glPushMatrix();
@@ -351,8 +343,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 	while (true)
 	{
-		Time::currentTicks = clock();
-
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
@@ -364,9 +354,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 		display();
 
 		SwapBuffers(hdc);
-
-		Time::elapsedTicks = clock() - Time::currentTicks;
-		Time::elapsedSeconds = Time::toSeconds(Time::elapsedTicks);
 	}
 
 	UnregisterClass(WINDOW_TITLE, wc.hInstance);
