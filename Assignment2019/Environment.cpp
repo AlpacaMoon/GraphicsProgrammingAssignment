@@ -30,7 +30,7 @@ void Environment::skybox() {
 		Color::white();
 		glRotatef(-90, 1, 0, 0);
 		gluQuadricTexture(skyboxObj, GL_TRUE);
-		gluSphere(skyboxObj, 15, 300, 300);
+		gluSphere(skyboxObj, 30, 300, 300);
 	}
 	glPopMatrix();
 	if (isLightingOn) {
