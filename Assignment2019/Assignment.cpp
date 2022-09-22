@@ -54,6 +54,15 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		PostQuitMessage(0);
 		break;
 
+	case WM_MOUSEWHEEL:
+		if (eye[2] < 20 && eye[2] > -20) {
+			eye[2] += GET_WHEEL_DELTA_WPARAM(wParam) / 120.0f;
+		}
+		else {
+			eye[2] = 0.01f;
+		}
+		break;
+
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE) PostQuitMessage(0);
 		else {
@@ -88,15 +97,13 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				camRotation[2] = 0;
 				break;
 
-			case VK_NUMPAD2:
-				camRotation[0] = 0;
-				camRotation[1] = 0;
-				camRotation[2] = 0;
-				break;
 			case VK_NUMPAD8:
-				camRotation[0] = 0;
-				camRotation[1] = 180;
-				camRotation[2] = 0;
+				if (eye[2] > -20) {
+					eye[2] -= 0.1f;
+				}
+				else if (eye[2] == 0) {
+					eye[2] = 0.01f;
+				}
 				break;
 			case VK_NUMPAD4:
 				camRotation[0] = 0;
@@ -130,20 +137,6 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				Environment::showSkybox = !Environment::showSkybox;
 				break;
 
-				//try eye
-			case 'V':
-				eyeXAngle = 5.0f;
-				Utility::rotateAroundXaxis(eye, eyeXAngle, tempEye);
-
-				eye[0] = tempEye[0];
-				eye[1] = tempEye[1];
-				eye[2] = tempEye[2];
-
-				if (cumEyeXAngle == 360) {
-					cumEyeXAngle -= 360;
-				}
-
-				break;
 			}
 
 			if (Controls::isIndependentControls) {

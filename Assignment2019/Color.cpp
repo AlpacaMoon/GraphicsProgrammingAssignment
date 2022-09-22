@@ -21,17 +21,16 @@ void Color::lightBlue2() {
 	}
 }
 
-void Color::lightGray() {
+void Color::lightGrey() {
 	if (Lightning::onLightning) {
 		glColor3f(1, 1, 1);
 	}
 	else {
 		glColor3f(168 / 255.0f, 168 / 255.0f, 168 / 255.0f);
 	}
-	
 }
 
-void Color::darkGray() {
+void Color::darkGrey() {
 	if (Lightning::onLightning) {
 		glColor3f(1, 1, 1);
 	}
@@ -107,14 +106,5 @@ void Color::yellow() {
 	}
 	else {
 		glColor3f(1, 1, 0);
-	}
-}
-
-void Color::grey() {
-	if (Lightning::onLightning) {
-		glColor3f(1, 1, 1);
-	}
-	else {
-		glColor3f((79 / 255.0), (79 / 255.0), (78 / 255.0));
 	}
 }
