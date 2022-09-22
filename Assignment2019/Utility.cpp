@@ -226,22 +226,22 @@ void Utility::drawTube(float centerA[3], float normalA[3], float radiusA, float 
 		// Draw #1 that lies on first circle, with angle = rot
 		for (int i = 0; i < 3; i++)
 			temp[i] = thisCenterA[i] + radiusA * (basisA1[i] * cos(degToRad(rot)) + basisA2[i] * sin(degToRad(rot)));
-		glVertex3f(temp[0], temp[1], temp[2]);
+		drawVertex(temp[0], temp[1], temp[2], thisCenterA);
 
 		// Draw #2 that lines on first circle, with angle = rot + increment
 		for (int i = 0; i < 3; i++)
 			temp[i] = thisCenterA[i] + radiusA * (basisA1[i] * cos(degToRad(rot + increment)) + basisA2[i] * sin(degToRad(rot + increment)));
-		glVertex3f(temp[0], temp[1], temp[2]);
+		drawVertex(temp[0], temp[1], temp[2], thisCenterA);
 
 		// Draw #3 that lines on second circle, with angle = rot + increment
 		for (int i = 0; i < 3; i++)
 			temp[i] = thisCenterB[i] + radiusB * (basisB1[i] * cos(degToRad(rot + increment)) + basisB2[i] * sin(degToRad(rot + increment)));
-		glVertex3f(temp[0], temp[1], temp[2]);
+		drawVertex(temp[0], temp[1], temp[2], thisCenterB);
 
 		// Draw #4 that lines on second circle, with angle = rot
 		for (int i = 0; i < 3; i++)
 			temp[i] = thisCenterB[i] + radiusB * (basisB1[i] * cos(degToRad(rot)) + basisB2[i] * sin(degToRad(rot)));
-		glVertex3f(temp[0], temp[1], temp[2]);
+		drawVertex(temp[0], temp[1], temp[2], thisCenterB);
 
 		glEnd();
 
@@ -309,25 +309,25 @@ void Utility::drawTube(float centerA[3], float normalA[3], float radiusA, float 
 		for (int i = 0; i < 3; i++)
 			temp[i] = thisCenterA[i] + radiusA * (basisA1[i] * cos(degToRad(rot)) + basisA2[i] * sin(degToRad(rot)));
 		glTexCoord2f(0, 0);
-		glVertex3f(temp[0], temp[1], temp[2]);
+		drawVertex(temp[0], temp[1], temp[2], thisCenterA);
 
 		// Draw #2 that lines on first circle, with angle = rot + increment
 		for (int i = 0; i < 3; i++)
 			temp[i] = thisCenterA[i] + radiusA * (basisA1[i] * cos(degToRad(rot + increment)) + basisA2[i] * sin(degToRad(rot + increment)));
 		glTexCoord2f(0, 1);
-		glVertex3f(temp[0], temp[1], temp[2]);
+		drawVertex(temp[0], temp[1], temp[2], thisCenterA);
 
 		// Draw #3 that lines on second circle, with angle = rot + increment
 		for (int i = 0; i < 3; i++)
 			temp[i] = thisCenterB[i] + radiusB * (basisB1[i] * cos(degToRad(rot + increment)) + basisB2[i] * sin(degToRad(rot + increment)));
 		glTexCoord2f(1, 1);
-		glVertex3f(temp[0], temp[1], temp[2]);
+		drawVertex(temp[0], temp[1], temp[2], thisCenterB);
 
 		// Draw #4 that lines on second circle, with angle = rot
 		for (int i = 0; i < 3; i++)
 			temp[i] = thisCenterB[i] + radiusB * (basisB1[i] * cos(degToRad(rot)) + basisB2[i] * sin(degToRad(rot)));
 		glTexCoord2f(1, 0);
-		glVertex3f(temp[0], temp[1], temp[2]);
+		drawVertex(temp[0], temp[1], temp[2], thisCenterB);
 
 		glEnd();
 		Texture::off();
@@ -607,7 +607,6 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 		}
 	}
 
-
 	// Draw top face
 	if (drawTop) {
 		drawPolygon(face, faceCenter, volumeCenter);
@@ -648,9 +647,8 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 
 	// Dealloc unused memory
 	another.destroy();
-	if (!volCenterGiven) {
-		delete[] volumeCenter;
-	}
+
+	delete[] volumeCenter;
 }
 
 void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float direction[3], float amount, TextureMap tMap, bool drawTop, bool drawBottom, float volumeCenter[3]) {
@@ -807,9 +805,7 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 
 	// Dealloc unused memory
 	another.destroy();
-	if (!volCenterGiven) {
-		delete[] volumeCenter;
-	}
+	delete[] volumeCenter;
 }
 
 
@@ -874,16 +870,13 @@ void Utility::drawHemisphere(float radius, int slices, int stacks, GLuint textur
 *	The amount of vertices in both faces must be the same
 *	f1 must be in same rotational direction with f2
 */
-void Utility::connectTwoFaces(CoordinateSet f1, float centerF1[3], CoordinateSet f2, float centerF2[3]) {
+void Utility::connectTwoFaces(CoordinateSet f1, CoordinateSet f2, float volumeCenter[3]) {
 	if (f1.numberOfCoords != f2.numberOfCoords) {
 		throw exception("Vertices mismatch: Utility::connectTwoFaces()");
 		return;
 	}
 
 	int n = f1.numberOfCoords;
-
-	float volumeCenter[3];
-	midpointBetweenTwoPoints(centerF1, centerF2, volumeCenter);
 
 	// Draw connection faces
 	for (int i = 0; i < n - 1; i++) {
@@ -904,16 +897,13 @@ void Utility::connectTwoFaces(CoordinateSet f1, float centerF1[3], CoordinateSet
 	glEnd();
 }
 
-void Utility::connectTwoFaces(CoordinateSet f1, float centerF1[3], CoordinateSet f2, float centerF2[3], GLuint texture) {
+void Utility::connectTwoFaces(CoordinateSet f1, CoordinateSet f2, GLuint texture, float volumeCenter[3]) {
 	if (f1.numberOfCoords != f2.numberOfCoords) {
 		throw exception("Vertices mismatch: Utility::connectTwoFaces()");
 		return;
 	}
 
 	int n = f1.numberOfCoords;
-
-	float volumeCenter[3];
-	midpointBetweenTwoPoints(centerF1, centerF2, volumeCenter);
 
 	Texture::use(texture);
 	Texture::on();

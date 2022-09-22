@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <gl/GL.h>
 #include <math.h>
+#include <ctime>
 
 #include "Utility.h"
 #include "CoordinateSet.h"
@@ -10,6 +11,8 @@
 #include "Color.h"
 #include "Controls.h"
 #include "Lightning.h"
+#include "Time.h"
+#include "Texture.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 
@@ -44,8 +47,6 @@ float lookAtXAngle = 0;
 float lookAtYAngle = 0;
 float lookAtZAngle = 0;
 float up[3] = { 0,1,0 };
-
-//bullet
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -124,7 +125,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				showGrid = !showGrid;
 				break;
 
-			case VK_NUMPAD0:
+			case VK_F3:
 				Controls::isIndependentControls = !Controls::isIndependentControls;
 				break;
 
@@ -133,53 +134,40 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				eyeXAngle = 5.0f;
 				cumEyeXAngle += eyeXAngle;
 
-				if (cumEyeXAngle < 90 || cumEyeXAngle > 270) {
-					Utility::rotateAroundXaxis(eye, eyeXAngle, tempEye);
-					eye[0] = tempEye[0];
-					eye[1] = tempEye[1];
-					eye[2] = tempEye[2];
-				}
-				else if (cumEyeXAngle == 90) {
+				if (cumEyeXAngle ==90) {
+					//Utility::rotateAroundYaxis(tempEye, 180, eye);
+					//Utility::rotateAroundXaxis(eye, 180, tempEye);
 					Utility::rotateAroundZaxis(eye, 180, tempEye);
-					eye[0] = tempEye[0];
-					eye[1] = tempEye[1];
-					eye[2] = tempEye[2];
-
-					Utility::rotateAroundXaxis(eye, 180, tempEye);
-					eye[0] = tempEye[0];
-					eye[1] = tempEye[1];
-					eye[2] = tempEye[2];
+					//Utility::rotateAroundXaxis(eye, -eyeXAngle, tempEye);
+				}
+				else {
+					Utility::rotateAroundXaxis(eye, eyeXAngle, tempEye);
 
 				}
-				if (cumEyeXAngle > 90 && cumEyeXAngle < 270) {
-					Utility::rotateAroundXaxis(eye, -eyeXAngle, tempEye);
-					eye[0] = tempEye[0];
-					eye[1] = tempEye[1];
-					eye[2] = tempEye[2];
-				}
+				eye[0] = tempEye[0];
+				eye[1] = tempEye[1];
+				eye[2] = tempEye[2];
 
 				if (cumEyeXAngle == 360) {
 					cumEyeXAngle -= 360;
 				}
-				break;
 
-			case 'B':
-				Model::isFired = !Model::isFired;
 				break;
 			}
-
 
 			if (Controls::isIndependentControls) {
 				Controls::independentControls(wParam);
 			}
 			else {
-				Controls::presetAnimationControls(wParam);
+				Controls::presetAnimationKeyDown(wParam);
 			}
 		}
 		break;
 
 	case WM_KEYUP:
-
+		if (!Controls::isIndependentControls) {
+			Controls::presetAnimationKeyUp(wParam);
+		}
 	default:
 		break;
 	}
@@ -227,7 +215,8 @@ void display()
 	//	OpenGL drawing
 	//--------------------------------
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(1, 1, 1, 1);
+	//glClearColor(1, 1, 1, 1);
+	glClearColor(0.8, 0.8, 0.8, 1);
 
 	if (onLightning) {
 		//enable which type of light
@@ -243,32 +232,35 @@ void display()
 	}
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glScalef(0.8, 0.8, 0.8);
 
-	Animation::runAnimations();
 
 	glRotatef(camRotation[0], 1, 0, 0);
 	glRotatef(camRotation[1], 0, 1, 0);
 	glRotatef(camRotation[2], 0, 0, 1);
 
+	glScalef(0.8, 0.8, 0.8);
 
-		glPushMatrix();
-		{
-			Animation::shootBullet();
-			Model::r99();
-			//Model::Pathfinder();
-		}
-		glPopMatrix();
-
-		// Gridlines
-		if (showGrid) {
-			glColor3f(0.9, 0.9, 0.9);
-			Utility::drawGrids();
-		}
-
-		//--------------------------------
-		//	End of OpenGL drawing
-		//--------------------------------
+	Animation::runAnimations();
+	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	{
+		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
+		Model::Pathfinder();
 	}
+	glPopMatrix();
+
+
+	// Gridlines
+	if (showGrid) {
+		glColor3f(0.9, 0.9, 0.9);
+		Utility::drawGrids();
+	}
+
+	//--------------------------------
+	//	End of OpenGL drawing
+	//--------------------------------
 }
 //--------------------------------------------------------------------
 void setupEnvironmentLightning() {
@@ -283,9 +275,9 @@ void setupCamera()
 	glMatrixMode(GL_PROJECTION);
 	//glOrtho(-2, 2, -2, 2, 1, 10);
 	//glFrustum(-1, 1, -1, 1, 1, 10);
-
-	gluPerspective(60, 1, 1, 10);
-
+	
+	//gluPerspective(60, 1, 1, 10);
+	
 	//# pragma endregion
 }
 
@@ -343,6 +335,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 	while (true)
 	{
+		Time::currentTicks = clock();
+
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
@@ -354,6 +348,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 		display();
 
 		SwapBuffers(hdc);
+
+		Time::elapsedTicks = clock() - Time::currentTicks;
+		Time::elapsedSeconds = Time::toSeconds(Time::elapsedTicks);
 	}
 
 	UnregisterClass(WINDOW_TITLE, wc.hInstance);

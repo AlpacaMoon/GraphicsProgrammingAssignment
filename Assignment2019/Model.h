@@ -44,11 +44,9 @@ public:
 
 	// Weapon Models
 	static void r99();
-	static void bullet();
-	static float bulletPos[3];
-	static boolean isFired;
 
 	// Variables to control animation / Model transformations
+	static float bodyPos[3];
 	static float headRot[3];
 	static float RLegUpperRot[3];
 	static float RLegHingeRot, RFeetRot;
@@ -63,5 +61,8 @@ public:
 
 	static float openedFingerRot[5][3];
 	static float closedFingerRot[5][3];
+
+	// Variables to control textures
+	static GLuint tvTexture;
 };
 
