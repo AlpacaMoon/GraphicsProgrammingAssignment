@@ -77,9 +77,6 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		if (eye[2] <= 20 && eye[2] >= -20) {
 			eye[2] += GET_WHEEL_DELTA_WPARAM(wParam) / 120.0f;
 		}
-		else if (eye[2] == 0) {
-			eye[2] = 0.01f;
-		}
 		else if (eye[2] > 20) {
 			eye[2] = 20.0f;
 		}
