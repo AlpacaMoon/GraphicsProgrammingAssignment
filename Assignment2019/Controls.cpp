@@ -274,6 +274,7 @@ void Controls::independentControls(WPARAM wParam) {
 	// 6) Right and left fingers
 	case 6:
 		switch (wParam) {
+			// ===== LEFT FINGERS =====
 		// Left pinky
 		case 'Q':
 			for (int i = 0; i < 3; i++)
@@ -319,8 +320,8 @@ void Controls::independentControls(WPARAM wParam) {
 			for (int i = 0; i < 3; i++)
 				Model::LFingerRot[0][i] += rotateSpeed;
 			break;
-		// Right hand
 
+			// ===== RIGHT FINGERS =====
 		// Right thumb
 		case 'Y':
 			for (int i = 0; i < 3; i++)

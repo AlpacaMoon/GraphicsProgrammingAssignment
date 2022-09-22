@@ -10,11 +10,12 @@ void Animation::hardReset() {
 		Model::hipRot[i] = 0;
 		Model::bodyRot[i] = 0;
 		for (int j = 0; j < 3; j++) {
-			Model::RArmRot[i][j] = 0;
-			Model::LArmRot[i][j] = 0;
+			Model::RArmRot[i][j] = Model::defaultRArmRot[i][j];
+			Model::LArmRot[i][j] = Model::defaultLArmRot[i][j];
 		}
 		for (int j = 0; j < 5; j++) {
 			Model::RFingerRot[j][i] = Model::openedFingerRot[j][i];
+			Model::LFingerRot[j][i] = Model::openedFingerRot[j][i];
 		}
 	}
 
@@ -23,14 +24,6 @@ void Animation::hardReset() {
 
 	Model::LLegHingeRot = 0;
 	Model::LFeetRot = 0;
-
-	Model::RArmRot[0][0] = 10;
-	Model::RArmRot[0][1] = -15;
-	Model::RArmRot[1][2] = 15;
-
-	Model::LArmRot[0][0] = -10;
-	Model::LArmRot[0][1] = 15;
-	Model::LArmRot[1][2] = 15;
 }
 
 bool Animation::softResetClamping(float* target, float min, float frustum, float max, float speed) {

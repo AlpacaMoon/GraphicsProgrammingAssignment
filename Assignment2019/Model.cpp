@@ -11,10 +11,12 @@
 #include "TextureMap.h"
 #include "Animation.h"
 
+// Three main axes
 float xAxis[3] = { 1, 0, 0 };
 float yAxis[3] = { 0, 1, 0 };
 float zAxis[3] = { 0, 0, 1 };
 
+// General values for model
 float torsoWidth = 0.5f;
 float waistWidth = 0.2f;
 float legWidth = 0.125f;
@@ -22,7 +24,7 @@ float armWidth = 0.15f;
 float handThickness = 0.075f;
 float buttWidth = 0.1f;
 
-
+// Texture Variables
 GLuint Model::tvTexture;
 
 // GLUquadricObj variables
@@ -41,20 +43,15 @@ float Model::bulletPos[3] = { 0.0f,0.0f,0.0f };
 GLUquadricObj* barrelObj;
 
 // Animation variables / Model transformation variables
-float Model::bodyPos[3] = {0, 0, 0};
-
+float Model::bodyPos[3] = { 0, 0, 0 };
 float Model::headRot[3] = { 0, 0, 0 };
-
 float Model::RLegUpperRot[3] = { 0, 0, 0 };
 float Model::RLegHingeRot = 0;
 float Model::RFeetRot = 0;
-
 float Model::LLegUpperRot[3] = { 0, 0, 0 };
 float Model::LLegHingeRot = 0;
 float Model::LFeetRot = 0;
-
 float Model::hipRot[3] = { 0, 0, 0 };
-
 float Model::bodyRot[3] = { 0, 0, 0 };
 
 float Model::RArmRot[3][3] = {
@@ -63,6 +60,16 @@ float Model::RArmRot[3][3] = {
 	{0, 0, 0}
 };
 float Model::LArmRot[3][3] = {
+	{-20, 10, 15},
+	{0, 0, 90},
+	{0, 0, 0}
+};
+float Model::defaultRArmRot[3][3] = {
+	{20, -10, 15},
+	{0, 0, 90},
+	{0, 0, 0}
+};
+float Model::defaultLArmRot[3][3] = {
 	{-20, 10, 15},
 	{0, 0, 90},
 	{0, 0, 0}

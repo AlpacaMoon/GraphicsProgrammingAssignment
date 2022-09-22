@@ -62,8 +62,11 @@ public:
 	static float hipRot[3];
 	static float bodyRot[3];
 
+	// Default values (Used in reset)
 	static float openedFingerRot[5][3];
 	static float closedFingerRot[5][3];
+	static float defaultRArmRot[3][3];
+	static float defaultLArmRot[3][3];
 
 	// Variables to control textures
 	static GLuint tvTexture;
