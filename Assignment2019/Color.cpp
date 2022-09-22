@@ -1,5 +1,4 @@
 #include "Color.h"
-
 #include <Windows.h>
 #include <gl/GL.h>
 
