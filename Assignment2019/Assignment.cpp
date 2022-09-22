@@ -35,14 +35,14 @@ GLfloat diffuseLight[4] = { 1,1,1,1 }; //RGBA
 GLfloat positionLight[4] = { 0,5,0,0 }; //x,y,z,0
 
 //lookAt test
-float eye[3] = { 0,0,-3 };
+float eye[3] = { 0,0,0 };
 float tempEye[3] = { 0,0,0 };
 float eyeXAngle = 0;
 float cumEyeXAngle = 0;
 
 float eyeYAngle = 0;
 float eyeZAngle = 0;
-float lookAt[3] = { 0,0,0 };
+float lookAt[3] = { 0,0,-1 };
 float lookAtXAngle = 0;
 float lookAtYAngle = 0;
 float lookAtZAngle = 0;
@@ -134,15 +134,14 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				eyeXAngle = 5.0f;
 				cumEyeXAngle += eyeXAngle;
 
-				if (cumEyeXAngle ==90) {
+				if (cumEyeXAngle == 90) {
 					//Utility::rotateAroundYaxis(tempEye, 180, eye);
-					//Utility::rotateAroundXaxis(eye, 180, tempEye);
-					Utility::rotateAroundZaxis(eye, 180, tempEye);
+					Utility::rotateAroundXaxis(eye, 180, tempEye);
+					//Utility::rotateAroundZaxis(eye, 180, tempEye);
 					//Utility::rotateAroundXaxis(eye, -eyeXAngle, tempEye);
 				}
 				else {
 					Utility::rotateAroundXaxis(eye, eyeXAngle, tempEye);
-
 				}
 				eye[0] = tempEye[0];
 				eye[1] = tempEye[1];
@@ -231,14 +230,6 @@ void display()
 		glDisable(GL_LIGHTING);
 	}
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glScalef(0.8, 0.8, 0.8);
-
-
-	glRotatef(camRotation[0], 1, 0, 0);
-	glRotatef(camRotation[1], 0, 1, 0);
-	glRotatef(camRotation[2], 0, 0, 1);
-
 	glScalef(0.8, 0.8, 0.8);
 
 	Animation::runAnimations();
@@ -251,9 +242,17 @@ void display()
 	}
 	glPopMatrix();
 
-
-	// Gridlines
-	if (showGrid) {
+		// Gridlines
+		if (showGrid) {
+			glColor3f(0.9, 0.9, 0.9);
+			Utility::drawGrids();
+		}
+		glPopMatrix();
+		//--------------------------------
+		//	End of OpenGL drawing
+		//--------------------------------
+	}
+}
 		glColor3f(0.9, 0.9, 0.9);
 		Utility::drawGrids();
 	}
@@ -267,7 +266,6 @@ void setupEnvironmentLightning() {
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
 	glLightfv(GL_LIGHT0, GL_POSITION, positionLight);
-}
 
 void setupCamera()
 {
@@ -275,9 +273,9 @@ void setupCamera()
 	glMatrixMode(GL_PROJECTION);
 	//glOrtho(-2, 2, -2, 2, 1, 10);
 	//glFrustum(-1, 1, -1, 1, 1, 10);
-	
+
 	//gluPerspective(60, 1, 1, 10);
-	
+
 	//# pragma endregion
 }
 

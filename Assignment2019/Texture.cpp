@@ -14,6 +14,9 @@ int Texture::wrapT = GL_REPEAT;
 // Static textures
 GLuint Texture::_blue;
 GLuint Texture::_blue2;
+GLuint Texture::_gunYellow;
+GLuint Texture::_gunBlack;
+GLuint Texture::_gunGrey;
 
 // TV Screen textures
 GLuint Texture::_tvTextures[11];
@@ -35,7 +38,7 @@ void Texture::off() {
 void Texture::setupTextures() {
 	// General Pathfinder Textures
 	initializeTexture("Textures/blue.bmp", &_blue);
-
+	
 	// TV Textures
 	LPCSTR tvTextureFiles[11] = {
 		"Textures/tvAngry.bmp",

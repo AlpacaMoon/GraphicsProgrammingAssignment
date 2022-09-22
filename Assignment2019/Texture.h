@@ -8,7 +8,10 @@ public:
 	// Texture GLuint
 	static GLuint _blue;
 	static GLuint _blue2;
-
+	static GLuint _gunYellow;
+	static GLuint _gunBlack;
+	static GLuint _gunGrey;
+	
 	// TV screen textures
 	static GLuint _tvTextures[11];
 

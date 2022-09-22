@@ -32,6 +32,9 @@ GLUquadricObj* hipBallObj;
 GLUquadricObj* armUpperObj, * armLowerObj, * shoulderObj, * fingerObj;;
 GLUquadricObj* zipLineTubeObj, * zipLineBackpackObj;
 
+GLUquadricObj* weaponObj;
+boolean Model::isFired = false;
+float Model::bulletPos[3] = { 0.0f,0.0f,0.0f };
 GLUquadricObj* barrelObj;
 
 // Animation variables / Model transformation variables
@@ -91,6 +94,11 @@ float Model::closedFingerRot[5][3] = {
 	{80, 80, 80},
 	{80, 80, 80}
 };
+
+float Model::bulletPos[3] = { 0,0,0 };
+boolean Model::isFired = false;
+//float Model::bulletPos[3] = { LArmRot[2][0], LArmRot[2][1], LArmRot[2][2] };
+
 
 GLuint Model::tvTexture;
 
@@ -2654,6 +2662,12 @@ void Model::r99() {
 	handle2.addCoordinate(0.03, 0.12, 0);
 	handle2.addCoordinate(-0.03, 0.12, 0);
 
+	CoordinateSet sight(10);
+	sight.addCoordinate(-0.05, -0.02, 0);
+	sight.addCoordinate(0.05, -0.02, 0);
+	sight.addCoordinate(0.03, 0.04, 0);
+	sight.addCoordinate(0, 0, 0);
+	sight.addCoordinate(-0.04, 0, 0);
 	glPushMatrix();
 	{
 		glTranslatef(0, 0, -0.5f);
@@ -2782,6 +2796,12 @@ void Model::r99() {
 		}
 		glPopMatrix();
 
+		glPushMatrix();
+		{
+			bullet();
+		}
+		glPopMatrix();
+
 
 	}
 	glPopMatrix();
@@ -2793,4 +2813,21 @@ void Model::r99() {
 	handle1.destroy();
 	magazine.destroy();
 	handle2.destroy();
+}
+
+void Model::bullet() {
+	if (weaponObj == NULL) {
+		weaponObj = gluNewQuadric();
+	}
+	glColor3f(1, 0, 0);
+	glPushMatrix();
+	{
+		glTranslatef(bulletPos[0], bulletPos[1], bulletPos[2]);
+		gluCylinder(weaponObj, 0.001f, 0.02f, 0.05f, 10, 10);
+		glTranslatef(0, 0, 0.1f);
+		gluCylinder(weaponObj, 0.02f, 0.02f, 0.05f, 10, 10);
+		//gluSphere(weaponObj, 0.02f, 10, 10);
+	}
+	glPopMatrix();
+
 }

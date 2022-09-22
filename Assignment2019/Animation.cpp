@@ -369,6 +369,16 @@ void Animation::clampLeftFingers() {
 	}
 }
 
+void Animation::shootBullet() {
+	if (Model::isFired && Model::bulletPos[0] > -2 && Model::bulletPos[1] > -2 && Model::bulletPos[2] > -2) {
+		Model::bulletPos[2] -= 0.005f;
+	}
+	else {
+		Model::bulletPos[0] = Model::LArmRot[2][0];
+		Model::bulletPos[1] = Model::LArmRot[2][1];
+		Model::bulletPos[2] = Model::LArmRot[2][2];
+	}
+}
 
 /*	Texture files
 	1)	"Textures/tvAngry.bmp",

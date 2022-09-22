@@ -40,6 +40,8 @@ public:
 	static void clampRightFingers();
 	static void clampLeftFingers();
 
+	//weapon
+	static  void shootBullet();
 
 	// TV screen
 	static int currentTVscreen;
