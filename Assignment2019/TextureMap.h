@@ -15,5 +15,10 @@ public:
 
 	// Static
 	static TextureMap allBlue();
+
+	static TextureMap gunYellow();
+	static TextureMap gunBlack();
+	static TextureMap gunGrey();
+
 };
 

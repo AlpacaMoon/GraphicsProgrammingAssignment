@@ -11,9 +11,14 @@ int Texture::minFilter = GL_LINEAR;
 int Texture::wrapS = GL_REPEAT;
 int Texture::wrapT = GL_REPEAT;
 
+//texture control
+bool Texture::onTexture = true;
+
 // Static textures
 GLuint Texture::_blue;
 GLuint Texture::_blue2;
+
+//gun texture
 GLuint Texture::_gunYellow;
 GLuint Texture::_gunBlack;
 GLuint Texture::_gunGrey;
@@ -28,7 +33,9 @@ void Texture::use(GLuint texture) {
 }
 
 void Texture::on() {
-	glEnable(GL_TEXTURE_2D);
+	if (onTexture) {
+		glEnable(GL_TEXTURE_2D);
+	}
 }
 
 void Texture::off() {
@@ -61,6 +68,11 @@ void Texture::setupTextures() {
 
 	// Skybox
 	initializeTexture("Textures/skybox.bmp", &_skybox);
+
+	//gun texture
+	initializeTexture("Textures/r99_1.bmp", &_gunYellow);
+	initializeTexture("Textures/r99_2.bmp", &_gunBlack);
+	initializeTexture("Textures/r99_3.bmp", &_gunGrey);
 }
 
 // Initialize one texture

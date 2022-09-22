@@ -88,10 +88,52 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Textures\brick.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
     <Image Include="Textures\blue.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Textures\brick.bmp">
+    <Image Include="Textures\tvAngry.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\tvBlank.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\tvDead.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\tvExclamation.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\tvGlitched.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\tvHappy.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\tvKO.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\tvLove.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\tvQuestion-Mark.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\tvSad.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\tvThumbs-Up.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\r99_1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\r99_2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\r99_3.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Textures\tvAngry.bmp">

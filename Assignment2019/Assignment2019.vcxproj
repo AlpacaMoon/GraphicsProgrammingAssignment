@@ -184,6 +184,9 @@
     <Image Include="Textures\tvQuestion-Mark.bmp" />
     <Image Include="Textures\tvSad.bmp" />
     <Image Include="Textures\tvThumbs-Up.bmp" />
+  <Image Include="Textures\r99_1.bmp" />
+    <Image Include="Textures\r99_2.bmp" />
+    <Image Include="Textures\r99_3.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

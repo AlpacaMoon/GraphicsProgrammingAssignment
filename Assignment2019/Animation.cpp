@@ -115,6 +115,8 @@ void Animation::runAnimations() {
 		if (isJumping()) {
 			jump();
 		}
+		
+		Animation::shootBullet();
 	}
 	// If cutscene == Zipline away
 	else if (playingCutscene == 1) {
@@ -590,7 +592,7 @@ void Animation::clampLeftFingers() {
 
 void Animation::shootBullet() {
 	if (Model::isFired && Model::bulletPos[0] > -2 && Model::bulletPos[1] > -2 && Model::bulletPos[2] > -2) {
-		Model::bulletPos[2] -= 0.005f;
+		Model::bulletPos[2] -= 0.05f;
 	}
 	else {
 		Model::bulletPos[0] = Model::LArmRot[2][0];

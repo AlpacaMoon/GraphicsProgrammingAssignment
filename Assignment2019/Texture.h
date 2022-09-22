@@ -22,6 +22,7 @@ public:
 	// Enable / Disable texture
 	static void on();
 	static void off();
+	static bool onTexture;
 
 	// Initialize all textures at once
 	static void setupTextures();
@@ -42,7 +43,5 @@ public:
 	// Variables for texture wrapping methods
 	static int wrapS;
 	static int wrapT;
-
-
 };
 

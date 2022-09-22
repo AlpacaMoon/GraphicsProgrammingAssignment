@@ -1,4 +1,4 @@
-
+#include <Windowsx.h>
 #include <Windows.h>
 #include <gl/GL.h>
 #include <math.h>
@@ -23,27 +23,24 @@ const int X_AXIS[3] = { 1, 0, 0 };
 const int Y_AXIS[3] = { 0, 1, 0 };
 const int Z_AXIS[3] = { 0, 0, 1 };
 
-float camRotation[3] = { 0, 0, 0 };
+float camRotation[3] = { 0,0,0 };
 float camRotateSpeed = 5.0f;
 
-//lighting test
+//lighting 
 GLfloat ambientLight[4] = { 1,1,1,1 }; //RGBA
 GLfloat diffuseLight[4] = { 1,1,1,1 }; //RGBA
 GLfloat positionLight[4] = { 0,5,0,0 }; //x,y,z,0
 
-//lookAt test
+//lookAt
 float eye[3] = { 0,0,5 };
 float tempEye[3] = { 0,0,0 };
-float eyeXAngle = 0;
-float cumEyeXAngle = 0;
-
-float eyeYAngle = 0;
-float eyeZAngle = 0;
 float lookAt[3] = { 0,0,0 };
-float lookAtXAngle = 0;
-float lookAtYAngle = 0;
-float lookAtZAngle = 0;
 float up[3] = { 0,1,0 };
+
+bool isOrtho = true;
+
+// mouse movement
+float lastX = 0.0f, lastY = 0.0f;
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -52,6 +49,40 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
+		break;
+
+	case WM_MOUSEMOVE:
+		switch (wParam) {
+		case MK_RBUTTON:
+			int xPos = GET_X_LPARAM(lParam);
+			int yPos = GET_Y_LPARAM(lParam);
+			camRotation[1] += (xPos - lastX) / 2;
+			camRotation[0] += (yPos - lastY) / 2;
+			lastX = xPos;
+			lastY = yPos;
+			break;
+		}
+		break;
+
+	case WM_RBUTTONDOWN:
+		lastX = GET_X_LPARAM(lParam);
+		lastY = GET_Y_LPARAM(lParam);
+		break;
+
+	case WM_LBUTTONDOWN:
+		Model::isFired = !Model::isFired;
+		break;
+
+	case WM_MOUSEWHEEL:
+		if (eye[2] <= 20 && eye[2] >= -20) {
+			eye[2] += GET_WHEEL_DELTA_WPARAM(wParam) / 120.0f;
+		}
+		else if (eye[2] > 20) {
+			eye[2] = 20.0f;
+		}
+		else if (eye[2] < -20) {
+			eye[2] = -20.0f;
+		}
 		break;
 
 	case WM_KEYDOWN:
@@ -66,53 +97,37 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				camRotation[0] += camRotateSpeed;
 				inputting = true;
 				break;
+
 			case VK_LEFT:
 				camRotation[1] -= camRotateSpeed;
 				inputting = true;
 				break;
+
 			case VK_RIGHT:
 				camRotation[1] += camRotateSpeed;
 				inputting = true;
 				break;
+
 			case VK_OEM_COMMA:
 				camRotation[2] += camRotateSpeed;
 				inputting = true;
 				break;
+
 			case VK_OEM_PERIOD:
 				camRotation[2] -= camRotateSpeed;
 				inputting = true;
 				break;
+
+			case VK_NUMPAD0:
+				isOrtho = !isOrtho;
+				break;
+
 			case VK_BACK:
 				camRotation[0] = 0;
 				camRotation[1] = 0;
 				camRotation[2] = 0;
 				break;
 
-			case VK_NUMPAD2:
-				camRotation[0] = 0;
-				camRotation[1] = 0;
-				camRotation[2] = 0;
-				break;
-			case VK_NUMPAD8:
-				camRotation[0] = 0;
-				camRotation[1] = 180;
-				camRotation[2] = 0;
-				break;
-			case VK_NUMPAD4:
-				camRotation[0] = 0;
-				camRotation[1] = 270;
-				camRotation[2] = 0;
-				break;
-			case VK_NUMPAD6:
-				camRotation[0] = 0;
-				camRotation[1] = 90;
-				camRotation[2] = 0;
-				break;
-			case VK_NUMPAD5:
-				camRotation[0] = -90;
-				camRotation[1] = 0;
-				camRotation[2] = 0;
-				break;
 
 			case VK_F1:
 				Lightning::onLightning = !Lightning::onLightning;
@@ -125,34 +140,15 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			case VK_F3:
 				Controls::isIndependentControls = !Controls::isIndependentControls;
 				break;
-			
+
 			case VK_F4:
 				Environment::showSkybox = !Environment::showSkybox;
 				break;
 
-				//try eye
-			case 'V':
-				eyeXAngle = 5.0f;
-				cumEyeXAngle += eyeXAngle;
-
-				if (cumEyeXAngle == 90) {
-					//Utility::rotateAroundYaxis(tempEye, 180, eye);
-					Utility::rotateAroundXaxis(eye, 180, tempEye);
-					//Utility::rotateAroundZaxis(eye, 180, tempEye);
-					//Utility::rotateAroundXaxis(eye, -eyeXAngle, tempEye);
-				}
-				else {
-					Utility::rotateAroundXaxis(eye, eyeXAngle, tempEye);
-				}
-				eye[0] = tempEye[0];
-				eye[1] = tempEye[1];
-				eye[2] = tempEye[2];
-
-				if (cumEyeXAngle == 360) {
-					cumEyeXAngle -= 360;
-				}
-
+			case VK_F5:
+				Texture::onTexture = !Texture::onTexture;
 				break;
+
 			}
 
 			if (Controls::isIndependentControls) {
@@ -240,6 +236,8 @@ void display()
 	{
 		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
 		Model::Pathfinder();
+		//Model::r99();
+
 	}
 	glPopMatrix();
 
@@ -259,17 +257,15 @@ void setupEnvironmentLightning() {
 
 void setupCamera()
 {
-	//#pragma region View to Project
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-1.5, 1.5, -1.5, 1.5, -2, 100);
-	//gluPerspective(35, 1, 1, 100);
-	//glOrtho(-2, 2, -2, 2, 1, 10);
-	//glFrustum(-1, 1, -1, 1, 1, 10);
 
-	//gluPerspective(60, 1, 1, 10);
-
-	//# pragma endregion
+	if (isOrtho) {
+		glOrtho(-1.5f, 1.5f, -1.5f, 1.5f, -2, 100);
+	}
+	else {
+		gluPerspective(35, 1, 1, 100);
+	}
 }
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
@@ -313,9 +309,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 	//Lightning setup
 	setupEnvironmentLightning();
-	//camera setup
-	setupCamera();
-
+	
 	// Texture setup
 	Texture::setupTextures();
 
@@ -326,6 +320,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
 	while (true)
 	{
+		//camera setup
+		setupCamera();
+
 		Time::currentTicks = clock();
 
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))

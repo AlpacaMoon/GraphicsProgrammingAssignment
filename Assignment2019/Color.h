@@ -5,8 +5,8 @@ public:
 	// Texture colors
 	static void lightBlue();
 	static void lightBlue2();
-	static void lightGray();
-	static void darkGray();
+	static void lightGrey();
+	static void darkGrey();
 	static void gold();
 
 	// Basic colors

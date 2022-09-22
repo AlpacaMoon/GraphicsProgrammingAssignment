@@ -1,4 +1,5 @@
 #include "Lightning.h";
+#include "Texture.h";
 #include <Windows.h>
 #include <gl/GL.h>
 
