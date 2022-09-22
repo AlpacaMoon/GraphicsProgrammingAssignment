@@ -1,4 +1,4 @@
-
+#include <Windowsx.h>
 #include <Windows.h>
 #include <gl/GL.h>
 #include <math.h>
@@ -23,7 +23,7 @@ const int X_AXIS[3] = { 1, 0, 0 };
 const int Y_AXIS[3] = { 0, 1, 0 };
 const int Z_AXIS[3] = { 0, 0, 1 };
 
-float camRotation[3] = { 0, 0, 0 };
+float camRotation[3] = {0,0,0};
 float camRotateSpeed = 5.0f;
 
 //lighting test
@@ -34,16 +34,11 @@ GLfloat positionLight[4] = { 0,5,0,0 }; //x,y,z,0
 //lookAt test
 float eye[3] = { 0,0,5 };
 float tempEye[3] = { 0,0,0 };
-float eyeXAngle = 0;
-float cumEyeXAngle = 0;
-
-float eyeYAngle = 0;
-float eyeZAngle = 0;
 float lookAt[3] = { 0,0,0 };
-float lookAtXAngle = 0;
-float lookAtYAngle = 0;
-float lookAtZAngle = 0;
 float up[3] = { 0,1,0 };
+
+// mouse movement
+float lastX = 0.0f, lastY = 0.0f;
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -52,6 +47,28 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
+		break;
+
+	case WM_MOUSEMOVE:
+		switch (wParam) {
+		case MK_RBUTTON:
+			int xPos = GET_X_LPARAM(lParam);
+			int yPos = GET_Y_LPARAM(lParam);
+			camRotation[1] += (xPos - lastX)/2;
+			camRotation[0] += (yPos - lastY)/2;
+			lastX = xPos;
+			lastY = yPos;
+			break;
+		}
+		break;
+
+	case WM_RBUTTONDOWN:
+		lastX = GET_X_LPARAM(lParam);
+		lastY = GET_Y_LPARAM(lParam);
+		break;
+
+	case WM_LBUTTONDOWN:
+		Model::isFired = !Model::isFired;
 		break;
 
 	case WM_MOUSEWHEEL:
@@ -93,30 +110,6 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				break;
 			case VK_SPACE:
 				camRotation[0] = 0;
-				camRotation[1] = 0;
-				camRotation[2] = 0;
-				break;
-
-			case VK_NUMPAD8:
-				if (eye[2] > -20) {
-					eye[2] -= 0.1f;
-				}
-				else if (eye[2] == 0) {
-					eye[2] = 0.01f;
-				}
-				break;
-			case VK_NUMPAD4:
-				camRotation[0] = 0;
-				camRotation[1] = 270;
-				camRotation[2] = 0;
-				break;
-			case VK_NUMPAD6:
-				camRotation[0] = 0;
-				camRotation[1] = 90;
-				camRotation[2] = 0;
-				break;
-			case VK_NUMPAD5:
-				camRotation[0] = -90;
 				camRotation[1] = 0;
 				camRotation[2] = 0;
 				break;
