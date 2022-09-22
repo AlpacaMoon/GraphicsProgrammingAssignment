@@ -148,6 +148,7 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="CoordinateSet.cpp" />
+    <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Lightning.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="Controls.h" />
     <ClInclude Include="CoordinateSet.h" />
+    <ClInclude Include="Environment.h" />
     <ClInclude Include="Lightning.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Texture.h" />
@@ -170,9 +172,7 @@
   <ItemGroup>
     <Image Include="Textures\blue.bmp" />
     <Image Include="Textures\brick.bmp" />
-    <Image Include="Textures\r99_1.bmp" />
-    <Image Include="Textures\r99_2.bmp" />
-    <Image Include="Textures\r99_3.bmp" />
+    <Image Include="Textures\skybox.bmp" />
     <Image Include="Textures\tvAngry.bmp" />
     <Image Include="Textures\tvBlank.bmp" />
     <Image Include="Textures\tvDead.bmp" />
@@ -184,6 +184,9 @@
     <Image Include="Textures\tvQuestion-Mark.bmp" />
     <Image Include="Textures\tvSad.bmp" />
     <Image Include="Textures\tvThumbs-Up.bmp" />
+  <Image Include="Textures\r99_1.bmp" />
+    <Image Include="Textures\r99_2.bmp" />
+    <Image Include="Textures\r99_3.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -19,6 +19,7 @@ GLuint Texture::_blue2;
 GLuint Texture::_gunYellow;
 GLuint Texture::_gunBlack;
 GLuint Texture::_gunGrey;
+GLuint Texture::_skybox;
 
 // TV Screen textures
 GLuint Texture::_tvTextures[11];
@@ -59,6 +60,9 @@ void Texture::setupTextures() {
 		initializeTexture(tvTextureFiles[i], &_tvTextures[i]);
 	}
 	Animation::currentTVscreen = 0;
+
+	// Skybox
+	initializeTexture("Textures/skybox.bmp", &_skybox);
 
 	//gun texture
 	initializeTexture("Textures/r99_1.bmp", &_gunYellow);

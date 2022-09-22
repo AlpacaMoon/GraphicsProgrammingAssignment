@@ -11,7 +11,6 @@ public:
 	static float radToDeg(float rad);
 
 	// Drawing
-	static void drawGrids(float interval = 0.1f);
 	static void drawLine(CoordinateSet coords);
 	static void drawCircle(float center[3], float normal[3], float radius, int edges);
 	static void drawBezierLine(CoordinateSet coordSet, int divisions);

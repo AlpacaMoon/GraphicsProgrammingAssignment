@@ -13,6 +13,7 @@
 #include "Lightning.h"
 #include "Time.h"
 #include "Texture.h"
+#include "Environment.h"
 
 #pragma comment (lib, "OpenGL32.lib")
 
@@ -25,24 +26,20 @@ const int Z_AXIS[3] = { 0, 0, 1 };
 float camRotation[3] = { 0, 0, 0 };
 float camRotateSpeed = 5.0f;
 
-bool showGrid = true;
-
-bool onLightning = false;
-
 //lighting test
 GLfloat ambientLight[4] = { 1,1,1,1 }; //RGBA
 GLfloat diffuseLight[4] = { 1,1,1,1 }; //RGBA
 GLfloat positionLight[4] = { 0,5,0,0 }; //x,y,z,0
 
 //lookAt test
-float eye[3] = { 0,0,0 };
+float eye[3] = { 0,0,5 };
 float tempEye[3] = { 0,0,0 };
 float eyeXAngle = 0;
 float cumEyeXAngle = 0;
 
 float eyeYAngle = 0;
 float eyeZAngle = 0;
-float lookAt[3] = { 0,0,-1 };
+float lookAt[3] = { 0,0,0 };
 float lookAtXAngle = 0;
 float lookAtYAngle = 0;
 float lookAtZAngle = 0;
@@ -118,15 +115,19 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				break;
 
 			case VK_F1:
-				onLightning = !onLightning;
+				Lightning::onLightning = !Lightning::onLightning;
 				break;
 
 			case VK_F2:
-				showGrid = !showGrid;
+				Environment::showGridlines = !Environment::showGridlines;
 				break;
 
 			case VK_F3:
 				Controls::isIndependentControls = !Controls::isIndependentControls;
+				break;
+			
+			case VK_F4:
+				Environment::showSkybox = !Environment::showSkybox;
 				break;
 
 				//try eye
@@ -218,30 +219,22 @@ void display()
 	glClearColor(0.8, 0.8, 0.8, 1);
 
 	// Lighting switch
-	if (onLightning) {
-		//enable which type of light
-		glEnable(GL_LIGHT0);
-		//enable lighting
-		glEnable(GL_LIGHTING);
-	}
-	else {
-		//enable which type of light
-		glDisable(GL_LIGHT0);
-		//enable lighting
-		glDisable(GL_LIGHTING);
-	}
+	Lightning::lightningSwitch();
 
 	// Real thing
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glScalef(0.8, 0.8, 0.8);
+	gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
 
 	glRotatef(camRotation[0], 1, 0, 0);
 	glRotatef(camRotation[1], 0, 1, 0);
 	glRotatef(camRotation[2], 0, 0, 1);
 
+	Environment::skybox();
+	Environment::gridLines();
 	Animation::runAnimations();
-	
+
+	glScalef(0.8, 0.8, 0.8);
 	glPushMatrix();
 	{
 		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
@@ -251,11 +244,6 @@ void display()
 	}
 	glPopMatrix();
 
-	// Gridlines
-	if (showGrid) {
-		glColor3f(0.9, 0.9, 0.9);
-		Utility::drawGrids();
-	}
 	//--------------------------------
 	//	End of OpenGL drawing
 	//--------------------------------
@@ -263,6 +251,8 @@ void display()
 
 //--------------------------------------------------------------------
 void setupEnvironmentLightning() {
+	Lightning::onLightning = false;
+
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
 	glLightfv(GL_LIGHT0, GL_POSITION, positionLight);
@@ -272,6 +262,9 @@ void setupCamera()
 {
 	//#pragma region View to Project
 	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//glOrtho(-1, 1, -1, 1, -2, 100);
+	gluPerspective(35, 1, 1, 100);
 	//glOrtho(-2, 2, -2, 2, 1, 10);
 	//glFrustum(-1, 1, -1, 1, 1, 10);
 
