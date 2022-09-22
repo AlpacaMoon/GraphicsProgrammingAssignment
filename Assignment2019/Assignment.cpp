@@ -147,6 +147,10 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				Environment::showSkybox = !Environment::showSkybox;
 				break;
 
+			case VK_F5:
+				Texture::onTexture = !Texture::onTexture;
+				break;
+
 			}
 
 			if (Controls::isIndependentControls) {

@@ -11,6 +11,9 @@ int Texture::minFilter = GL_LINEAR;
 int Texture::wrapS = GL_REPEAT;
 int Texture::wrapT = GL_REPEAT;
 
+//texture control
+bool Texture::onTexture = true;
+
 // Static textures
 GLuint Texture::_blue;
 GLuint Texture::_blue2;
@@ -30,7 +33,9 @@ void Texture::use(GLuint texture) {
 }
 
 void Texture::on() {
-	glEnable(GL_TEXTURE_2D);
+	if (onTexture) {
+		glEnable(GL_TEXTURE_2D);
+	}
 }
 
 void Texture::off() {

@@ -22,6 +22,7 @@ public:
 	// Enable / Disable texture
 	static void on();
 	static void off();
+	static bool onTexture;
 
 	// Initialize all textures at once
 	static void setupTextures();
