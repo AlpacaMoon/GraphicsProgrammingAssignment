@@ -2677,125 +2677,141 @@ void Model::r99() {
 
 		glPushMatrix();
 		{
-			glColor3f(1, 0, 0);
-			Utility::extrudePolygon(barrelCoors, centre1, zAxis, 1.0f, true, true);
+			Lightning::yellowMaterial();
+			Utility::extrudePolygon(barrelCoors, centre1, zAxis, 1.0f, TextureMap::gunYellow(), true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
-			glColor3f(0.1, 0.1, 0.5);
 			glTranslatef(0.055f, 0, 1.0f);
-			Utility::extrudePolygon(barrelBack, centre1, zAxis, 0.5f, true, true);
+			Lightning::greyMaterial();
+			Utility::extrudePolygon(barrelBack, centre1, zAxis, 0.5f, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
-			glColor3f(0.1, 0.1, 0.5);
+			
 			glTranslatef(-0.055f, 0, 1.0f);
-			Utility::extrudePolygon(barrelBack, centre1, zAxis, 0.5f, true, true);
+			Lightning::greyMaterial();
+			Utility::extrudePolygon(barrelBack, centre1, zAxis, 0.5f, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
-			glColor3f(0, 0, 0);
 			glTranslatef(0.07f, -0.05f, 1.5f);
 			glRotatef(-90, 0, 1, 0);
-			Utility::extrudePolygon(shoulderRest, centre1, zAxis, 0.14f, true, true);
+			Lightning::blackMaterial();
+			Utility::extrudePolygon(shoulderRest, centre1, zAxis, 0.14f, TextureMap::gunBlack(), true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
-			glColor3f(1, 1, 0);
 			glTranslatef(0.069, 0, 0);
-			Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
+			Lightning::blackMaterial();
+			Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, TextureMap::gunBlack(), true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
-			glColor3f(1, 0, 1);
 			glTranslatef(-0.069, 0, 0);
-			Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, true, true);
+			Lightning::blackMaterial();
+			Utility::extrudePolygon(barrelSide, centre1, zAxis, 0.2f, TextureMap::gunBlack(), true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
-			glColor3f(0, 1, 1);
 			glTranslatef(0, -0.075, 0.05);
-			Utility::extrudePolygon(barrelBottom, centre1, zAxis, 0.2f, true, true);
+			Lightning::greyMaterial();
+			Utility::extrudePolygon(barrelBottom, centre1, zAxis, 0.2f, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
-			glColor3f(0.5, 0, 0);
 			glTranslatef(0, 0.07, 0.07);
-			Utility::extrudePolygon(barrelTop, centre1, zAxis, 0.35f, true, true);
+			Lightning::blackMaterial();
+			Utility::extrudePolygon(barrelTop, centre1, zAxis, 0.35f, TextureMap::gunBlack(), true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
-			glColor3f(0.5, 0.2, 0.7);
 			glTranslatef(0, 0.07, 0.42);
-			Utility::extrudePolygon(barrelTopBack, centre1, zAxis, 0.53f, true, true);
+			Lightning::blackMaterial();
+			Utility::extrudePolygon(barrelTopBack, centre1, zAxis, 0.53f, TextureMap::gunBlack(), true, true);
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
-			glColor3f(0.5, 0, 0.5);
 			glTranslatef(0, -0.1, 0.05);
-			Utility::extrudePolygon(handle1, centre1, zAxis, 0.03f, true, true);
-		}
-		glPopMatrix();
-
-		//barrel head
-		glPushMatrix();
-		{
-			glColor3f(0, 0, 1);
-			glTranslatef(0, 0, -0.1f);
-			glRotatef(90, 0, 0, 1);
-			gluCylinder(barrelObj, 0.02f, 0.02f, 0.1f, 20, 20);
-			gluPartialDisk(barrelObj, 0, 0.02f, 20, 20, 0, 360);
-		}
-		glPopMatrix();
-
-		//lower barrel head
-		glPushMatrix();
-		{
-			glColor3f(1, 0.5, 0);
-			glTranslatef(0, -0.075f, -0.15f);
-			glRotatef(90, 0, 0, 1);
-			gluCylinder(barrelObj, 0.025f, 0.025f, 0.2f, 20, 20);
-			gluPartialDisk(barrelObj, 0, 0.025f, 20, 20, 0, 360);
+			Lightning::greyMaterial();
+			Utility::extrudePolygon(handle1, centre1, zAxis, 0.03f, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
 
 		//magazine
 		glPushMatrix();
 		{
-			glColor3f(0.2, 0, 0.3);
 			glTranslatef(-0.03, -0.13, 0.5);
 			glRotatef(-30, 1, 0, 0);
 			glRotatef(90, 0, 1, 0);
-			Utility::extrudePolygon(magazine, centre1, zAxis, 0.06, true, true);
+			Lightning::greyMaterial();
+			Utility::extrudePolygon(magazine, centre1, zAxis, 0.06, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
 
 		//handle2
 		glPushMatrix();
 		{
-			glColor3f(1, 0.8, 0.1);
 			glTranslatef(-0.03, -0.10, 0.9);
 			glRotatef(-30, 1, 0, 0);
 			glRotatef(90, 0, 1, 0);
-			Utility::extrudePolygon(handle2, centre1, zAxis, 0.06, true, true);
+			Lightning::greyMaterial();
+			Utility::extrudePolygon(handle2, centre1, zAxis, 0.06, TextureMap::gunGrey(), true, true);
+		}
+		glPopMatrix();
+
+		//barrel head
+		glPushMatrix();
+		{
+			glTranslatef(0, 0, -0.1f);
+			glRotatef(90, 0, 0, 1);
+			Lightning::blackMaterial();
+			Texture::use(Texture::_gunBlack);
+			Texture::on();
+			gluCylinder(barrelObj, 0.02f, 0.02f, 0.1f, 20, 20);
+			gluPartialDisk(barrelObj, 0, 0.02f, 20, 20, 0, 360);
+			Texture::off();
+		}
+		glPopMatrix();
+
+		//lower barrel head
+		glPushMatrix();
+		{
+			glTranslatef(0, -0.075f, -0.15f);
+			glRotatef(90, 0, 0, 1);
+			Lightning::blackMaterial();
+			Texture::use(Texture::_gunBlack);
+			Texture::on();
+			gluCylinder(barrelObj, 0.025f, 0.025f, 0.2f, 20, 20);
+			gluPartialDisk(barrelObj, 0, 0.025f, 20, 20, 0, 360);
+			Texture::off();
+		}
+		glPopMatrix();
+
+
+		glPushMatrix();
+		{
+			glTranslatef(0.05f, 0.11f, 0.88f);
+			glRotatef(-90, 0, 1, 0);
+			Utility::extrudePolygon(sight, centre1, zAxis, 0.1, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
 
@@ -2822,7 +2838,7 @@ void Model::bullet() {
 	if (weaponObj == NULL) {
 		weaponObj = gluNewQuadric();
 	}
-	glColor3f(1, 0, 0);
+	glColor3f(0, 0, 0);
 	glPushMatrix();
 	{
 		glTranslatef(bulletPos[0], bulletPos[1], bulletPos[2]);

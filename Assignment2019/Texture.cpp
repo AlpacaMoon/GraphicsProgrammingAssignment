@@ -14,6 +14,8 @@ int Texture::wrapT = GL_REPEAT;
 // Static textures
 GLuint Texture::_blue;
 GLuint Texture::_blue2;
+
+//gun texture
 GLuint Texture::_gunYellow;
 GLuint Texture::_gunBlack;
 GLuint Texture::_gunGrey;
@@ -57,6 +59,11 @@ void Texture::setupTextures() {
 		initializeTexture(tvTextureFiles[i], &_tvTextures[i]);
 	}
 	Animation::currentTVscreen = 0;
+
+	//gun texture
+	initializeTexture("Textures/r99_1.bmp", &_gunYellow);
+	initializeTexture("Textures/r99_2.bmp", &_gunBlack);
+	initializeTexture("Textures/r99_3.bmp", &_gunGrey);
 }
 
 // Initialize one texture

@@ -38,3 +38,27 @@ TextureMap TextureMap::allBlue() {
 	tmap.add(Texture::_blue, 3);
 	return tmap;
 }
+
+TextureMap TextureMap::gunBlack() {
+	TextureMap tmap;
+	tmap.add(Texture::_gunBlack, 1);
+	tmap.add(Texture::_gunBlack, 2);
+	tmap.add(Texture::_gunBlack, 3);
+	return tmap;
+}
+
+TextureMap TextureMap::gunYellow() {
+	TextureMap tmap;
+	tmap.add(Texture::_gunYellow, 1);
+	tmap.add(Texture::_gunYellow, 2);
+	tmap.add(Texture::_gunYellow, 3);
+	return tmap;
+}
+
+TextureMap TextureMap::gunGrey() {
+	TextureMap tmap;
+	tmap.add(Texture::_gunGrey, 1);
+	tmap.add(Texture::_gunGrey, 2);
+	tmap.add(Texture::_gunGrey, 3);
+	return tmap;
+}

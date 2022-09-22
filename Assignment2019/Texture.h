@@ -11,7 +11,7 @@ public:
 	static GLuint _gunYellow;
 	static GLuint _gunBlack;
 	static GLuint _gunGrey;
-	
+
 	// TV screen textures
 	static GLuint _tvTextures[11];
 
@@ -41,7 +41,5 @@ public:
 	// Variables for texture wrapping methods
 	static int wrapS;
 	static int wrapT;
-
-
 };
 
