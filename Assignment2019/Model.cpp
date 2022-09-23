@@ -511,14 +511,14 @@ void Model::Head() {
 				tempSet.addCoordinate(0.2, 0.025, -headWidthHalf + barOffset);
 				tempSet.addCoordinate(0.325, 0.025, -headWidthHalf + barOffset);
 				tempSet.addCoordinate(0.325, 0.03, -headWidthHalf + barOffset);
-				Utility::drawStraightTubes(tempSet, 6, 3, 8, barRad, 0.1);
+				Utility::drawStraightTubes(tempSet, 6, 3, 8, barRad, 0.1, Texture::_yellow);
 
 				tempSet.clear(10);
 				tempSet.addCoordinate(0.2, 0.0251, 0);
 				tempSet.addCoordinate(0.2, 0.025, headWidthHalf - barOffset);
 				tempSet.addCoordinate(0.325, 0.025, headWidthHalf - barOffset);
 				tempSet.addCoordinate(0.325, 0.03, headWidthHalf - barOffset);
-				Utility::drawStraightTubes(tempSet, 6, 3, 8, barRad, 0.1);
+				Utility::drawStraightTubes(tempSet, 6, 3, 8, barRad, 0.1, Texture::_yellow);
 
 				glPushMatrix();
 				{
@@ -527,7 +527,7 @@ void Model::Head() {
 					tempSet.addCoordinate(0.325, headWidthHalf * 1.35f - barOffset, -headWidthHalf + barOffset);
 					tempSet.addCoordinate(0.325, headWidthHalf * 1.35f - barOffset, headWidthHalf - barOffset);
 					tempSet.addCoordinate(0.325, 0.03, headWidthHalf - barOffset);
-					Utility::drawBezierTube(tempSet, 12, 8, barRad);
+					Utility::drawBezierTube(tempSet, 12, 8, barRad, Texture::_yellow);
 				}
 				glPopMatrix();
 			}
@@ -547,14 +547,14 @@ void Model::Head() {
 				tempSet.addCoordinate(0.2, -0.025, -headWidthHalf + barOffset);
 				tempSet.addCoordinate(0.325, -0.025, -headWidthHalf + barOffset);
 				tempSet.addCoordinate(0.325, -0.03, -headWidthHalf + barOffset);
-				Utility::drawStraightTubes(tempSet, 6, 3, 8, barRad, 0.1);
+				Utility::drawStraightTubes(tempSet, 6, 3, 8, barRad, 0.1, Texture::_yellow);
 
 				tempSet.clear(10);
 				tempSet.addCoordinate(0.2, -0.0251, 0);
 				tempSet.addCoordinate(0.2, -0.025, headWidthHalf - barOffset);
 				tempSet.addCoordinate(0.325, -0.025, headWidthHalf - barOffset);
 				tempSet.addCoordinate(0.325, -0.03, headWidthHalf - barOffset);
-				Utility::drawStraightTubes(tempSet, 6, 3, 8, barRad, 0.1);
+				Utility::drawStraightTubes(tempSet, 6, 3, 8, barRad, 0.1, Texture::_yellow);
 
 				glPushMatrix();
 				{
@@ -563,7 +563,7 @@ void Model::Head() {
 					tempSet.addCoordinate(0.325, -headWidthHalf * 1.35f + barOffset, -headWidthHalf + barOffset);
 					tempSet.addCoordinate(0.325, -headWidthHalf * 1.35f + barOffset, headWidthHalf - barOffset);
 					tempSet.addCoordinate(0.325, -0.03, headWidthHalf - barOffset);
-					Utility::drawBezierTube(tempSet, 12, 8, barRad);
+					Utility::drawBezierTube(tempSet, 12, 8, barRad, Texture::_yellow);
 				}
 				glPopMatrix();
 			}
@@ -877,13 +877,13 @@ void Model::Torso() {
 			Texture::on();
 			Texture::use(Texture::_tvTextures[Animation::currentTVscreen]);
 			glBegin(GL_QUADS);
-			glTexCoord2f(0, 1);
-			glVertex3f(x, 0, -tvWidthHalf);
-			glTexCoord2f(0, 0);
-			glVertex3f(x, -tvHeight, -tvWidthHalf);
-			glTexCoord2f(1, 0);
-			glVertex3f(x, -tvHeight, tvWidthHalf);
 			glTexCoord2f(1, 1);
+			glVertex3f(x, 0, -tvWidthHalf);
+			glTexCoord2f(1, 0);
+			glVertex3f(x, -tvHeight, -tvWidthHalf);
+			glTexCoord2f(0, 0);
+			glVertex3f(x, -tvHeight, tvWidthHalf);
+			glTexCoord2f(0, 1);
 			glVertex3f(x, 0, tvWidthHalf);
 			glEnd();
 			Texture::off();
@@ -986,7 +986,7 @@ void Model::Torso() {
 			tempSet.addCoordinate(0.75, -0.6, barLenHalf);
 			tempSet.addCoordinate(0.65, -0.4, barLenHalf);
 			tempSet.addCoordinate(0.65, -0.4, barLenHalf - barOutGap);
-			Utility::drawStraightTubes(tempSet, 8, 4, 8, barRad, 0.2f);
+			Utility::drawStraightTubes(tempSet, 8, 4, 8, barRad, 0.2f, Texture::_yellow);
 		}
 		glPopMatrix();
 
@@ -1046,38 +1046,38 @@ void Model::Torso() {
 			tempSet.addCoordinate(0.6, 0.225, 0);
 			tempSet.addCoordinate(0.6, 0.225, -barGap2);
 			tempSet.addCoordinate(0.55, 0.3, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(0.55, 0.3, -barGap2);
 			tempSet.addCoordinate(0.47, 0.38, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(0.47, 0.38, -barGap2);
 			tempSet.addCoordinate(0.45, 0.4, -barGap2);
 			tempSet.addCoordinate(0.39, 0.395, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(0.39, 0.395, -barGap2);
 			tempSet.addCoordinate(-0.09, 0.36, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.09, 0.36, -barGap2);
 			tempSet.addCoordinate(-0.15, 0.35, -barGap2);
 			tempSet.addCoordinate(-0.16, 0.335, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.16, 0.335, -barGap2);
 			tempSet.addCoordinate(-0.24, 0.215, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.24, 0.215, -barGap2);
 			tempSet.addCoordinate(-0.25, 0.2, -barGap2);
 			tempSet.addCoordinate(-0.25, 0.2, -barGap2 * 0.1f);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.25, 0.2, -barGap2 * 0.1f);
 			tempSet.addCoordinate(-0.25, 0.199, barGap * 2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 		}
 		glPopMatrix();
 
@@ -1097,38 +1097,38 @@ void Model::Torso() {
 			tempSet.addCoordinate(0.6, 0.225, -barGap2 * 2);
 			tempSet.addCoordinate(0.6, 0.225, -barGap2);
 			tempSet.addCoordinate(0.55, 0.3, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(0.55, 0.3, -barGap2);
 			tempSet.addCoordinate(0.47, 0.38, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(0.47, 0.38, -barGap2);
 			tempSet.addCoordinate(0.45, 0.4, -barGap2);
 			tempSet.addCoordinate(0.39, 0.395, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(0.39, 0.395, -barGap2);
 			tempSet.addCoordinate(-0.09, 0.36, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.09, 0.36, -barGap2);
 			tempSet.addCoordinate(-0.15, 0.35, -barGap2);
 			tempSet.addCoordinate(-0.16, 0.335, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.16, 0.335, -barGap2);
 			tempSet.addCoordinate(-0.24, 0.215, -barGap2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.24, 0.215, -barGap2);
 			tempSet.addCoordinate(-0.25, 0.2, -barGap2);
 			tempSet.addCoordinate(-0.25, 0.2, -barGap2 - (barGap2) * 0.9f);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 			tempSet.clear(3);
 			tempSet.addCoordinate(-0.25, 0.2, -barGap2 - (barGap2) * 0.9f);
 			tempSet.addCoordinate(-0.25, 0.199, (-barGap - barGap2) * 2);
-			Utility::drawBezierTube(tempSet, 3, 8, barRad);
+			Utility::drawBezierTube(tempSet, 3, 8, barRad, Texture::_yellow);
 		}
 		glPopMatrix();
 

@@ -7,11 +7,12 @@ class Texture
 public:
 	// Pathfinder textures
 	static GLuint _blue;
-	static GLuint _tvTextures[11];
+	static GLuint _yellow;
 	static GLuint _yellowRope;
 	static GLuint _eye;
 	static GLuint _blackVent;
 	static GLuint _winder;
+	static GLuint _tvTextures[11];
 
 	// Weapon textures
 	static GLuint _gunYellow;

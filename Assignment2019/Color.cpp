@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include <Windows.h>
 #include <gl/GL.h>
+#include "Texture.h"
 
 void Color::lightBlue() {
 	if (Lightning::onLightning) {
@@ -100,7 +101,7 @@ void Color::white() {
 }
 
 void Color::yellow() {
-	if (Lightning::onLightning) {
+	if (Lightning::onLightning || Texture::onTexture) {
 		glColor3f(1, 1, 1);
 	}
 	else {
