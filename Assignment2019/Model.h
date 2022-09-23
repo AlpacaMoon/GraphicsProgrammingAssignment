@@ -45,6 +45,7 @@ public:
 	// Weapon Models
 	static void r99();
 	static void bullet();
+	static void kukriKnife();
 	static float bulletPos[3];
 	static boolean isFired;
 

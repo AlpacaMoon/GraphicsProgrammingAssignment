@@ -33,6 +33,9 @@ GLfloat darkGreyMaterialDiffuse[4] = { (40 / 255.0), (41 / 255.0), (43 / 255.0),
 //Black
 GLfloat blackMaterialAmbient[4] = { 0,0,0,1 };
 GLfloat blackMaterialDiffuse[4] = { 0,0,0,1 };
+//silver
+GLfloat silverMaterialAmbient[4] = { (186 / 255.0), (186 / 255.0), (186 / 255.0),1 };
+GLfloat silverMaterialDiffuse[4] = { (186 / 255.0), (186 / 255.0), (186 / 255.0),1 };
 
 // Default
 GLfloat defaultMatAmbient[4] = { 0.2, 0.2, 0.2, 1 };
@@ -97,4 +100,9 @@ void Lightning::darkerGreyMaterial() {
 void Lightning::blackMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, blackMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blackMaterialDiffuse);
+}
+
+void Lightning::silverMaterial() {
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, silverMaterialAmbient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, silverMaterialDiffuse);
 }

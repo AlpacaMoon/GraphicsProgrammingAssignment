@@ -40,7 +40,6 @@ GLUquadricObj* zipLineTubeObj, * zipLineBackpackObj;
 GLUquadricObj* weaponObj;
 boolean Model::isFired = false;
 float Model::bulletPos[3] = { 0.0f,0.0f,0.0f };
-GLUquadricObj* barrelObj;
 
 // Animation variables / Model transformation variables
 float Model::bodyPos[3] = { 0, 0, 0 };
@@ -632,11 +631,11 @@ void Model::Head() {
 			upperNeck.rotate(headRot[0], headRot[1], headRot[2]);
 
 			// Compute lower neck (Stays still no matter the head rotation)
-			float center2[3] = {center[0], center[1], center[2] - neckLength};
+			float center2[3] = { center[0], center[1], center[2] - neckLength };
 			CoordinateSet lowerNeck = Utility::circleCoords(center2, neckRadiusLower, neckEdges);
 			lowerNeck.rotate(-90, 0, 0);
 
-			float volumeCenter[3] = {0, -headHeightHalf - neckLength / 2.0f, 0};
+			float volumeCenter[3] = { 0, -headHeightHalf - neckLength / 2.0f, 0 };
 
 			Utility::connectTwoFaces(upperNeck, lowerNeck, center2);
 
@@ -682,7 +681,7 @@ void Model::Torso() {
 			Lightning::blueMaterial();
 
 			float torsoCenter[3] = { 0, 0, z1 };
-			
+
 			Utility::extrudePolygon(torso, torsoCenter, zAxis, torsoWidth, TextureMap::allBlue());
 
 			Color::red();
@@ -815,7 +814,7 @@ void Model::Torso() {
 			back3.addCoordinate(-0.1, levels[2], halfTorsoWidth * radiuses[2]);
 			back3.addCoordinate(-0.35, levels[2], halfTorsoWidth * radiuses[2]);
 
-			float volumeCenter[3] = {-0.25, levels[2], 0};
+			float volumeCenter[3] = { -0.25, levels[2], 0 };
 			Utility::connectTwoFaces(back1, back2, Texture::_blue, volumeCenter);
 			Utility::connectTwoFaces(back2, back3, Texture::_blue, volumeCenter);
 
@@ -896,7 +895,7 @@ void Model::Torso() {
 			float tvWidthHalf = (0.68027f) / 2.0f;
 			float tvHeight = 0.45 * 1.1;
 			float x = 0.8151f;
-			float volumeCenter[3] = {0, 0, 0};
+			float volumeCenter[3] = { 0, 0, 0 };
 
 			Texture::on();
 			Texture::use(Texture::_tvTextures[Animation::currentTVscreen]);
@@ -2132,7 +2131,7 @@ void Model::Finger(float r1, float r2, float r3) {
 		seg.addCoordinate(segLength[0], -fingerWidth, 0);
 		seg.addCoordinate(segLength[0], 0, 0);
 		float segCenter[3] = { segLength[0] / 2.0f, -fingerWidth / 2.0f, 0 };
-		
+
 		Utility::extrudePolygon(seg, segCenter, zAxis, fingerThickness, TextureMap::allBlue());
 
 		// Finger deco
@@ -2591,12 +2590,11 @@ void Model::zipLineBackTube() {
 // Weapon Models
 void Model::r99() {
 
-	if (barrelObj == NULL) {
-		barrelObj = gluNewQuadric();
+	if (weaponObj == NULL) {
+		weaponObj = gluNewQuadric();
 	}
 
 	float centre1[3] = { 0,0,0 };
-	float centre2[3] = { 0,0,0 };
 	float zAxis[3] = { 0,0,1 };
 	float normal1[3] = { 0,0,0 };
 	float normal2[3] = { 0,0,0 };
@@ -2706,7 +2704,7 @@ void Model::r99() {
 
 		glPushMatrix();
 		{
-			
+
 			glTranslatef(-0.055f, 0, 1.0f);
 			Lightning::greyMaterial();
 			Color::lightGrey();
@@ -2811,8 +2809,8 @@ void Model::r99() {
 			Color::black();
 			Texture::use(Texture::_gunBlack);
 			Texture::on();
-			gluCylinder(barrelObj, 0.02f, 0.02f, 0.1f, 20, 20);
-			gluPartialDisk(barrelObj, 0, 0.02f, 20, 20, 0, 360);
+			gluCylinder(weaponObj, 0.02f, 0.02f, 0.1f, 20, 20);
+			gluPartialDisk(weaponObj, 0, 0.02f, 20, 20, 0, 360);
 			Texture::off();
 		}
 		glPopMatrix();
@@ -2826,8 +2824,8 @@ void Model::r99() {
 			Color::black();
 			Texture::use(Texture::_gunBlack);
 			Texture::on();
-			gluCylinder(barrelObj, 0.025f, 0.025f, 0.2f, 20, 20);
-			gluPartialDisk(barrelObj, 0, 0.025f, 20, 20, 0, 360);
+			gluCylinder(weaponObj, 0.025f, 0.025f, 0.2f, 20, 20);
+			gluPartialDisk(weaponObj, 0, 0.025f, 20, 20, 0, 360);
 			Texture::off();
 		}
 		glPopMatrix();
@@ -2848,8 +2846,6 @@ void Model::r99() {
 			bullet();
 		}
 		glPopMatrix();
-
-
 	}
 	glPopMatrix();
 
@@ -2862,6 +2858,85 @@ void Model::r99() {
 	handle1.destroy();
 	magazine.destroy();
 	handle2.destroy();
+}
+
+void Model::kukriKnife() {
+	if (weaponObj == NULL) {
+		weaponObj = gluNewQuadric();
+	}
+
+	float centre1[3] = { -0.2,0.2,0 };
+	float zAxis[3] = { 0,0,1 };
+
+	CoordinateSet temp(10);
+	CoordinateSet temp2(10);
+	temp.addCoordinate(0, 0.4, 0);
+	temp.addCoordinate(-0.6, 0.3, 0);
+	temp.addCoordinate(-0.9, -0.1, 0);
+	temp.addCoordinate(-1.3, -0.5, 0);
+	temp2 = Utility::bezierCurveCoords(temp, 20);
+
+	CoordinateSet knife(10);
+	knife.addCoordinate(0.3, 0.4, 0);
+	knife.combineCoords(temp2);
+
+	temp.clear(10);
+
+	temp.addCoordinate(-1.3, -0.5, 0);
+	temp.addCoordinate(-0.8, -0.7, 0);
+	temp.addCoordinate(-0.7, -0.3, 0);
+	temp.addCoordinate(-0.4, -0.1, 0);
+	temp.addCoordinate(-0.3, 0.2, 0);
+	temp.addCoordinate(0.1, 0.2, 0);
+	temp2 = Utility::bezierCurveCoords(temp, 20);
+
+	knife.combineCoords(temp2);
+	knife.addCoordinate(0.3, 0.2, 0);
+
+	glPushMatrix();
+	{
+		Color::silver();
+		Lightning::silverMaterial();
+		glTranslatef(0, -0.02f, 0);
+		//Utility::drawLine(knife);
+		Utility::extrudePolygon(knife, centre1, zAxis, 0.02, true, true);
+	}
+	glPopMatrix();
+
+	glPushMatrix();
+	{
+		glTranslatef(0.3f, 0.27f, 0);
+		glRotatef(90, 0, 1, 0);
+		glRotatef(90, 0, 0, 1);
+		glPushMatrix();
+		{
+			Color::black();
+			Lightning::blackMaterial();
+			gluPartialDisk(weaponObj, 0, 0.12f, 10, 10, 0, 360);
+			gluCylinder(weaponObj, 0.12f, 0.12f, 0.05f, 20, 20);
+			glTranslatef(0, 0, 0.05f);
+			gluPartialDisk(weaponObj, 0, 0.12f, 10, 10, 0, 360);
+		}
+		glPopMatrix();
+
+		glPushMatrix();
+		{
+			Color::darkGrey();
+			Lightning::darkerGreyMaterial();
+			glTranslatef(0, 0, 0.05f);
+			gluPartialDisk(weaponObj, 0, 0.08f, 10, 10, 0, 360);
+			gluCylinder(weaponObj, 0.08f, 0.08f, 0.6f, 20, 20);
+			glTranslatef(0, 0, 0.6f);
+			gluPartialDisk(weaponObj, 0, 0.08f, 10, 10, 0, 360);
+		}
+		glPopMatrix();
+	}
+	glPopMatrix();
+	
+	knife.destroy();
+	temp.destroy();
+	temp2.destroy();
+
 }
 
 void Model::bullet() {
