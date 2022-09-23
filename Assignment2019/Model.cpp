@@ -30,7 +30,7 @@ float buttWidth = 0.1f;
 *	1 = Gun (R99)
 *	2 = Knife (Kukri Knife)
 */
-int Model::currentWeapon = 1;
+int Model::currentWeapon = 2;
 GLfloat Model::gunFirePointMatrix[16];
 GLfloat Model::temporaryMatrix[16];
 boolean Model::isFired = false;
@@ -106,10 +106,10 @@ float Model::defaultLArmRot[3][3] = {
 };
 float Model::RFingerRot[5][3] = {
 	{30, 37, 45},
-	{15, 70, 70},
 	{40, 70, 70},
-	{80, 80, 80},
-	{80, 80, 80}
+	{40, 70, 70},
+	{40, 70, 70},
+	{40, 70, 70},
 };
 float Model::LFingerRot[5][3] = {
 	{15, 15, 15},
@@ -138,6 +138,13 @@ float Model::holdingGunFingerRot[5][3] = {
 	{40, 70, 70},
 	{80, 80, 80},
 	{80, 80, 80}
+};
+float Model::holdingKnifeFingerRot[5][3] = {
+	{30, 37, 45},
+	{40, 70, 70},
+	{40, 70, 70},
+	{40, 70, 70},
+	{40, 70, 70},
 };
 void Model::Pathfinder() {
 	glPushMatrix();
@@ -207,7 +214,6 @@ void Model::UpperBody() {
 			LeftArm();
 		}
 		glPopMatrix();
-
 	}
 	glPopMatrix();
 }
@@ -394,6 +400,11 @@ void Model::RightArm() {
 				break;
 			case 2:
 				// Knife (Kukri Knife)
+				glTranslatef(0.2, 0, 0.1);
+				glRotatef(180, 0, 1, 0);
+				glRotatef(-90, 0, 0, 1);
+				glScalef(0.6, 0.6, 0.6);
+				kukriKnife();
 				break;
 			}
 		}
@@ -2965,6 +2976,8 @@ void Model::kukriKnife() {
 		weaponObj = gluNewQuadric();
 	}
 
+	glTranslatef(-0.6, -0.275, 0);
+
 	float centre1[3] = { -0.2,0.2,0 };
 	float zAxis[3] = { 0,0,1 };
 
@@ -2998,7 +3011,6 @@ void Model::kukriKnife() {
 		Color::silver();
 		Lightning::silverMaterial();
 		glTranslatef(0, -0.02f, 0);
-		//Utility::drawLine(knife);
 		Utility::extrudePolygon(knife, centre1, zAxis, 0.02, TextureMap::metal(), true, true);
 	}
 	glPopMatrix();

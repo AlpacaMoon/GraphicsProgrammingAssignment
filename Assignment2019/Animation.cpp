@@ -636,7 +636,6 @@ void Animation::shootBullet() {
 				Model::bulletPositions[i][0] = 0;
 
 				// Random spread on x and y axis
-				srand(clock());
 				Model::bulletPositions[i][1] = (((rand() % 2001) / 1000.0f) - 1.0f) * Model::bulletSpread;
 				Model::bulletPositions[i][2] = (((rand() % 2001) / 1000.0f) - 1.0f) * Model::bulletSpread;
 
@@ -660,7 +659,6 @@ void Animation::shootBullet() {
 			Model::bulletPositions[furthest][0] = 0;
 
 			// Random spread on x and y axis
-			srand(clock());
 			Model::bulletPositions[furthest][1] = (((rand() % 2001) / 1000.0f) - 1.0f) * Model::bulletSpread;
 			Model::bulletPositions[furthest][2] = (((rand() % 2001) / 1000.0f) - 1.0f) * Model::bulletSpread;
 		}
