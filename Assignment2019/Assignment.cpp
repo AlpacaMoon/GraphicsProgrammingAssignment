@@ -234,10 +234,9 @@ void display()
 	glScalef(0.8, 0.8, 0.8);
 	glPushMatrix();
 	{
-		//gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
-		//Model::Pathfinder();
+		Model::Pathfinder();
 		//Model::r99();
-		Model::kukriKnife();
+		//Model::kukriKnife();
 
 	}
 	glPopMatrix();
