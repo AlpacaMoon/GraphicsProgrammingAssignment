@@ -5,16 +5,21 @@
 class Texture
 {
 public:
-	// Texture GLuint
+	// Pathfinder textures
 	static GLuint _blue;
-	static GLuint _blue2;
+	static GLuint _tvTextures[11];
+	static GLuint _yellowRope;
+	static GLuint _eye;
+	static GLuint _blackVent;
+	static GLuint _winder;
+
+	// Weapon textures
 	static GLuint _gunYellow;
 	static GLuint _gunBlack;
 	static GLuint _gunGrey;
-	static GLuint _skybox;
 	
-	// TV screen textures
-	static GLuint _tvTextures[11];
+	// Environment textures
+	static GLuint _skybox;
 
 	// Change current using texture to the given texture
 	static void use(GLuint texture);

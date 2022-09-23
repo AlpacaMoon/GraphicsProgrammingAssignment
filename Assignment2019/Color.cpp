@@ -45,9 +45,8 @@ void Color::gold() {
 		glColor3f(1, 1, 1);
 	}
 	else {
-		glColor3f(168 / 255.0f, 168 / 255.0f, 168 / 255.0f);
+		glColor3f(255 / 255.0f, 215 / 255.0f, 0);
 	}
-	glColor3f(255 / 255.0f, 215 / 255.0f, 0);
 }
 
 void Color::red() {
@@ -55,9 +54,8 @@ void Color::red() {
 		glColor3f(1, 1, 1);
 	}
 	else {
-		glColor3f(168 / 255.0f, 168 / 255.0f, 168 / 255.0f);
+		glColor3f(1, 0, 0);
 	}
-	glColor3f(1, 0, 0);
 }
 void Color::green() {
 	if (Lightning::onLightning) {

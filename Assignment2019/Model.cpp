@@ -35,7 +35,7 @@ GLUquadricObj* legLowerSpring, * legPlateObj;
 GLUquadricObj* leftLegObj, * rightLegObj;
 GLUquadricObj* hipBallObj;
 GLUquadricObj* armUpperObj, * armLowerObj, * shoulderObj, * fingerObj;;
-GLUquadricObj* zipLineTubeObj, * zipLineBackpackObj;
+GLUquadricObj* zipLineTubeObj, * zipLineBackTubeObj;
 
 GLUquadricObj* weaponObj;
 boolean Model::isFired = false;
@@ -487,8 +487,14 @@ void Model::Head() {
 				Color::gold();
 				Lightning::goldMaterial();
 
+				Texture::on();
+				Texture::use(Texture::_eye);
+				gluQuadricTexture(headObj, GL_TRUE);
 				glTranslatef(0.28, 0, 0);
+				glRotatef(90, 0, 0, 1);
 				gluSphere(headObj, eyeBallRadius, 16, 16);
+				gluQuadricTexture(headObj, GL_FALSE);
+				Texture::off();
 			}
 			glPopMatrix();
 
@@ -580,37 +586,8 @@ void Model::Head() {
 				CoordinateSet ear = Utility::circleCoords(center, earRadius, earEdges);
 				Utility::extrudePolygon(ear, center, zAxis, earExtrude, TextureMap::allBlue(), true, false);
 
-				//Texture::on();
-				//Texture::use(Texture::_blue);
-				//gluQuadricTexture(headObj, GL_TRUE);
-				//glTranslatef(0, 0.02, -headWidthHalf - earExtrude);
-				//gluDisk(headObj, 0, earRadius, earEdges, 4);
-				//Texture::off();
-
-				//// Right ear extrusion
-				//tempSet.destroy();
-				//tempSet = Utility::circleCoords(center, earRadius, earEdges);
-				//tempSet2.destroy();
-				//tempSet2 = tempSet.copy();
-				//tempSet2.translate(0, 0, earExtrude);
-				//float center2[3] = {center[0], center[1], center[2] + earExtrude / 2.0f}; 
-				//Utility::connectTwoFaces(tempSet, center, tempSet2, center2, Texture::_blue);
-
 				glTranslatef(0, 0, headWidth + earExtrude);
 				Utility::extrudePolygon(ear, center, zAxis, earExtrude, TextureMap::allBlue(), false, true);
-
-
-				//// Left ear extrusion
-				//glTranslatef(0, 0, headWidth + earExtrude);
-				//Utility::connectTwoFaces(tempSet, center, tempSet2, center2, Texture::_blue);
-
-				//// Left ear drum
-				//glTranslatef(0, 0, earExtrude);
-				//Texture::on();
-				//Texture::use(Texture::_blue);
-				//gluQuadricTexture(headObj, GL_TRUE);
-				//gluDisk(headObj, 0, earRadius, earEdges, 4);
-				//Texture::off();
 			}
 			glPopMatrix();
 		}
@@ -852,6 +829,7 @@ void Model::Torso() {
 				gluCylinder(torsoObj, radius[0], radius[1], widths[1], 16, 1);
 			}
 			glPopMatrix();
+			gluQuadricTexture(torsoObj, GL_FALSE);
 			Texture::off();
 		}
 		glPopMatrix();
@@ -889,8 +867,7 @@ void Model::Torso() {
 		// Television Screen
 		glPushMatrix();
 		{
-			//Color::cyan();
-			Color::white();
+			Color::cyan();
 			glTranslatef(0, -0.01, 0);
 			// 0.68027 : 0.45 = The tv texture ratio
 			float tvWidthHalf = (0.68027f) / 2.0f;
@@ -1180,12 +1157,29 @@ void Model::Torso() {
 			Color::yellow();
 			Lightning::yellowMaterial();
 
+			Texture::on();
+			Texture::use(Texture::_yellowRope);
+			gluQuadricTexture(torsoObj, GL_TRUE);
+
+			// Modify GL_TEXTURE matrix to get repeating textures on gluCylinder
+			glMatrixMode(GL_TEXTURE);
+			glScalef(5, 1, 1);
+			glRotatef(-90, 0, 0, 1);
+			glMatrixMode(GL_MODELVIEW);
+
 			float stringRad = 0.01f;
 			float stringLen = 0.6f;
-			glTranslatef(-0.675, 0.35, -0.3);
+			glTranslatef(-0.67, 0.345, -0.3);
 			gluCylinder(torsoObj, stringRad, stringRad, stringLen, 8, 40);
-			glTranslatef(0.05, -0.1, 0);
+			glTranslatef(0.035, -0.1, 0);
 			gluCylinder(torsoObj, stringRad, stringRad, stringLen, 8, 40);
+			gluQuadricTexture(torsoObj, GL_FALSE);
+			Texture::off();
+
+			// Reset GL_TEXTURE matrix
+			glMatrixMode(GL_TEXTURE);
+			glLoadIdentity();
+			glMatrixMode(GL_MODELVIEW);
 		}
 		glPopMatrix();
 
@@ -1243,6 +1237,7 @@ void Model::Waist() {
 
 			glTranslatef(0, 0, -2.0f * gap);
 			gluSphere(waistObj, hingeRadius, 8, 8);
+			gluQuadricTexture(waistObj, GL_FALSE);
 			Texture::off();
 		}
 		glPopMatrix();
@@ -1303,6 +1298,7 @@ void Model::Waist() {
 				glPopMatrix();
 			}
 			glPopMatrix();
+			gluQuadricTexture(waistObj, GL_FALSE);
 			Texture::off();
 		}
 		glPopMatrix();
@@ -1425,8 +1421,34 @@ void Model::Buttock() {
 		glTranslatef(0.05, 0.05, buttWidth / 2.0f);
 		glScalef(0.75, 0.75, 0.75);
 		glTranslatef(-0.05, -0.05, -buttWidth / 2.0f);
-		float ventCenter[3] = { 0, 0.02, 0 };
+		float ventCenter[3] = { 0.05 - ventExtrude / 2.0f, 0.05 + ventExtrude / 2.0f, 0 };
+
 		Utility::extrudePolygon(vent, ventCenter, zAxis, buttWidth);
+
+		// Vent texture
+		Color::darkGrey();
+		Lightning::blackVentMaterial();
+		ventExtrude += 0.001f;
+		Texture::on();
+		Texture::use(Texture::_blackVent);
+		glBegin(GL_QUADS);
+		float ventTexCoords[4][3] = {
+			{0.1 - ventExtrude, 0.1 + ventExtrude, 0},
+			{0.1 - ventExtrude, 0.1 + ventExtrude, buttWidth},
+			{-ventExtrude, ventExtrude, buttWidth},
+			{-ventExtrude, ventExtrude, 0}
+		};
+		float normalTemp[3];
+		glTexCoord2d(1, 1);
+		Utility::drawVertex(ventTexCoords[0][0], ventTexCoords[0][1], ventTexCoords[0][2], ventCenter);
+		glTexCoord2d(0, 1);
+		Utility::drawVertex(ventTexCoords[1][0], ventTexCoords[1][1], ventTexCoords[1][2], ventCenter);
+		glTexCoord2d(0, 0);
+		Utility::drawVertex(ventTexCoords[2][0], ventTexCoords[2][1], ventTexCoords[2][2], ventCenter);
+		glTexCoord2d(1, 0);
+		Utility::drawVertex(ventTexCoords[3][0], ventTexCoords[3][1], ventTexCoords[3][2], ventCenter);
+		glEnd();
+		Texture::off();
 
 		butt.destroy();
 		vent.destroy();
@@ -1476,6 +1498,7 @@ void Model::ButtockJet() {
 		Texture::use(Texture::_blue);
 		gluQuadricTexture(buttockJetObj, GL_TRUE);
 		gluCylinder(buttockJetObj, barRad, barRad, 0.075f, 8, 1);
+		gluQuadricTexture(buttockJetObj, GL_FALSE);
 		Texture::off();
 	}
 	glPopMatrix();
@@ -2336,6 +2359,7 @@ void Model::zipLineTube() {
 		gluQuadricTexture(zipLineTubeObj, GL_TRUE);
 		glTranslatef(0, 0, -tubeLength / 2.0f);
 		gluCylinder(zipLineTubeObj, tubeRadius, tubeRadius, tubeLength, 24, 12);
+		gluQuadricTexture(zipLineTubeObj, GL_FALSE);
 		Texture::off();
 
 		// End cover with red deco
@@ -2348,6 +2372,7 @@ void Model::zipLineTube() {
 			Texture::use(Texture::_blue);
 			gluQuadricTexture(zipLineTubeObj, GL_TRUE);
 			gluDisk(zipLineTubeObj, 0, tubeRadius, 24, 4);
+			gluQuadricTexture(zipLineTubeObj, GL_FALSE);
 			Texture::off();
 
 			Color::red();
@@ -2369,6 +2394,7 @@ void Model::zipLineTube() {
 			gluQuadricTexture(zipLineTubeObj, GL_TRUE);
 			glTranslatef(0, 0, tubeLength);
 			gluDisk(zipLineTubeObj, 0, tubeRadius, 24, 4);
+			gluQuadricTexture(zipLineTubeObj, GL_FALSE);
 			Texture::off();
 
 			Color::red();
@@ -2459,8 +2485,8 @@ void Model::zipLineTube() {
 
 
 void Model::zipLineBackTube() {
-	if (zipLineBackpackObj == NULL) {
-		zipLineBackpackObj = gluNewQuadric();
+	if (zipLineBackTubeObj == NULL) {
+		zipLineBackTubeObj = gluNewQuadric();
 	}
 
 	glPushMatrix();
@@ -2476,8 +2502,14 @@ void Model::zipLineBackTube() {
 		Lightning::greyMaterial();
 
 		// Tube itself
+		Texture::on();
+		Texture::use(Texture::_winder);
+		gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
 		glTranslatef(0, 0, -containerHeight / 2.0f);
-		gluCylinder(zipLineBackpackObj, containerRadius, containerRadius, containerHeight, 24, 12);
+		gluCylinder(zipLineBackTubeObj, containerRadius, containerRadius, containerHeight, 24, 12);
+
+		gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);
+		Texture::off();
 
 		// Lids
 		Color::lightBlue();
@@ -2485,24 +2517,25 @@ void Model::zipLineBackTube() {
 
 		Texture::on();
 		Texture::use(Texture::_blue);
-		gluQuadricTexture(zipLineBackpackObj, GL_TRUE);
+		gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
 		glPushMatrix();
 		{
-			gluDisk(zipLineBackpackObj, 0, lidRadius, 24, 6);
+			gluDisk(zipLineBackTubeObj, 0, lidRadius, 24, 6);
 			glTranslatef(0, 0, -lidHeight);
-			gluCylinder(zipLineBackpackObj, lidRadius, lidRadius, lidHeight, 24, 1);
-			gluDisk(zipLineBackpackObj, 0, lidRadius, 24, 6);
+			gluCylinder(zipLineBackTubeObj, lidRadius, lidRadius, lidHeight, 24, 1);
+			gluDisk(zipLineBackTubeObj, 0, lidRadius, 24, 6);
 		}
 		glPopMatrix();
 		glPushMatrix();
 		{
 			glTranslatef(0, 0, containerHeight);
-			gluDisk(zipLineBackpackObj, 0, lidRadius, 24, 6);
-			gluCylinder(zipLineBackpackObj, lidRadius, lidRadius, lidHeight, 24, 1);
+			gluDisk(zipLineBackTubeObj, 0, lidRadius, 24, 6);
+			gluCylinder(zipLineBackTubeObj, lidRadius, lidRadius, lidHeight, 24, 1);
 			glTranslatef(0, 0, lidHeight);
-			gluDisk(zipLineBackpackObj, 0, lidRadius, 24, 6);
+			gluDisk(zipLineBackTubeObj, 0, lidRadius, 24, 6);
 		}
 		glPopMatrix();
+		gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);
 		Texture::off();
 
 		// Handle
@@ -2527,9 +2560,10 @@ void Model::zipLineBackTube() {
 		{
 			Texture::on();
 			Texture::use(Texture::_blue);
-			gluQuadricTexture(zipLineBackpackObj, GL_TRUE);
+			gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
 			glRotatef(180, 1, 0, 0);
-			gluCylinder(zipLineBackpackObj, 0.035, 0.035, containerHeight * 0.5, 8, 8);
+			gluCylinder(zipLineBackTubeObj, 0.035, 0.035, containerHeight * 0.5, 8, 8);
+			gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);
 			Texture::off();
 		}
 		glPopMatrix();
@@ -2546,12 +2580,12 @@ void Model::zipLineBackTube() {
 
 			Texture::on();
 			Texture::use(Texture::_blue);
-			gluQuadricTexture(zipLineBackpackObj, GL_TRUE);
+			gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
 			glTranslatef(0, -containerRadius, 0);
 			glPushMatrix();
 			{
 				glRotatef(90, 1, 0, 0);
-				gluCylinder(zipLineBackpackObj, cyclerConnectionRad, cyclerConnectionRad, cyclerConnectionLen, 8, 2);
+				gluCylinder(zipLineBackTubeObj, cyclerConnectionRad, cyclerConnectionRad, cyclerConnectionLen, 8, 2);
 			}
 			glPopMatrix();
 
@@ -2562,13 +2596,27 @@ void Model::zipLineBackTube() {
 				Lightning::darkerBlueMaterial();
 
 				glRotatef(90, 1, 0, 0);
-				gluDisk(zipLineBackpackObj, 0, cyclerRadius, 12, 3);
+				gluDisk(zipLineBackTubeObj, 0, cyclerRadius, 12, 3);
+				gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);
 				Texture::off();
 
 				Color::yellow();
 				Lightning::yellowMaterial();
 
-				gluCylinder(zipLineBackpackObj, cyclerRadius, cyclerRadius, cyclerThickness, 12, 3);
+				glMatrixMode(GL_TEXTURE);
+				glScalef(3, 0.5, 1);
+				glMatrixMode(GL_MODELVIEW);
+
+				Texture::on();
+				Texture::use(Texture::_yellowRope);
+				gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
+				gluCylinder(zipLineBackTubeObj, cyclerRadius, cyclerRadius, cyclerThickness, 12, 3);
+				gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);
+				Texture::off();
+
+				glMatrixMode(GL_TEXTURE);
+				glLoadIdentity();
+				glMatrixMode(GL_MODELVIEW);
 			}
 			glPopMatrix();
 			glTranslatef(0, -cyclerThickness, 0);
@@ -2579,8 +2627,9 @@ void Model::zipLineBackTube() {
 
 			Texture::on();
 			Texture::use(Texture::_blue);
-			gluQuadricTexture(zipLineBackpackObj, GL_TRUE);
-			gluDisk(zipLineBackpackObj, 0, cyclerRadius, 12, 3);
+			gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
+			gluDisk(zipLineBackTubeObj, 0, cyclerRadius, 12, 3);
+			gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);
 			Texture::off();
 		}
 		glPopMatrix();
