@@ -242,9 +242,9 @@ void display()
 	glScalef(-0.8, 0.8, 0.8);
 	glPushMatrix();
 	{
-		Model::Pathfinder();
+		//Model::Pathfinder();
 		//Model::r99();
-		//Model::kukriKnife();
+		Model::kukriKnife();
 
 	}
 	glPopMatrix();
