@@ -2981,7 +2981,7 @@ void Model::kukriKnife() {
 		glPopMatrix();
 	}
 	glPopMatrix();
-	
+
 	knife.destroy();
 	temp.destroy();
 	temp2.destroy();
