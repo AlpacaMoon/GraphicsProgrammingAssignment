@@ -48,6 +48,11 @@ bool Animation::softResetClamping(float* target, float min, float frustum, float
 	return stopped;
 }
 
+bool Animation::isResetting = false;
+void Animation::startReset() {
+	isResetting = true;
+}
+
 // Resets animation to original rotation and position, 
 // But translates/rotates them instead of displacing them like hardReset()
 // Returns true if softReset is finished, false if not. 
@@ -55,6 +60,8 @@ bool Animation::softReset(float speed) {
 	boolean stopped = true;
 	
 	for (int i = 0; i < 3; i++) {
+		if (softResetClamping(&Model::bodyPos[i], -360, Model::defaultBodyPos[i], 360, speed / 100.0f) == false)
+			stopped = false;
 		if (softResetClamping(&Model::bodyRot[i], -360, Model::defaultBodyRot[i], 360, speed) == false)
 			stopped = false;
 		if (softResetClamping(&Model::headRot[i], -360, Model::defaultHeadRot[i], 360, speed) == false)
@@ -98,6 +105,17 @@ void Animation::cancelAllAnimations() {
 }
 
 void Animation::runAnimations() {
+	// Disallow input if resetting body parts
+	if (isResetting) {
+		if (softReset(250.0f * Time::elapsedSeconds))
+			isResetting = false;
+		return;
+	}
+	// Disable animations in Independent controls / Posing mode
+	else if (Controls::isIndependentControls) {
+		return;
+	}
+
 	// if not playing cutscene
 	if (playingCutscene == 0) {
 

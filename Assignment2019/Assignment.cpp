@@ -37,7 +37,7 @@ float tempEye[3] = { 0,0,0 };
 float lookAt[3] = { 0,0,0 };
 float up[3] = { 0,1,0 };
 
-bool isOrtho = true;
+bool isOrtho = false;
 
 // mouse movement
 float lastX = 0.0f, lastY = 0.0f;
@@ -74,14 +74,14 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 
 	case WM_MOUSEWHEEL:
-		if (eye[2] <= 20 && eye[2] >= -20) {
-			eye[2] += GET_WHEEL_DELTA_WPARAM(wParam) / 120.0f;
+		if (eye[2] <= 20 && eye[2] >= 2.0) {
+			eye[2] += GET_WHEEL_DELTA_WPARAM(wParam) / 240.0f;
 		}
 		else if (eye[2] > 20) {
 			eye[2] = 20.0f;
 		}
-		else if (eye[2] < -20) {
-			eye[2] = -20.0f;
+		else if (eye[2] < 2.0) {
+			eye[2] = 2.0f;
 		}
 		break;
 
@@ -139,6 +139,8 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 			case VK_F3:
 				Controls::isIndependentControls = !Controls::isIndependentControls;
+				Animation::cancelAllAnimations();
+				Animation::startReset();
 				break;
 
 			case VK_F4:

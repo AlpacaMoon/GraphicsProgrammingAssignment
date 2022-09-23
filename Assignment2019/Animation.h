@@ -10,6 +10,8 @@ public:
 	static int playingCutscene;
 
 	static void cancelAllAnimations();
+	static void startReset();
+	static bool isResetting;
 
 	static void hardReset();
 	static bool softReset(float speed);

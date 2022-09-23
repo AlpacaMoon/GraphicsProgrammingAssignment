@@ -543,7 +543,7 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 		volCenterGiven = false;
 		volumeCenter = new float[3];
 		for (int i = 0; i < 3; i++) {
-			volumeCenter[i] = faceCenter[i] + direction[i] * amount;
+			volumeCenter[i] = faceCenter[i] + direction[i] * amount / 2.0f;
 		}
 	}
 
@@ -607,7 +607,7 @@ void Utility::extrudePolygon(CoordinateSet face, float faceCenter[3], float dire
 		volCenterGiven = false;
 		volumeCenter = new float[3];
 		for (int i = 0; i < 3; i++) {
-			volumeCenter[i] = faceCenter[i] + direction[i] * amount;
+			volumeCenter[i] = faceCenter[i] + direction[i] * amount / 2.0f;
 		}
 	}
 

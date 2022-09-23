@@ -14,18 +14,21 @@ int Texture::wrapT = GL_REPEAT;
 //texture control
 bool Texture::onTexture = true;
 
-// Static textures
+// Pathfinder textures
 GLuint Texture::_blue;
-GLuint Texture::_blue2;
+GLuint Texture::_tvTextures[11];
+GLuint Texture::_yellowRope;
+GLuint Texture::_eye;
+GLuint Texture::_blackVent;
+GLuint Texture::_winder;
 
 //gun texture
 GLuint Texture::_gunYellow;
 GLuint Texture::_gunBlack;
 GLuint Texture::_gunGrey;
-GLuint Texture::_skybox;
 
-// TV Screen textures
-GLuint Texture::_tvTextures[11];
+// Environment Textures
+GLuint Texture::_skybox;
 
 // Change current using texture to the given texture
 void Texture::use(GLuint texture) {
@@ -46,6 +49,10 @@ void Texture::off() {
 void Texture::setupTextures() {
 	// General Pathfinder Textures
 	initializeTexture("Textures/blue.bmp", &_blue);
+	initializeTexture("Textures/yellowRope.bmp", &_yellowRope);
+	initializeTexture("Textures/eye.bmp", &_eye);
+	initializeTexture("Textures/blackVent.bmp", &_blackVent);
+	initializeTexture("Textures/winder.bmp", &_winder);
 	
 	// TV Textures
 	LPCSTR tvTextureFiles[11] = {
@@ -65,7 +72,7 @@ void Texture::setupTextures() {
 		initializeTexture(tvTextureFiles[i], &_tvTextures[i]);
 	}
 	Animation::currentTVscreen = 5;
-
+	
 	// Skybox
 	initializeTexture("Textures/skybox.bmp", &_skybox);
 
@@ -73,6 +80,7 @@ void Texture::setupTextures() {
 	initializeTexture("Textures/r99_1.bmp", &_gunYellow);
 	initializeTexture("Textures/r99_2.bmp", &_gunBlack);
 	initializeTexture("Textures/r99_3.bmp", &_gunGrey);
+
 }
 
 // Initialize one texture

@@ -14,7 +14,8 @@ TextureMap::TextureMap() {
 	{values of 'face' corresponds to: }
 	1) Front
 	2) Back
-	3) Side
+	3) Side (All sides)
+
 */
 void TextureMap::add(GLuint texture, int face) {
 	addedTextures[face - 1] = true;

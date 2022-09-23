@@ -402,9 +402,9 @@ void Controls::presetAnimationKeyDown(WPARAM wParam) {
 		}
 		break;
 
-	case VK_OEM_PERIOD:
+	case VK_OEM_5:
 		Animation::stopWalking();
-		Animation::hardReset();
+		Animation::startReset();
 		break;
 
 	default:

@@ -52,7 +52,6 @@ public:
 	static void drawVertex(float p1, float p2, float p3, float origin[3] = NULL);
 	static void drawVertex(float p1, float p2, float p3, float q1, float q2, float q3);
 
-private:
 	// Bezier curve functions
 	static float bezier(float t, float coords[], int points);
 	static float bezierDerivative(float t, float coords[], int points);
