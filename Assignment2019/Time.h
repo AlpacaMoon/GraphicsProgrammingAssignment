@@ -17,6 +17,7 @@ public:
 	// Non-static variables for each Time instance, used in animation
 	Time(float seconds);
 	Time(clock_t ticks);
+	void setTime(float seconds);
 	void setTime(clock_t ticks);
 	clock_t startTime;
 	clock_t endTime;

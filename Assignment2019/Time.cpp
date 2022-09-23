@@ -23,6 +23,10 @@ Time::Time(clock_t ticks) {
 	setTime(ticks);
 }
 
+void Time::setTime(float seconds) {
+	setTime(toTicks(seconds));
+}
+
 void Time::setTime(clock_t ticks) {
 	startTime = clock();
 	endTime = startTime + ticks;

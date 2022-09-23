@@ -70,7 +70,13 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 
 	case WM_LBUTTONDOWN:
-		Model::isFired = !Model::isFired;
+		if (Model::currentWeapon == 1)
+			Model::isFired = true;
+		break;
+
+	case WM_LBUTTONUP:
+		if (Model::currentWeapon == 1)
+			Model::isFired = false;
 		break;
 
 	case WM_MOUSEWHEEL:
@@ -233,7 +239,7 @@ void display()
 	Environment::gridLines();
 	Animation::runAnimations();
 
-	glScalef(0.8, 0.8, 0.8);
+	glScalef(-0.8, 0.8, 0.8);
 	glPushMatrix();
 	{
 		//Model::Pathfinder();
@@ -314,6 +320,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 	
 	// Texture setup
 	Texture::setupTextures();
+
+	// Models setup
+	Model::initializeBulletPositions();
 
 	ShowWindow(hWnd, nCmdShow);
 

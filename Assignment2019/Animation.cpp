@@ -3,7 +3,56 @@
 #include "Time.h"
 #include "Controls.h"
 
+/* Current playing cutscene
+*	0 = No cutscenes are playing
+*	1 - Zipline away
+*/
 int Animation::playingCutscene = 0;
+Time Animation::gunFireCooldownTime(0.0f);
+
+void Animation::runAnimations() {
+	// Disallow input if resetting body parts
+	if (isResetting) {
+		if (softReset(250.0f * Time::elapsedSeconds))
+			isResetting = false;
+		return;
+	}
+
+	Animation::shootBullet();
+
+	// Disable animations in Independent controls / Posing mode
+	if (Controls::isIndependentControls) {
+		return;
+	}
+
+	// if not playing cutscene
+	if (playingCutscene == 0) {
+
+		if (!isJumping() && Controls::isPressingWalk()) {
+			if (walkSteps == 0)
+				startWalking();
+			else
+				rotateWalk();
+		}
+
+		if (walkSteps != 0) {
+			Animation::walk();
+		}
+
+		if (isJumping()) {
+			jump();
+		}
+
+	}
+	// If cutscene == Zipline away
+	else if (playingCutscene == 1) {
+
+	}
+}
+
+void Animation::switchWeapon() {
+	Model::currentWeapon = (Model::currentWeapon + 1) % 3;
+}
 
 void Animation::hardReset() {
 	for (int i = 0; i < 3; i++) {
@@ -104,44 +153,6 @@ void Animation::cancelAllAnimations() {
 	jumpSteps = 0;
 }
 
-void Animation::runAnimations() {
-	// Disallow input if resetting body parts
-	if (isResetting) {
-		if (softReset(250.0f * Time::elapsedSeconds))
-			isResetting = false;
-		return;
-	}
-	// Disable animations in Independent controls / Posing mode
-	else if (Controls::isIndependentControls) {
-		return;
-	}
-
-	// if not playing cutscene
-	if (playingCutscene == 0) {
-
-		if (!isJumping() && Controls::isPressingWalk()) {
-			if (walkSteps == 0)
-				startWalking();
-			else
-				rotateWalk();
-		}
-
-		if (walkSteps != 0) {
-			Animation::walk();
-		}
-
-		if (isJumping()) {
-			jump();
-		}
-		
-		Animation::shootBullet();
-	}
-	// If cutscene == Zipline away
-	else if (playingCutscene == 1) {
-
-	}
-
-}
 
 // ==================== WALKING ====================
 // WalkSteps values: 
@@ -608,15 +619,87 @@ void Animation::clampLeftFingers() {
 	}
 }
 
+// Weapon R99
+
 void Animation::shootBullet() {
-	if (Model::isFired && Model::bulletPos[0] > -2 && Model::bulletPos[1] > -2 && Model::bulletPos[2] > -2) {
-		Model::bulletPos[2] -= 0.05f;
+	// Add new bullets if fire button is pressed
+	if (Model::isFired && gunFireCooldownTime.hasPassedEndTime()) {
+		// Reset cooldown
+		gunFireCooldownTime.setTime(Model::fireCooldown);
+		
+		int furthest = -1;
+		bool found = false;
+		for (int i = 0; i < Model::MAX_BULLETS_ON_SCREEN; i++) {
+			// If this bullet position is empty
+			if (Model::bulletPositions[i][0] == 1) {
+				// Initialize bullet distance from gun to 0
+				Model::bulletPositions[i][0] = 0;
+
+				// Random spread on x and y axis
+				srand(clock());
+				Model::bulletPositions[i][1] = (((rand() % 2001) / 1000.0f) - 1.0f) * Model::bulletSpread;
+				Model::bulletPositions[i][2] = (((rand() % 2001) / 1000.0f) - 1.0f) * Model::bulletSpread;
+
+				found = true;
+				break;
+			}
+			// Else if not empty
+			else {
+				// Update the furthest bullet
+				if (furthest == -1)
+					furthest = i;
+				else if (Model::bulletPositions[i][0] > Model::bulletPositions[furthest][0]) {
+					furthest = i;
+				}
+			}
+		}
+
+		// If reached the bullet amount limit, remove the furthest bullet
+		if (!found) {
+			// Initialize bullet distance from gun to 0
+			Model::bulletPositions[furthest][0] = 0;
+
+			// Random spread on x and y axis
+			srand(clock());
+			Model::bulletPositions[furthest][1] = (((rand() % 2001) / 1000.0f) - 1.0f) * Model::bulletSpread;
+			Model::bulletPositions[furthest][2] = (((rand() % 2001) / 1000.0f) - 1.0f) * Model::bulletSpread;
+		}
 	}
-	else {
-		Model::bulletPos[0] = Model::LArmRot[2][0];
-		Model::bulletPos[1] = Model::LArmRot[2][1];
-		Model::bulletPos[2] = Model::LArmRot[2][2];
+
+	// Draw all bullets and move them
+	for (int i = 0; i < Model::MAX_BULLETS_ON_SCREEN; i++) {
+		if (Model::bulletPositions[i][0] != 1) {
+			glPushMatrix();
+			{
+				// Change transformation matrix to the gun's fire point
+				glGetFloatv(GL_MODELVIEW_MATRIX, Model::temporaryMatrix);
+				glMatrixMode(GL_MODELVIEW);
+				glLoadMatrixf(Model::gunFirePointMatrix);
+				
+				// Bullet spread
+				glRotatef(Model::bulletPositions[i][2], 0, 1, 0);
+				glRotatef(Model::bulletPositions[i][1], 1, 0, 0);
+				
+				// Spawn bullet
+				glTranslatef(0, 0, Model::bulletPositions[i][0]);
+				Model::bullet();
+
+				// Move bullet forward
+				Model::bulletPositions[i][0] -= Model::bulletSpeed * Time::elapsedSeconds;
+
+				// Remove bullets that are outside of rendering distance
+				if (Model::bulletPositions[i][0] < -Model::bulletDespawnDistance) {
+					Model::resetBulletPosition(i);
+				}
+
+				// Reload transformation matrix
+				glMatrixMode(GL_MODELVIEW);
+				glLoadMatrixf(Model::temporaryMatrix);
+			}
+			glPopMatrix();
+		}
 	}
+
 }
 
 /*	Texture files

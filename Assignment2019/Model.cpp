@@ -24,10 +24,34 @@ float armWidth = 0.15f;
 float handThickness = 0.075f;
 float buttWidth = 0.1f;
 
+// Weapon Variables
+/* Current weapon
+*	0 = Empty handed
+*	1 = Gun (R99)
+*	2 = Knife (Kukri Knife)
+*/
+int Model::currentWeapon = 1;
+GLfloat Model::gunFirePointMatrix[16];
+GLfloat Model::temporaryMatrix[16];
+boolean Model::isFired = false;
+float Model::bulletSpeed = 50.0f;
+float Model::fireCooldown = 1 / 100.0f;
+float Model::bulletSpread = 5.0f;
+
+/* Bullet positions
+*	- Stores the necessary values needed to calculate the positions of all bullets on screen
+*	[0] = Z-value, distance away from the gun (value of 1 means that this position has no bullet)
+*	[1] = Spread angle on X-axis
+*	[2] = Spread angle on Y-axis
+*/
+float Model::bulletPositions[MAX_BULLETS_ON_SCREEN][3];
+float Model::bulletDespawnDistance = 30.0f;
+
 // Texture Variables
 GLuint Model::tvTexture;
 
 // GLUquadricObj variables
+GLUquadricObj* weaponObj;
 GLUquadricObj* headObj;
 GLUquadricObj* torsoObj, * waistObj, * buttockJetObj;
 GLUquadricObj* torsoBar;
@@ -36,10 +60,6 @@ GLUquadricObj* leftLegObj, * rightLegObj;
 GLUquadricObj* hipBallObj;
 GLUquadricObj* armUpperObj, * armLowerObj, * shoulderObj, * fingerObj;;
 GLUquadricObj* zipLineTubeObj, * zipLineBackTubeObj;
-
-GLUquadricObj* weaponObj;
-boolean Model::isFired = false;
-float Model::bulletPos[3] = { 0.0f,0.0f,0.0f };
 
 // Animation variables / Model transformation variables
 float Model::bodyPos[3] = { 0, 0, 0 };
@@ -64,7 +84,6 @@ float Model::defaultLFeetRot = 0;
 float Model::defaultHipRot[3] = { 0, 0, 0 };
 float Model::defaultBodyRot[3] = { 0, 0, 0 };
 
-
 float Model::RArmRot[3][3] = {
 	{20, -10, 15},
 	{0, 0, 90},
@@ -86,11 +105,11 @@ float Model::defaultLArmRot[3][3] = {
 	{0, 0, 0}
 };
 float Model::RFingerRot[5][3] = {
-	{15, 15, 15},
-	{10, 10, 10},
-	{10, 10, 10},
-	{10, 10, 10},
-	{10, 10, 10}
+	{30, 37, 45},
+	{15, 70, 70},
+	{40, 70, 70},
+	{80, 80, 80},
+	{80, 80, 80}
 };
 float Model::LFingerRot[5][3] = {
 	{15, 15, 15},
@@ -99,7 +118,6 @@ float Model::LFingerRot[5][3] = {
 	{10, 10, 10},
 	{10, 10, 10}
 };
-
 float Model::openedFingerRot[5][3] = {
 	{15, 15, 15},
 	{10, 10, 10},
@@ -107,7 +125,6 @@ float Model::openedFingerRot[5][3] = {
 	{10, 10, 10},
 	{10, 10, 10}
 };
-
 float Model::closedFingerRot[5][3] = {
 	{30, 37, 45},
 	{80, 80, 80},
@@ -115,7 +132,13 @@ float Model::closedFingerRot[5][3] = {
 	{80, 80, 80},
 	{80, 80, 80}
 };
-
+float Model::holdingGunFingerRot[5][3] = {
+	{30, 37, 45},
+	{15, 70, 70},
+	{40, 70, 70},
+	{80, 80, 80},
+	{80, 80, 80}
+};
 void Model::Pathfinder() {
 	glPushMatrix();
 	{
@@ -345,6 +368,36 @@ void Model::RightArm() {
 		glRotatef(RArmRot[2][1], 0, 1, 0);
 		glRotatef(RArmRot[2][2], 0, 0, 1);
 		RightHand();
+
+		// Weapon
+		glPushMatrix();
+		{
+			switch (currentWeapon) {
+			case 0:
+				// Empty handed
+				break;
+			case 1:
+				// Gun (R99)
+				glTranslatef(0.605, 0.25, 0.05);
+				glRotatef(3, 0, 0, 1);
+				glRotatef(90, 0, -1, 0);
+
+				glPushMatrix();
+				{
+					glTranslatef(0, 0, -0.6);
+					// Save the fire point as a transformation matrix
+					glGetFloatv(GL_MODELVIEW_MATRIX, gunFirePointMatrix);
+				}
+				glPopMatrix();
+
+				r99();
+				break;
+			case 2:
+				// Knife (Kukri Knife)
+				break;
+			}
+		}
+		glPopMatrix();
 	}
 	glPopMatrix();
 }
@@ -2889,12 +2942,6 @@ void Model::r99() {
 			Utility::extrudePolygon(sight, centre1, zAxis, 0.1, TextureMap::gunGrey(), true, true);
 		}
 		glPopMatrix();
-
-		glPushMatrix();
-		{
-			bullet();
-		}
-		glPopMatrix();
 	}
 	glPopMatrix();
 
@@ -2907,25 +2954,6 @@ void Model::r99() {
 	handle1.destroy();
 	magazine.destroy();
 	handle2.destroy();
-}
-
-void Model::bullet() {
-	if (weaponObj == NULL) {
-		weaponObj = gluNewQuadric();
-	}
-
-	glColor3f(0, 0, 0);
-	glPushMatrix();
-	{
-		Color::lightGrey();
-		Lightning::greyMaterial();
-		glTranslatef(bulletPos[0], bulletPos[1], bulletPos[2]);
-		gluCylinder(weaponObj, 0.001f, 0.02f, 0.05f, 10, 10);
-		glTranslatef(0, 0, 0.05f);
-		gluCylinder(weaponObj, 0.02f, 0.02f, 0.05f, 10, 10);
-	}
-	glPopMatrix();
-
 }
 
 void Model::kukriKnife() {
@@ -3007,3 +3035,34 @@ void Model::kukriKnife() {
 
 }
 
+void Model::bullet() {
+	if (weaponObj == NULL) {
+		weaponObj = gluNewQuadric();
+	}
+
+	glPushMatrix();
+	{
+		glScalef(1, 1, 6);
+		glTranslatef(0, 0, -0.1);
+		Color::lightGrey();
+		Lightning::greyMaterial();
+		gluCylinder(weaponObj, 0.001f, 0.01f, 0.05f, 10, 10);
+		glTranslatef(0, 0, 0.05f);
+		gluCylinder(weaponObj, 0.01f, 0.01f, 0.05f, 10, 10);
+	}
+	glPopMatrix();
+}
+
+void Model::initializeBulletPositions() {
+	for (int i = 0; i < MAX_BULLETS_ON_SCREEN; i++) {
+		bulletPositions[i][0] = 1;
+		bulletPositions[i][1] = 0;
+		bulletPositions[i][2] = 0;
+	}
+}
+
+void Model::resetBulletPosition(int pos) {
+	bulletPositions[pos][0] = 1;
+	bulletPositions[pos][1] = 0;
+	bulletPositions[pos][2] = 0;
+}
