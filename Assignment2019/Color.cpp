@@ -1,5 +1,6 @@
 #include "Color.h"
 #include "Lightning.h"
+#include "Texture.h"
 #include <Windows.h>
 #include <gl/GL.h>
 #include "Texture.h"
@@ -38,7 +39,7 @@ void Color::darkGrey() {
 	else {
 		glColor3f(80 / 255.0f, 80 / 255.0f, 80 / 255.0f);
 	}
-	
+
 }
 
 void Color::gold() {
@@ -65,7 +66,7 @@ void Color::green() {
 	else {
 		glColor3f(0, 0, 1);
 	}
-	
+
 }
 void Color::blue() {
 	if (Lightning::onLightning) {
@@ -74,16 +75,16 @@ void Color::blue() {
 	else {
 		glColor3f(0, 0, 1);
 	}
-	
+
 }
 void Color::cyan() {
-	if (Lightning::onLightning) {
+	if (Lightning::onLightning || Texture::onTexture) {
 		glColor3f(1, 1, 1);
 	}
 	else {
 		glColor3f(0, 1, 1);
 	}
-	
+
 }
 void Color::black() {
 	if (Lightning::onLightning) {
@@ -92,7 +93,7 @@ void Color::black() {
 	else {
 		glColor3f(0, 0, 0);
 	}
-	
+
 }
 
 void Color::white() {

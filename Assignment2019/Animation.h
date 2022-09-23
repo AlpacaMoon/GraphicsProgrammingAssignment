@@ -6,62 +6,61 @@ class Animation
 {
 public:
 
-	static void runAnimations();
-	static int playingCutscene;
+    static void runAnimations();
+    static int playingCutscene;
 
-	static void cancelAllAnimations();
-	static void startReset();
-	static bool isResetting;
+    static void cancelAllAnimations();
+    static void startReset();
+    static bool isResetting;
 
-	static void hardReset();
-	static bool softReset(float speed);
-	static bool softResetClamping(float* target, float min, float frustum, float max, float speed);
-	
-	// Walking Animation
-	static int walkSteps, walkDir;
-	static float walkSpeed, walkBodyShifting;
-	static void startWalking();
-	static void stopWalking();
-	static void rotateWalk();
-	static void walk();
+    static void hardReset();
+    static bool softReset(float speed);
+    static bool softResetClamping(float* target, float min, float frustum, float max, float speed);
 
-	// Jumping Animation
-	static int jumpSteps;
-	static float jumpSpeed, movingBodyPartSpeed, jumpHeight;
-	static bool isJumping();
-	static void startJumping();
-	static void jump();
+    // Walking Animation
+    static int walkSteps, walkDir;
+    static float walkSpeed, walkBodyShifting;
+    static void startWalking();
+    static void stopWalking();
+    static void rotateWalk();
+    static void walk();
 
-
-	// Cutscene
-	// 1) Zipline away
+    // Jumping Animation
+    static int jumpSteps;
+    static float jumpSpeed, movingBodyPartSpeed, jumpHeight;
+    static bool isJumping();
+    static void startJumping();
+    static void jump();
 
 
-	// General Animations
-	static float fingerSpeed;
-	static void closeRightHand(float fingerSpeed);
-	static void closeLeftHand(float fingerSpeed);
-	static void openRightHand(float fingerSpeed);
-	static void openLeftHand(float fingerSpeed);
+    // Cutscene
+    // 1) Zipline away
 
-	// Clamping rotations
-	static float clampFloat(float value, float min, float max);
 
-	static void clampHead();
-	static void clampHip();
-	static void clampBody();
-	static void clampRightLeg();
-	static void clampLeftLeg();
-	static void clampRightArm();
-	static void clampLeftArm();
-	static void clampRightFingers();
-	static void clampLeftFingers();
+    // General Animations
+    static float fingerSpeed;
+    static void closeRightHand(float fingerSpeed);
+    static void closeLeftHand(float fingerSpeed);
+    static void openRightHand(float fingerSpeed);
+    static void openLeftHand(float fingerSpeed);
 
-	//weapon
-	static  void shootBullet();
+    // Clamping rotations
+    static float clampFloat(float value, float min, float max);
 
-	// TV screen
-	static int currentTVscreen;
-	static void switchTVscreen();
+    static void clampHead();
+    static void clampHip();
+    static void clampBody();
+    static void clampRightLeg();
+    static void clampLeftLeg();
+    static void clampRightArm();
+    static void clampLeftArm();
+    static void clampRightFingers();
+    static void clampLeftFingers();
+
+    //weapon
+    static  void shootBullet();
+
+    // TV screen
+    static int currentTVscreen;
+    static void switchTVscreen();
 };
-
