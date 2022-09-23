@@ -106,3 +106,12 @@ void Color::yellow() {
 		glColor3f(1, 1, 0);
 	}
 }
+
+void Color::silver() {
+	if (Lightning::onLightning) {
+		glColor3f(1, 1, 1);
+	}
+	else {
+		glColor3f(186 / 255.0f, 186 / 255.0f, 186 / 255.0f);
+	}
+}

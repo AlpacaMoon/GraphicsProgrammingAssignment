@@ -22,6 +22,8 @@ public:
 
 	static void blackMaterial();
 
+	static void silverMaterial();
+
 	static void blackVentMaterial();
 
 };

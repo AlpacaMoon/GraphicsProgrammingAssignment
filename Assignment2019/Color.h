@@ -17,5 +17,6 @@ public:
 	static void black();
 	static void white();
 	static void yellow();
+	static void silver();
 };
 
