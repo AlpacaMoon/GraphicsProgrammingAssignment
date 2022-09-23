@@ -2909,6 +2909,26 @@ void Model::r99() {
 	handle2.destroy();
 }
 
+void Model::bullet() {
+	if (weaponObj == NULL) {
+		weaponObj = gluNewQuadric();
+	}
+
+	glColor3f(0, 0, 0);
+	glPushMatrix();
+	{
+		Color::lightGrey();
+		Lightning::greyMaterial();
+		glTranslatef(bulletPos[0], bulletPos[1], bulletPos[2]);
+		gluCylinder(weaponObj, 0.001f, 0.02f, 0.05f, 10, 10);
+		glTranslatef(0, 0, 0.05f);
+		gluCylinder(weaponObj, 0.02f, 0.02f, 0.05f, 10, 10);
+		//gluSphere(weaponObj, 0.02f, 10, 10);
+	}
+	glPopMatrix();
+
+}
+
 void Model::kukriKnife() {
 	if (weaponObj == NULL) {
 		weaponObj = gluNewQuadric();
@@ -2988,22 +3008,3 @@ void Model::kukriKnife() {
 
 }
 
-void Model::bullet() {
-	if (weaponObj == NULL) {
-		weaponObj = gluNewQuadric();
-	}
-
-	glColor3f(0, 0, 0);
-	glPushMatrix();
-	{
-		Color::lightGrey();
-		Lightning::greyMaterial();
-		glTranslatef(bulletPos[0], bulletPos[1], bulletPos[2]);
-		gluCylinder(weaponObj, 0.001f, 0.02f, 0.05f, 10, 10);
-		glTranslatef(0, 0, 0.05f);
-		gluCylinder(weaponObj, 0.02f, 0.02f, 0.05f, 10, 10);
-		//gluSphere(weaponObj, 0.02f, 10, 10);
-	}
-	glPopMatrix();
-
-}
