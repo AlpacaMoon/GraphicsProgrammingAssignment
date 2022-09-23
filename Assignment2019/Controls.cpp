@@ -376,6 +376,9 @@ void Controls::independentControls(WPARAM wParam) {
 		switch (wParam) {
 		case 'Q':
 			Animation::switchTVscreen();
+			break;
+		case 'W':
+			Animation::switchWeapon();
 		}
 		break;
 	}

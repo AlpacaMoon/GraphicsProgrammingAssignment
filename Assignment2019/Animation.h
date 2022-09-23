@@ -6,16 +6,25 @@ class Animation
 {
 public:
 
+    // Main method (runs all the below mentioned animations)
     static void runAnimations();
+
+    // Variables 
     static int playingCutscene;
+    static Time gunFireCooldownTime;
 
-    static void cancelAllAnimations();
-    static void startReset();
-    static bool isResetting;
+    // Weapon related methods
+    static void switchWeapon();
 
+    // Methods to Move body parts
     static void hardReset();
     static bool softReset(float speed);
     static bool softResetClamping(float* target, float min, float frustum, float max, float speed);
+
+    // Reset Animation
+    static void cancelAllAnimations();
+    static void startReset();
+    static bool isResetting;
 
     // Walking Animation
     static int walkSteps, walkDir;

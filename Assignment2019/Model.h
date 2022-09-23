@@ -43,11 +43,22 @@ public:
 	static void zipLineBackTube();
 
 	// Weapon Models
+	static const int MAX_BULLETS_ON_SCREEN = 100;
+	static int currentWeapon;
 	static void r99();
 	static void bullet();
 	static void kukriKnife();
-	static float bulletPos[3];
 	static boolean isFired;
+	static float bulletPositions[MAX_BULLETS_ON_SCREEN][3];
+	static float bulletSpeed;
+	static float fireCooldown;
+	static float bulletSpread;
+	static float bulletDespawnDistance;
+	static void initializeBulletPositions();
+	static GLfloat gunFirePointMatrix[16];
+	static GLfloat temporaryMatrix[16];
+	static void resetBulletPosition(int pos);
+
 
 	// Variables to control animation / Model transformations
 	static float bodyPos[3];
@@ -66,6 +77,7 @@ public:
 	// Default values (Used in reset)
 	static float openedFingerRot[5][3];
 	static float closedFingerRot[5][3];
+	static float holdingGunFingerRot[5][3];
 	static float defaultRArmRot[3][3];
 	static float defaultLArmRot[3][3];
 	static float defaultBodyPos[3];
