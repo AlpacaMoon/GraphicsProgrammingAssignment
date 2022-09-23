@@ -242,9 +242,7 @@ void display()
 	glScalef(-0.8, 0.8, 0.8);
 	glPushMatrix();
 	{
-		//Model::Pathfinder();
-		//Model::r99();
-		Model::kukriKnife();
+		Model::Pathfinder();
 
 	}
 	glPopMatrix();
@@ -311,6 +309,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 	//--------------------------------
 	//	End initialization
 	//--------------------------------
+
+	srand(time(NULL));
 
 	// Enable depth test AFTER initialization
 	glEnable(GL_DEPTH_TEST);

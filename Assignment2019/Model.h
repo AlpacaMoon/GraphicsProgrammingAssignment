@@ -78,6 +78,7 @@ public:
 	static float openedFingerRot[5][3];
 	static float closedFingerRot[5][3];
 	static float holdingGunFingerRot[5][3];
+	static float holdingKnifeFingerRot[5][3];
 	static float defaultRArmRot[3][3];
 	static float defaultLArmRot[3][3];
 	static float defaultBodyPos[3];

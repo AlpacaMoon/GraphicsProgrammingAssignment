@@ -10,7 +10,7 @@ bool Lightning::onLightning;
 //blue
 //GLfloat blueMaterialAmbient[4] = { (120 / 255.0), (142 / 255.0), (163 / 255.0),1 };
 //GLfloat blueMaterialDiffuse[4] = { (120 / 255.0), (142 / 255.0), (163 / 255.0),1 };
-GLfloat blueMaterialAmbient[4] = { (152 / 255.0), (168 / 255.0), (184 / 255.0),1 };
+GLfloat blueMaterialAmbient[4] = { (122 / 255.0), (138 / 255.0), (154 / 255.0),1 };
 GLfloat blueMaterialDiffuse[4] = { (152 / 255.0), (168 / 255.0), (184 / 255.0),1 };
 //yellow
 GLfloat yellowMaterialAmbient[4] = { (254 / 255.0), (217 / 255.0), (79 / 255.0),1 };
@@ -34,8 +34,8 @@ GLfloat darkGreyMaterialDiffuse[4] = { (70 / 255.0), (71 / 255.0), (73 / 255.0),
 GLfloat blackMaterialAmbient[4] = { 0,0,0,1 };
 GLfloat blackMaterialDiffuse[4] = { 0,0,0,1 };
 //silver
-GLfloat silverMaterialAmbient[4] = { (186 / 255.0), (186 / 255.0), (186 / 255.0),1 };
-GLfloat silverMaterialDiffuse[4] = { (186 / 255.0), (186 / 255.0), (186 / 255.0),1 };
+GLfloat silverMaterialAmbient[4] = { (126 / 255.0), (126 / 255.0), (126 / 255.0),1 };
+GLfloat silverMaterialDiffuse[4] = { (216 / 255.0), (216 / 255.0), (216 / 255.0),1 };
 //dark brown
 GLfloat darkBrownMaterialAmbient[4] = { (26 / 255.0), (21 / 255.0), (15 / 255.0),1 };
 GLfloat darkBrownMaterialDiffuse[4] = { (26 / 255.0), (21 / 255.0), (15 / 255.0),1 };
