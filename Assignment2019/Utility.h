@@ -23,7 +23,9 @@ public:
 	static void drawBezierTube(CoordinateSet coordSet, int lineSmoothness, int faces, float radius, GLuint texture);
 
 	static void drawAlternatingBezierTube(CoordinateSet coordSet, int lineSmoothness, int faces, float radius1, float radius2);
+	
 	static void drawStraightTubes(CoordinateSet points, int smoothnessStraight, int smoothnessTurn, int faces, float radius, float turnMultiplier);
+	static void drawStraightTubes(CoordinateSet points, int smoothnessStraight, int smoothnessTurn, int faces, float radius, float turnMultiplier, GLuint texture);
 
 	static void drawPolygon(CoordinateSet coordSet, float center[3], float volumeCenter[3]);
 	static void drawPolygon(CoordinateSet coordSet, float center[3], float volumeCenter[3], GLuint texture);

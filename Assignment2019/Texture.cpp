@@ -16,11 +16,12 @@ bool Texture::onTexture = true;
 
 // Pathfinder textures
 GLuint Texture::_blue;
-GLuint Texture::_tvTextures[11];
+GLuint Texture::_yellow;
 GLuint Texture::_yellowRope;
 GLuint Texture::_eye;
 GLuint Texture::_blackVent;
 GLuint Texture::_winder;
+GLuint Texture::_tvTextures[11];
 
 //gun texture
 GLuint Texture::_gunYellow;
@@ -49,6 +50,7 @@ void Texture::off() {
 void Texture::setupTextures() {
 	// General Pathfinder Textures
 	initializeTexture("Textures/blue.bmp", &_blue);
+	initializeTexture("Textures/yellow.bmp", &_yellow);
 	initializeTexture("Textures/yellowRope.bmp", &_yellowRope);
 	initializeTexture("Textures/eye.bmp", &_eye);
 	initializeTexture("Textures/blackVent.bmp", &_blackVent);

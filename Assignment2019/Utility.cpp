@@ -479,7 +479,65 @@ void Utility::drawStraightTubes(CoordinateSet points, int smoothnessStraight, in
 	tempSet.addCoordinate(coord3);
 	drawBezierTube(tempSet, smoothnessStraight, faces, radius);
 
+	tempSet.destroy();
+}
+
+void Utility::drawStraightTubes(CoordinateSet points, int smoothnessStraight, int smoothnessTurn, int faces, float radius, float turnMultiplier, GLuint texture) {
+	if (points.numberOfCoords <= 2) {
+		drawBezierTube(points, smoothnessStraight, faces, radius);
+		return;
+	}
+
+	float coord1[3], coord2[3], coord3[3];
+	CoordinateSet tempSet(3);
+
+	// Prepare first tube's coordinates
+	points.getCoords(1, coord1);
+
+	// For each control point that are not first or last point in the sequence:
+	for (int i = 2; i < points.numberOfCoords; i++) {
+		// Draw a straight tube from previous point to current point
+		{
+			// Start point of straight tube is obtain from previous calculations. (coord1)
+			// Get end point of the straight tube and assign to coord3
+			points.getCoords(i, coord2);
+			for (int j = 0; j < 3; j++) {
+				coord3[j] = coord2[j] - (coord2[j] - coord1[j]) * turnMultiplier;
+			}
+
+			// Draw straight tube (coord1 -> coord3)
+			tempSet.clear(3);
+			tempSet.addCoordinate(coord1);
+			tempSet.addCoordinate(coord3);
+			drawBezierTube(tempSet, smoothnessStraight, faces, radius, texture);
+		}
+
+		// Then draw a turning segment at the current point
+		{
+			// Start point of turning tube is obtained from previous calculations, (coord3)
+			// Use current point as pivot point, (coord2)
+			// Get the end point of the turning segment and assign to coord1
+			points.getCoords(i + 1, coord1);
+			for (int j = 0; j < 3; j++) {
+				coord1[j] = coord2[j] + (coord1[j] - coord2[j]) * turnMultiplier;
+			}
+
+			// Draw the turning tube (coord3 -> coord2 -> coord1)
+			tempSet.clear(3);
+			tempSet.addCoordinate(coord3);
+			tempSet.addCoordinate(coord2);
+			tempSet.addCoordinate(coord1);
+			drawBezierTube(tempSet, smoothnessTurn, faces, radius, texture);
+		}
+	}
+
+	// Draw last straight tube
+	// Start point of straight tube is obtain from previous calculations. (coord1)
+	points.getCoords(points.numberOfCoords, coord3);
 	tempSet.clear(3);
+	tempSet.addCoordinate(coord1);
+	tempSet.addCoordinate(coord3);
+	drawBezierTube(tempSet, smoothnessStraight, faces, radius, texture);
 
 	tempSet.destroy();
 }
