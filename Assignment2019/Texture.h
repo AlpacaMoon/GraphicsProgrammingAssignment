@@ -18,6 +18,9 @@ public:
 	static GLuint _gunYellow;
 	static GLuint _gunBlack;
 	static GLuint _gunGrey;
+	static GLuint _wood;
+	static GLuint _darkerWood;
+	static GLuint _metal;
 	
 	// Environment textures
 	static GLuint _skybox;

@@ -117,3 +117,21 @@ void Color::silver() {
 		glColor3f(186 / 255.0f, 186 / 255.0f, 186 / 255.0f);
 	}
 }
+
+void Color::darkerBrown() {
+	if (Lightning::onLightning) {
+		glColor3f(1, 1, 1);
+	}
+	else {
+		glColor3f(26 / 255.0f, 21 / 255.0f, 15 / 255.0f);
+	}
+}
+
+void Color::brown() {
+	if (Lightning::onLightning) {
+		glColor3f(1, 1, 1);
+	}
+	else {
+		glColor3f(71 / 255.0f, 41 / 255.0f, 17 / 255.0f);
+	}
+}

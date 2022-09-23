@@ -63,3 +63,11 @@ TextureMap TextureMap::gunGrey() {
 	tmap.add(Texture::_gunGrey, 3);
 	return tmap;
 }
+
+TextureMap TextureMap::metal() {
+	TextureMap tmap;
+	tmap.add(Texture::_metal, 1);
+	tmap.add(Texture::_metal, 2);
+	tmap.add(Texture::_metal, 3);
+	return tmap;
+}

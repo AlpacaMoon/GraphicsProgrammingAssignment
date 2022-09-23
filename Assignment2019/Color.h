@@ -8,6 +8,8 @@ public:
 	static void lightGrey();
 	static void darkGrey();
 	static void gold();
+	static void brown();
+	static void darkerBrown();
 
 	// Basic colors
 	static void red();

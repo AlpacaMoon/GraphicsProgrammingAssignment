@@ -36,6 +36,12 @@ GLfloat blackMaterialDiffuse[4] = { 0,0,0,1 };
 //silver
 GLfloat silverMaterialAmbient[4] = { (186 / 255.0), (186 / 255.0), (186 / 255.0),1 };
 GLfloat silverMaterialDiffuse[4] = { (186 / 255.0), (186 / 255.0), (186 / 255.0),1 };
+//dark brown
+GLfloat darkBrownMaterialAmbient[4] = { (26 / 255.0), (21 / 255.0), (15 / 255.0),1 };
+GLfloat darkBrownMaterialDiffuse[4] = { (26 / 255.0), (21 / 255.0), (15 / 255.0),1 };
+//brown
+GLfloat brownMaterialAmbient[4] = { (71 / 255.0), (41 / 255.0), (17 / 255.0),1 };
+GLfloat brownMaterialDiffuse[4] = { (71 / 255.0), (41 / 255.0), (17 / 255.0),1 };
 
 // Specific materials for certain body parts
 //Black Vent
@@ -111,6 +117,16 @@ void Lightning::blackMaterial() {
 void Lightning::silverMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, silverMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, silverMaterialDiffuse);
+}
+
+void Lightning::darkerBrownMaterial() {
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, darkBrownMaterialAmbient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, darkBrownMaterialDiffuse);
+}
+
+void Lightning::brownMaterial() {
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, brownMaterialAmbient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, brownMaterialDiffuse);
 }
 
 void Lightning::blackVentMaterial() {

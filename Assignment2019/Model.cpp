@@ -2909,10 +2909,12 @@ void Model::r99() {
 			glRotatef(90, 0, 0, 1);
 			Lightning::blackMaterial();
 			Color::black();
-			Texture::use(Texture::_gunBlack);
 			Texture::on();
+			Texture::use(Texture::_gunBlack);
+			gluQuadricTexture(weaponObj, GL_TRUE);
 			gluCylinder(weaponObj, 0.02f, 0.02f, 0.1f, 20, 20);
 			gluPartialDisk(weaponObj, 0, 0.02f, 20, 20, 0, 360);
+			gluQuadricTexture(weaponObj, GL_FALSE);
 			Texture::off();
 		}
 		glPopMatrix();
@@ -2924,10 +2926,12 @@ void Model::r99() {
 			glRotatef(90, 0, 0, 1);
 			Lightning::blackMaterial();
 			Color::black();
-			Texture::use(Texture::_gunBlack);
 			Texture::on();
+			Texture::use(Texture::_gunBlack);
+			gluQuadricTexture(weaponObj, GL_TRUE);
 			gluCylinder(weaponObj, 0.025f, 0.025f, 0.2f, 20, 20);
 			gluPartialDisk(weaponObj, 0, 0.025f, 20, 20, 0, 360);
+			gluQuadricTexture(weaponObj, GL_FALSE);
 			Texture::off();
 		}
 		glPopMatrix();
@@ -2995,7 +2999,7 @@ void Model::kukriKnife() {
 		Lightning::silverMaterial();
 		glTranslatef(0, -0.02f, 0);
 		//Utility::drawLine(knife);
-		Utility::extrudePolygon(knife, centre1, zAxis, 0.02, true, true);
+		Utility::extrudePolygon(knife, centre1, zAxis, 0.02, TextureMap::metal(), true, true);
 	}
 	glPopMatrix();
 
@@ -3006,24 +3010,35 @@ void Model::kukriKnife() {
 		glRotatef(90, 0, 0, 1);
 		glPushMatrix();
 		{
-			Color::black();
-			Lightning::blackMaterial();
+			Color::darkerBrown();
+			Lightning::darkerBrownMaterial();
+			gluQuadricDrawStyle(weaponObj, GLU_FILL);
+			Texture::on();
+			Texture::use(Texture::_darkerWood);
+			gluQuadricTexture(weaponObj, GL_TRUE);
 			gluPartialDisk(weaponObj, 0, 0.12f, 10, 10, 0, 360);
 			gluCylinder(weaponObj, 0.12f, 0.12f, 0.05f, 20, 20);
 			glTranslatef(0, 0, 0.05f);
 			gluPartialDisk(weaponObj, 0, 0.12f, 10, 10, 0, 360);
+			gluQuadricTexture(weaponObj, GL_FALSE);
+			Texture::off();
 		}
 		glPopMatrix();
 
 		glPushMatrix();
 		{
-			Color::darkGrey();
-			Lightning::darkerGreyMaterial();
+			Color::brown();
+			Lightning::brownMaterial();
+			Texture::on();
+			Texture::use(Texture::_wood);
+			gluQuadricTexture(weaponObj, GL_TRUE);
 			glTranslatef(0, 0, 0.05f);
 			gluPartialDisk(weaponObj, 0, 0.08f, 10, 10, 0, 360);
 			gluCylinder(weaponObj, 0.08f, 0.08f, 0.6f, 20, 20);
 			glTranslatef(0, 0, 0.6f);
 			gluPartialDisk(weaponObj, 0, 0.08f, 10, 10, 0, 360);
+			gluQuadricTexture(weaponObj, GL_FALSE);
+			Texture::off();
 		}
 		glPopMatrix();
 	}
@@ -3044,11 +3059,14 @@ void Model::bullet() {
 	{
 		glScalef(1, 1, 6);
 		glTranslatef(0, 0, -0.1);
-		Color::lightGrey();
-		Lightning::greyMaterial();
+		Color::silver();
+		Lightning::silverMaterial();
+		Texture::on();
+		Texture::use(Texture::_metal);
 		gluCylinder(weaponObj, 0.001f, 0.01f, 0.05f, 10, 10);
 		glTranslatef(0, 0, 0.05f);
 		gluCylinder(weaponObj, 0.01f, 0.01f, 0.05f, 10, 10);
+		Texture::off();
 	}
 	glPopMatrix();
 }

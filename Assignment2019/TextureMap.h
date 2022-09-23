@@ -19,6 +19,7 @@ public:
 	static TextureMap gunYellow();
 	static TextureMap gunBlack();
 	static TextureMap gunGrey();
+	static TextureMap metal();
 
 };
 

@@ -23,10 +23,13 @@ GLuint Texture::_blackVent;
 GLuint Texture::_winder;
 GLuint Texture::_tvTextures[11];
 
-//gun texture
+//weapon texture
 GLuint Texture::_gunYellow;
 GLuint Texture::_gunBlack;
 GLuint Texture::_gunGrey;
+GLuint Texture::_wood;
+GLuint Texture::_darkerWood;
+GLuint Texture::_metal;
 
 // Environment Textures
 GLuint Texture::_skybox;
@@ -78,11 +81,13 @@ void Texture::setupTextures() {
 	// Skybox
 	initializeTexture("Textures/skybox.bmp", &_skybox);
 
-	//gun texture
+	//weapon texture
 	initializeTexture("Textures/r99_1.bmp", &_gunYellow);
 	initializeTexture("Textures/r99_2.bmp", &_gunBlack);
 	initializeTexture("Textures/r99_3.bmp", &_gunGrey);
-
+	initializeTexture("Textures/wood.bmp", &_wood);
+	initializeTexture("Textures/darkerWood.bmp", &_darkerWood);
+	initializeTexture("Textures/metal.bmp", &_metal);
 }
 
 // Initialize one texture

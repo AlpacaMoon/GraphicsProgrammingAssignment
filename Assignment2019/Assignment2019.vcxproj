@@ -172,8 +172,8 @@
   <ItemGroup>
     <Image Include="Textures\blue.bmp" />
     <Image Include="Textures\brick.bmp" />
-    <Image Include="Textures\darkerWoodTexture.bmp" />
-    <Image Include="Textures\metalTexture.bmp" />
+    <Image Include="Textures\darkerWood.bmp" />
+    <Image Include="Textures\metal.bmp" />
     <Image Include="Textures\skybox.bmp" />
     <Image Include="Textures\tvAngry.bmp" />
     <Image Include="Textures\tvBlank.bmp" />
@@ -189,7 +189,7 @@
     <Image Include="Textures\r99_1.bmp" />
     <Image Include="Textures\r99_2.bmp" />
     <Image Include="Textures\r99_3.bmp" />
-    <Image Include="Textures\woodTexture.bmp" />
+    <Image Include="Textures\wood.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

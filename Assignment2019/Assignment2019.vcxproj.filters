@@ -172,13 +172,13 @@
     <Image Include="Textures\skybox.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Textures\darkerWoodTexture.bmp">
+    <Image Include="Textures\darkerWood.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Textures\metalTexture.bmp">
+    <Image Include="Textures\metal.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Textures\woodTexture.bmp">
+    <Image Include="Textures\wood.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
