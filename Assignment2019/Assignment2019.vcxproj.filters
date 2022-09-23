@@ -172,5 +172,14 @@
     <Image Include="Textures\skybox.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Textures\darkerWoodTexture.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\metalTexture.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\woodTexture.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

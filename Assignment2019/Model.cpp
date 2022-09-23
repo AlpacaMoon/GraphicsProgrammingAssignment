@@ -2923,7 +2923,6 @@ void Model::bullet() {
 		gluCylinder(weaponObj, 0.001f, 0.02f, 0.05f, 10, 10);
 		glTranslatef(0, 0, 0.05f);
 		gluCylinder(weaponObj, 0.02f, 0.02f, 0.05f, 10, 10);
-		//gluSphere(weaponObj, 0.02f, 10, 10);
 	}
 	glPopMatrix();
 
