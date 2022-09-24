@@ -3075,9 +3075,9 @@ void Model::bullet() {
 		Lightning::silverMaterial();
 		Texture::on();
 		Texture::use(Texture::_metal);
-		gluCylinder(weaponObj, 0.001f, 0.01f, 0.05f, 10, 10);
+		gluCylinder(weaponObj, 0.001f, 0.01f, 0.05f, 10, 5);
 		glTranslatef(0, 0, 0.05f);
-		gluCylinder(weaponObj, 0.01f, 0.01f, 0.05f, 10, 10);
+		gluCylinder(weaponObj, 0.01f, 0.01f, 0.05f, 10, 5);
 		Texture::off();
 	}
 	glPopMatrix();

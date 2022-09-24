@@ -93,7 +93,6 @@ void Color::black() {
 	else {
 		glColor3f(0, 0, 0);
 	}
-
 }
 
 void Color::white() {
