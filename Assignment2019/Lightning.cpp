@@ -12,6 +12,10 @@ bool Lightning::onLightning;
 //GLfloat blueMaterialDiffuse[4] = { (120 / 255.0), (142 / 255.0), (163 / 255.0),1 };
 GLfloat blueMaterialAmbient[4] = { (122 / 255.0), (138 / 255.0), (154 / 255.0),1 };
 GLfloat blueMaterialDiffuse[4] = { (152 / 255.0), (168 / 255.0), (184 / 255.0),1 };
+GLfloat greenMaterialAmbient[4] = { (68 / 255.0), (129 / 255.0), (68 / 255.0),1 };
+GLfloat greenMaterialDiffuse[4] = { (68 / 255.0), (129 / 255.0), (68 / 255.0),1 };
+GLfloat redMaterialAmbient[4] = { (186 / 255.0), (73 / 255.0), (76 / 255.0),1 };
+GLfloat redMaterialDiffuse[4] = { (186 / 255.0), (73 / 255.0), (76 / 255.0),1 };
 //yellow
 GLfloat yellowMaterialAmbient[4] = { (254 / 255.0), (217 / 255.0), (79 / 255.0),1 };
 GLfloat yellowMaterialDiffuse[4] = { (254 / 255.0), (217 / 255.0), (79 / 255.0),1 };
@@ -73,9 +77,18 @@ void Lightning::defaultMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, defaultMatDiffuse);
 }
 
-void Lightning::blueMaterial() {
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, blueMaterialAmbient);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueMaterialDiffuse);
+void Lightning::bodyMainMaterial() {
+	switch (Texture::currentSkin) {
+	case 1:
+		blueSkinMaterial();
+		break;
+	case 2:
+		greenSkinMaterial();
+		break;
+	case 3:
+		redSkinMaterial();
+		break;
+	}
 }
 
 void Lightning::goldMaterial() {
@@ -132,4 +145,18 @@ void Lightning::brownMaterial() {
 void Lightning::blackVentMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, blackVentMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blackVentMaterialDiffuse);
+}
+
+
+void Lightning::blueSkinMaterial() {
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, blueMaterialAmbient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, blueMaterialDiffuse);
+}
+void Lightning::greenSkinMaterial() {
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, greenMaterialAmbient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, greenMaterialDiffuse);
+}
+void Lightning::redSkinMaterial() {
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, redMaterialAmbient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, redMaterialDiffuse);
 }

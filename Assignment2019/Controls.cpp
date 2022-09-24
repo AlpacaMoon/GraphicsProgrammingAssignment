@@ -3,8 +3,16 @@
 #include <gl/GL.h>
 #include "Animation.h"
 #include "Model.h"
+#include "Texture.h"
 
-bool Controls::isIndependentControls = true;
+/*	1 = Posing Mode / Independent Controls Mode
+*	2 = Animation Mode
+*	3 = Texture changing mode
+*	4 = Weapon changing mode
+*	5 = TV Screen changing mode
+*/
+int Controls::controlMode = 1;
+
 int Controls::currentControlPart = 1;
 float Controls::rotateSpeed = 5;
 int Controls::currentPlayingAnimation = 1;
@@ -12,25 +20,75 @@ int Controls::currentPlayingAnimation = 1;
 bool Controls::pressingWalkKeys[3] = {false, false, false};
 
 void Controls::initialize() {
-	isIndependentControls = true;
+	controlMode = 1;
 	currentControlPart = 1;
 }
 
-void Controls::reset() {
-	if (isIndependentControls) {
-		currentControlPart = 1;
-	}
-	else {
+void Controls::manageControlsKeyDown(WPARAM wParam) {
 
+	// Posing mode
+	if (controlMode == 1) {
+		independentControls(wParam);
+	}
+	// Animation mode
+	else if (controlMode == 2) {
+		presetAnimationKeyDown(wParam);
+	}
+	// Texture changing mode
+	else if (controlMode == 3) {
+		switch (wParam) {
+		case '1':
+			Texture::changeSkin(1);
+			break;
+		case '2':
+			Texture::changeSkin(2);
+			break;
+		case '3':
+			Texture::changeSkin(3);
+			break;
+		}
+	}
+	// Weapon changing mode
+	else if (controlMode == 4) {
+		switch (wParam) {
+		case '1':
+			Animation::switchWeapon(1);
+			break;
+		case '2':
+			Animation::switchWeapon(2);
+			break;
+		case '3':
+			Animation::switchWeapon(3);
+			break;
+		}
+	}
+	// TV Screen changing mode
+	else if (controlMode == 5) {
+		if (wParam >= '1' && wParam <= '9') {
+			Animation::switchTVscreen(wParam - '0');
+		}
+		else if (wParam == '0') {
+			Animation::switchTVscreen(10);
+		}
+		else if (wParam == VK_OEM_MINUS) {
+			Animation::switchTVscreen(11);
+		}
 	}
 }
 
+void Controls::manageControlsKeyUp(WPARAM wParam) {
+	if (controlMode == 2) {
+		presetAnimationKeyUp(wParam);
+	}
+}
+
+
 void Controls::independentControls(WPARAM wParam) {
-	if (!isIndependentControls)
+	if (controlMode != 1)
 		return;
 
 	// Switch control parts
-	if (wParam >= '1' && wParam <= '7') {
+	if (wParam >= '1' && wParam <= '6') {
 		currentControlPart = wParam - '0';
 	}
 
@@ -370,16 +428,6 @@ void Controls::independentControls(WPARAM wParam) {
 		}
 		Animation::clampRightFingers();
 		Animation::clampLeftFingers();
-		break;
-		// Miscellaneous
-	case 7:
-		switch (wParam) {
-		case 'Q':
-			Animation::switchTVscreen();
-			break;
-		case 'W':
-			Animation::switchWeapon();
-		}
 		break;
 	}
 }

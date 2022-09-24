@@ -30,7 +30,7 @@ float buttWidth = 0.1f;
 *	1 = Gun (R99)
 *	2 = Knife (Kukri Knife)
 */
-int Model::currentWeapon = 2;
+int Model::currentWeapon = 0;
 GLfloat Model::gunFirePointMatrix[16];
 GLfloat Model::temporaryMatrix[16];
 boolean Model::isFired = false;
@@ -470,7 +470,7 @@ void Model::Head() {
 		glPushMatrix();
 		{
 			Color::lightBlue();
-			Lightning::blueMaterial();
+			Lightning::bodyMainMaterial();
 
 			// Apply head rotation
 			glRotatef(headRot[0], 1, 0, 0);
@@ -719,7 +719,7 @@ void Model::Torso() {
 			torso.addCoordinate(0.75, -0.25, z1);
 
 			Color::lightBlue();
-			Lightning::blueMaterial();
+			Lightning::bodyMainMaterial();
 
 			float torsoCenter[3] = { 0, 0, z1 };
 
@@ -856,8 +856,8 @@ void Model::Torso() {
 			back3.addCoordinate(-0.35, levels[2], halfTorsoWidth * radiuses[2]);
 
 			float volumeCenter[3] = { -0.25, levels[2], 0 };
-			Utility::connectTwoFaces(back1, back2, Texture::_blue, volumeCenter);
-			Utility::connectTwoFaces(back2, back3, Texture::_blue, volumeCenter);
+			Utility::connectTwoFaces(back1, back2, Texture::_bodyTexture, volumeCenter);
+			Utility::connectTwoFaces(back2, back3, Texture::_bodyTexture, volumeCenter);
 
 			back1.destroy();
 			back2.destroy();
@@ -874,7 +874,7 @@ void Model::Torso() {
 			float radius[2] = { 0.2f, 0.12f };
 			float widths[2] = { 0.075, 0.15 };
 			Texture::on();
-			Texture::use(Texture::_blue);
+			Texture::use(Texture::_bodyTexture);
 			gluQuadricTexture(torsoObj, GL_TRUE);
 			glPushMatrix();
 			{
@@ -941,13 +941,13 @@ void Model::Torso() {
 			Texture::on();
 			Texture::use(Texture::_tvTextures[Animation::currentTVscreen]);
 			glBegin(GL_QUADS);
-			glTexCoord2f(1, 1);
-			glVertex3f(x, 0, -tvWidthHalf);
-			glTexCoord2f(1, 0);
-			glVertex3f(x, -tvHeight, -tvWidthHalf);
-			glTexCoord2f(0, 0);
-			glVertex3f(x, -tvHeight, tvWidthHalf);
 			glTexCoord2f(0, 1);
+			glVertex3f(x, 0, -tvWidthHalf);
+			glTexCoord2f(0, 0);
+			glVertex3f(x, -tvHeight, -tvWidthHalf);
+			glTexCoord2f(1, 0);
+			glVertex3f(x, -tvHeight, tvWidthHalf);
+			glTexCoord2f(1, 1);
 			glVertex3f(x, 0, tvWidthHalf);
 			glEnd();
 			Texture::off();
@@ -1068,12 +1068,12 @@ void Model::Torso() {
 			tempSet.addCoordinate(-0.15, 0.37, 0);
 			tempSet.addCoordinate(0.7, 0.37, 0);
 			tempSet.addCoordinate(0.75, 0.05, 0);
-			Utility::drawBezierTube(tempSet, 12, 8, barRad, Texture::_blue);
+			Utility::drawBezierTube(tempSet, 12, 8, barRad, Texture::_bodyTexture);
 
 			glPushMatrix();
 			{
 				glTranslatef(0, 0, torsoWidth + (barGap + barRad) * 2);
-				Utility::drawBezierTube(tempSet, 12, 8, barRad, Texture::_blue);
+				Utility::drawBezierTube(tempSet, 12, 8, barRad, Texture::_bodyTexture);
 			}
 			glPopMatrix();
 
@@ -1082,14 +1082,14 @@ void Model::Torso() {
 			tempSet.addCoordinate(-0.25, 0.1, barGap);
 			tempSet.addCoordinate(-0.25, 0.1, -barGap);
 			tempSet.addCoordinate(-0.2, 0.15, -barGap);
-			Utility::drawBezierTube(tempSet, 4, 8, barRad, Texture::_blue);
+			Utility::drawBezierTube(tempSet, 4, 8, barRad, Texture::_bodyTexture);
 
 			glTranslatef(0, 0, torsoWidth + barRad * 2);
 			tempSet.clear(10);
 			tempSet.addCoordinate(-0.25, 0.1, -barGap);
 			tempSet.addCoordinate(-0.25, 0.1, barGap);
 			tempSet.addCoordinate(-0.2, 0.15, barGap);
-			Utility::drawBezierTube(tempSet, 4, 8, barRad, Texture::_blue);
+			Utility::drawBezierTube(tempSet, 4, 8, barRad, Texture::_bodyTexture);
 		}
 		glPopMatrix();
 
@@ -1276,10 +1276,10 @@ void Model::Waist() {
 			Lightning::darkerBlueMaterial();
 
 			glTranslatef(0, waistGap / 2.0f, 0);
-			Utility::drawHemisphere(waistSize + waistExtrude, 20, 16, Texture::_blue);
+			Utility::drawHemisphere(waistSize + waistExtrude, 20, 16, Texture::_bodyTexture);
 			glTranslatef(0, -waistGap, 0);
 			glRotatef(180, 1, 0, 0);
-			Utility::drawHemisphere(waistSize + waistExtrude, 20, 16, Texture::_blue);
+			Utility::drawHemisphere(waistSize + waistExtrude, 20, 16, Texture::_bodyTexture);
 		}
 		glPopMatrix();
 
@@ -1290,10 +1290,10 @@ void Model::Waist() {
 			float hingeRadius = 0.07f;
 
 			Color::lightBlue();
-			Lightning::blueMaterial();
+			Lightning::bodyMainMaterial();
 
 			Texture::on();
-			Texture::use(Texture::_blue);
+			Texture::use(Texture::_bodyTexture);
 			gluQuadricTexture(waistObj, GL_TRUE);
 			glTranslatef(0, -0.175f, gap);
 			gluSphere(waistObj, hingeRadius, 8, 8);
@@ -1314,10 +1314,10 @@ void Model::Waist() {
 			float gap2 = 0.09f;
 			float bar2Width = barWidth / 4.0f;
 			Color::lightBlue();
-			Lightning::blueMaterial();
+			Lightning::bodyMainMaterial();
 
 			Texture::on();
-			Texture::use(Texture::_blue);
+			Texture::use(Texture::_bodyTexture);
 			gluQuadricTexture(waistObj, GL_TRUE);
 			glTranslatef(0, -0.38f, 0);
 			glPushMatrix();
@@ -1370,7 +1370,7 @@ void Model::Waist() {
 		glPushMatrix();
 		{
 			Color::lightBlue();
-			Lightning::blueMaterial();
+			Lightning::bodyMainMaterial();
 
 			CoordinateSet torso(10);
 			torso.addCoordinate(0, 0, 0);
@@ -1459,7 +1459,7 @@ void Model::Buttock() {
 
 		// Main butt
 		Color::lightBlue();
-		Lightning::blueMaterial();
+		Lightning::bodyMainMaterial();
 
 		CoordinateSet butt(10);
 		butt.addCoordinate(0, 0, 0);
@@ -1539,7 +1539,7 @@ void Model::ButtockJet() {
 
 			glTranslatef(0, -jetRad, 0);
 			glRotatef(22.5, 1, 0, 0);
-			Utility::drawHemisphere(jetRad, 12, 6, Texture::_blue);
+			Utility::drawHemisphere(jetRad, 12, 6, Texture::_bodyTexture);
 
 			// Vent
 			Color::black();
@@ -1558,7 +1558,7 @@ void Model::ButtockJet() {
 		float barRad = 0.015f;
 		glTranslatef(0, -barRad, 0);
 		Texture::on();
-		Texture::use(Texture::_blue);
+		Texture::use(Texture::_bodyTexture);
 		gluQuadricTexture(buttockJetObj, GL_TRUE);
 		gluCylinder(buttockJetObj, barRad, barRad, 0.075f, 8, 1);
 		gluQuadricTexture(buttockJetObj, GL_FALSE);
@@ -1603,7 +1603,7 @@ void Model::LegUpper() {
 		glTranslatef(-center[0], -center[1], -legWidth / 2.0f);
 
 		Color::lightBlue();
-		Lightning::blueMaterial();
+		Lightning::bodyMainMaterial();
 		float polygonCenter[3] = { 0.35, -0.35, 0 };
 		Utility::extrudePolygon(circle, polygonCenter, zAxis, legWidth, TextureMap::allBlue());
 
@@ -1643,7 +1643,7 @@ void Model::LegLower() {
 	CoordinateSet tempCoordSet2(10);
 
 	Color::lightBlue();
-	Lightning::blueMaterial();
+	Lightning::bodyMainMaterial();
 
 	glPushMatrix();
 	{
@@ -1866,7 +1866,7 @@ void Model::ArmUpper() {
 	{
 		glRotatef(90, 0, 0, 1);
 		Color::lightBlue();
-		Lightning::blueMaterial();
+		Lightning::bodyMainMaterial();
 
 		CoordinateSet arm(10);
 		arm.addCoordinate(0, -0.17f, 0);
@@ -1942,7 +1942,7 @@ void Model::ArmLower() {
 	{
 		glTranslatef(0.1, 0.1, 0);
 		Color::lightBlue();
-		Lightning::blueMaterial();
+		Lightning::bodyMainMaterial();
 
 		// Main body
 		CoordinateSet arm(10);
@@ -2036,7 +2036,7 @@ void Model::RightHand() {
 		glPushMatrix();
 		{
 			Color::lightBlue();
-			Lightning::blueMaterial();
+			Lightning::bodyMainMaterial();
 
 			CoordinateSet palm(10);
 			palm.addCoordinate(0, -0.02, 0);
@@ -2117,7 +2117,7 @@ void Model::LeftHand() {
 		glPushMatrix();
 		{
 			Color::lightBlue();
-			Lightning::blueMaterial();
+			Lightning::bodyMainMaterial();
 
 			CoordinateSet palm(10);
 			palm.addCoordinate(0, -0.02, 0);
@@ -2210,7 +2210,7 @@ void Model::Finger(float r1, float r2, float r3) {
 	{
 		// Finger segment
 		Color::lightBlue();
-		Lightning::blueMaterial();
+		Lightning::bodyMainMaterial();
 
 		CoordinateSet seg(4);
 		seg.addCoordinate(0, 0, 0);
@@ -2310,7 +2310,7 @@ void Model::Finger(float r1, float r2, float r3) {
 	// Segment #2 
 	{
 		Color::lightBlue();
-		Lightning::blueMaterial();
+		Lightning::bodyMainMaterial();
 
 		CoordinateSet seg(4);
 		seg.addCoordinate(0, 0, 0);
@@ -2364,7 +2364,7 @@ void Model::Finger(float r1, float r2, float r3) {
 	glPushMatrix();
 	{
 		Color::lightBlue();
-		Lightning::blueMaterial();
+		Lightning::bodyMainMaterial();
 
 		CoordinateSet seg(4);
 		seg.addCoordinate(0, 0, 0);
@@ -2410,7 +2410,7 @@ void Model::zipLineTube() {
 	glPushMatrix();
 	{
 		Color::lightBlue();
-		Lightning::blueMaterial();
+		Lightning::bodyMainMaterial();
 
 		float tubeRadius = 0.1f;
 		float tubeLength = 0.7f;
@@ -2418,7 +2418,7 @@ void Model::zipLineTube() {
 
 		// Tube
 		Texture::on();
-		Texture::use(Texture::_blue);
+		Texture::use(Texture::_bodyTexture);
 		gluQuadricTexture(zipLineTubeObj, GL_TRUE);
 		glTranslatef(0, 0, -tubeLength / 2.0f);
 		gluCylinder(zipLineTubeObj, tubeRadius, tubeRadius, tubeLength, 24, 12);
@@ -2429,10 +2429,10 @@ void Model::zipLineTube() {
 		glPushMatrix();
 		{
 			Color::lightBlue();
-			Lightning::blueMaterial();
+			Lightning::bodyMainMaterial();
 
 			Texture::on();
-			Texture::use(Texture::_blue);
+			Texture::use(Texture::_bodyTexture);
 			gluQuadricTexture(zipLineTubeObj, GL_TRUE);
 			gluDisk(zipLineTubeObj, 0, tubeRadius, 24, 4);
 			gluQuadricTexture(zipLineTubeObj, GL_FALSE);
@@ -2450,10 +2450,10 @@ void Model::zipLineTube() {
 		glPushMatrix();
 		{
 			Color::lightBlue();
-			Lightning::blueMaterial();
+			Lightning::bodyMainMaterial();
 
 			Texture::on();
-			Texture::use(Texture::_blue);
+			Texture::use(Texture::_bodyTexture);
 			gluQuadricTexture(zipLineTubeObj, GL_TRUE);
 			glTranslatef(0, 0, tubeLength);
 			gluDisk(zipLineTubeObj, 0, tubeRadius, 24, 4);
@@ -2576,10 +2576,10 @@ void Model::zipLineBackTube() {
 
 		// Lids
 		Color::lightBlue();
-		Lightning::blueMaterial();
+		Lightning::bodyMainMaterial();
 
 		Texture::on();
-		Texture::use(Texture::_blue);
+		Texture::use(Texture::_bodyTexture);
 		gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
 		glPushMatrix();
 		{
@@ -2622,7 +2622,7 @@ void Model::zipLineBackTube() {
 		glPushMatrix();
 		{
 			Texture::on();
-			Texture::use(Texture::_blue);
+			Texture::use(Texture::_bodyTexture);
 			gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
 			glRotatef(180, 1, 0, 0);
 			gluCylinder(zipLineBackTubeObj, 0.035, 0.035, containerHeight * 0.5, 8, 8);
@@ -2642,7 +2642,7 @@ void Model::zipLineBackTube() {
 			Lightning::darkerBlueMaterial();
 
 			Texture::on();
-			Texture::use(Texture::_blue);
+			Texture::use(Texture::_bodyTexture);
 			gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
 			glTranslatef(0, -containerRadius, 0);
 			glPushMatrix();
@@ -2689,7 +2689,7 @@ void Model::zipLineBackTube() {
 			Lightning::darkerBlueMaterial();
 
 			Texture::on();
-			Texture::use(Texture::_blue);
+			Texture::use(Texture::_bodyTexture);
 			gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
 			gluDisk(zipLineBackTubeObj, 0, cyclerRadius, 12, 3);
 			gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);

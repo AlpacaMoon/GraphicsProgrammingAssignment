@@ -1,11 +1,15 @@
 #pragma once
 #include <Windows.h>
 #include <gl/GL.h>
+#include <Windows.h>
+#include <gl/GL.h>
 
 class Controls
 {
 public:
-	static bool isIndependentControls;
+	static int controlMode;
+	static void manageControlsKeyDown(WPARAM wParam);
+	static void manageControlsKeyUp(WPARAM wParam);
 
 	// Variables for independent controls
 	static int currentControlPart;
@@ -19,7 +23,6 @@ public:
 
 	// Methods
 	static void initialize();
-	static void reset();
 	static void independentControls(WPARAM wParam);
 	static void presetAnimationKeyDown(WPARAM wParam);
 	static void presetAnimationKeyUp(WPARAM wParam);

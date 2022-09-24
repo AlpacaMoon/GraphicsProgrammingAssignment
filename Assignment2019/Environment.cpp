@@ -9,7 +9,7 @@
 bool Environment::showSkybox = true;
 GLUquadricObj* Environment::skyboxObj;
 
-bool Environment::showGridlines = true;
+bool Environment::showGridlines = false;
 
 void Environment::skybox() {
 	if (!showSkybox)

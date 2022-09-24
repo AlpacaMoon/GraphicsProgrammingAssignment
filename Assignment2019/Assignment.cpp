@@ -136,42 +136,62 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 
 			case VK_F1:
+				// Enable / Disable Lighting
 				Lightning::onLightning = !Lightning::onLightning;
 				break;
 
 			case VK_F2:
-				Environment::showGridlines = !Environment::showGridlines;
+				// Enable / Disable texture
+				Texture::onTexture = !Texture::onTexture;
 				break;
 
 			case VK_F3:
-				Controls::isIndependentControls = !Controls::isIndependentControls;
+				// Change to Posing Mode
+				Controls::controlMode = 1;
 				Animation::cancelAllAnimations();
 				Animation::startReset();
 				break;
 
 			case VK_F4:
-				Environment::showSkybox = !Environment::showSkybox;
+				// Change to Animation Mode
+				Controls::controlMode = 2;
+				Animation::cancelAllAnimations();
+				Animation::startReset();
 				break;
 
 			case VK_F5:
-				Texture::onTexture = !Texture::onTexture;
+				// Change skin
+				Controls::controlMode = 3;
+				break;
+
+			case VK_F6:
+				// Change weapon
+				Controls::controlMode = 4;
+				break;
+
+			case VK_F7:
+				// Change TV Texture
+				Controls::controlMode = 5;
+				break;
+
+			case VK_F8:
+				// Enable / Disable skybox
+				Environment::showSkybox = !Environment::showSkybox;
+				break;
+
+			case VK_F9:
+				// Enable / disable gridlines
+				Environment::showGridlines = !Environment::showGridlines;
 				break;
 
 			}
 
-			if (Controls::isIndependentControls) {
-				Controls::independentControls(wParam);
-			}
-			else {
-				Controls::presetAnimationKeyDown(wParam);
-			}
+			Controls::manageControlsKeyDown(wParam);
 		}
 		break;
 
 	case WM_KEYUP:
-		if (!Controls::isIndependentControls) {
-			Controls::presetAnimationKeyUp(wParam);
-		}
+		Controls::manageControlsKeyUp(wParam);
 	default:
 		break;
 	}
