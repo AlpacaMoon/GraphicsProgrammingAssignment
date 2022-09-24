@@ -5,8 +5,9 @@
 class Texture
 {
 public:
+
 	// Pathfinder textures
-	static GLuint _blue;
+	static GLuint _bodyTexture;
 	static GLuint _yellow;
 	static GLuint _yellowRope;
 	static GLuint _eye;
@@ -24,6 +25,13 @@ public:
 	
 	// Environment textures
 	static GLuint _skybox;
+
+	// Customization features (Change skin texture)
+	static int currentSkin;
+	static GLuint _blueSkin;
+	static GLuint _greenSkin;
+	static GLuint _redSkin;
+	static void changeSkin(int n);
 
 	// Change current using texture to the given texture
 	static void use(GLuint texture);
@@ -52,5 +60,6 @@ public:
 	// Variables for texture wrapping methods
 	static int wrapS;
 	static int wrapT;
+
 };
 

@@ -14,7 +14,7 @@ public:
     static Time gunFireCooldownTime;
 
     // Weapon related methods
-    static void switchWeapon();
+    static void switchWeapon(int n);
 
     // Methods to Move body parts
     static void hardReset();
@@ -71,5 +71,5 @@ public:
 
     // TV screen
     static int currentTVscreen;
-    static void switchTVscreen();
+    static void switchTVscreen(int n);
 };

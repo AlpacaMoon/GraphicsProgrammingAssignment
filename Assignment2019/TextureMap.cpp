@@ -34,9 +34,9 @@ GLuint TextureMap::get(int face) {
 
 TextureMap TextureMap::allBlue() {
 	TextureMap tmap;
-	tmap.add(Texture::_blue, 1);
-	tmap.add(Texture::_blue, 2);
-	tmap.add(Texture::_blue, 3);
+	tmap.add(Texture::_bodyTexture, 1);
+	tmap.add(Texture::_bodyTexture, 2);
+	tmap.add(Texture::_bodyTexture, 3);
 	return tmap;
 }
 

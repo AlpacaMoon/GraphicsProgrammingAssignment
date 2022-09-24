@@ -15,7 +15,7 @@ int Texture::wrapT = GL_REPEAT;
 bool Texture::onTexture = true;
 
 // Pathfinder textures
-GLuint Texture::_blue;
+GLuint Texture::_bodyTexture;
 GLuint Texture::_yellow;
 GLuint Texture::_yellowRope;
 GLuint Texture::_eye;
@@ -33,6 +33,17 @@ GLuint Texture::_metal;
 
 // Environment Textures
 GLuint Texture::_skybox;
+
+// Current skin texture
+/*	1 = blue skin
+*	2 = green skin
+*	3 = red skin
+*/
+int Texture::currentSkin = 1;
+GLuint Texture::_blueSkin;
+GLuint Texture::_greenSkin;
+GLuint Texture::_redSkin;
+
 
 // Change current using texture to the given texture
 void Texture::use(GLuint texture) {
@@ -52,13 +63,18 @@ void Texture::off() {
 // Initialize all textures at once
 void Texture::setupTextures() {
 	// General Pathfinder Textures
-	initializeTexture("Textures/blue.bmp", &_blue);
 	initializeTexture("Textures/yellow.bmp", &_yellow);
 	initializeTexture("Textures/yellowRope.bmp", &_yellowRope);
 	initializeTexture("Textures/eye.bmp", &_eye);
 	initializeTexture("Textures/blackVent.bmp", &_blackVent);
 	initializeTexture("Textures/winder.bmp", &_winder);
-	
+
+	// Skins
+	initializeTexture("Textures/blueSkin.bmp", &_blueSkin);
+	initializeTexture("Textures/greenSkin.bmp", &_greenSkin);
+	initializeTexture("Textures/redSkin.bmp", &_redSkin);
+	_bodyTexture = _blueSkin;
+
 	// TV Textures
 	LPCSTR tvTextureFiles[11] = {
 		"Textures/tvAngry.bmp",
@@ -155,5 +171,19 @@ void Texture::setTextureWrap(int wrapHorizontal, int wrapVertical) {
 	}
 	if (wrapVertical == GL_CLAMP || wrapVertical == GL_REPEAT) {
 		Texture::wrapT = wrapVertical;
+	}
+}
+
+void Texture::changeSkin(int n) {
+	switch (n) {
+	case 1:
+		_bodyTexture = _blueSkin;
+		break;
+	case 2:
+		_bodyTexture = _greenSkin;
+		break;
+	case 3:
+		_bodyTexture = _redSkin;
+		break;
 	}
 }

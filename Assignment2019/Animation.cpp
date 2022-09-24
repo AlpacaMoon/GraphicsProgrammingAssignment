@@ -20,8 +20,8 @@ void Animation::runAnimations() {
 
 	Animation::shootBullet();
 
-	// Disable animations in Independent controls / Posing mode
-	if (Controls::isIndependentControls) {
+	// Disable animations if not in Animation Mode
+	if (Controls::controlMode != 2) {
 		return;
 	}
 
@@ -50,8 +50,8 @@ void Animation::runAnimations() {
 	}
 }
 
-void Animation::switchWeapon() {
-	Model::currentWeapon = (Model::currentWeapon + 1) % 3;
+void Animation::switchWeapon(int n) {
+	Model::currentWeapon = n - 1;
 }
 
 void Animation::hardReset() {
@@ -714,6 +714,6 @@ void Animation::shootBullet() {
 	11)	"Textures/tvThumbs-Up.bmp",
 */
 int Animation::currentTVscreen = 0;
-void Animation::switchTVscreen() {
-	currentTVscreen = (currentTVscreen + 1) % 11;
+void Animation::switchTVscreen(int n) {
+	currentTVscreen = n - 1;
 }

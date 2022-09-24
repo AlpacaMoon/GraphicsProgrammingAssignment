@@ -6,7 +6,11 @@ public:
 
 	static void defaultMaterial();
 
-	static void blueMaterial();
+	static void bodyMainMaterial();
+	
+	static void blueSkinMaterial();
+	static void greenSkinMaterial();
+	static void redSkinMaterial();
 
 	static void yellowMaterial();
 
