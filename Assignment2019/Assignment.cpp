@@ -263,6 +263,8 @@ void display()
 	glPushMatrix();
 	{
 		Model::Pathfinder();
+		//Model::r99();
+		//Model::kukriKnife();
 
 	}
 	glPopMatrix();
