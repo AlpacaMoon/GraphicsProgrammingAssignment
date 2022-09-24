@@ -9,8 +9,14 @@ void Color::lightBlue() {
 	if (Lightning::onLightning) {
 		glColor3f(1, 1, 1);
 	}
-	else {
+	else if (Texture::currentSkin == 1) {
 		glColor3f(121 / 255.0f, 144 / 255.0f, 160 / 255.0f);
+	}
+	else if (Texture::currentSkin == 2) {
+		glColor3f((68 / 255.0), (129 / 255.0), (68 / 255.0));
+	}
+	else if (Texture::currentSkin == 3) {
+		glColor3f((186 / 255.0), (73 / 255.0), (76 / 255.0));
 	}
 }
 
@@ -18,8 +24,14 @@ void Color::lightBlue2() {
 	if (Lightning::onLightning) {
 		glColor3f(1, 1, 1);
 	}
-	else {
+	else if (Texture::currentSkin == 1) {
 		glColor3f(111 / 255.0f, 131 / 255.0f, 152 / 255.0f);
+	}
+	else if (Texture::currentSkin == 2) {
+		glColor3f((58 / 255.0), (117 / 255.0), (60 / 255.0));
+	}
+	else if (Texture::currentSkin == 3) {
+		glColor3f((176 / 255.0), (62 / 255.0), (68 / 255.0));
 	}
 }
 
