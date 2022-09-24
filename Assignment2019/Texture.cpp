@@ -175,6 +175,7 @@ void Texture::setTextureWrap(int wrapHorizontal, int wrapVertical) {
 }
 
 void Texture::changeSkin(int n) {
+	currentSkin = n;
 	switch (n) {
 	case 1:
 		_bodyTexture = _blueSkin;

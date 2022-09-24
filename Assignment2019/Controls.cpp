@@ -117,10 +117,10 @@ void Controls::independentControls(WPARAM wParam) {
 			break;
 			// Hip
 		case 'T':
-			Model::hipRot[2] -= rotateSpeed;
+			Model::hipRot[2] += rotateSpeed;
 			break;
 		case 'G':
-			Model::hipRot[2] += rotateSpeed;
+			Model::hipRot[2] -= rotateSpeed;
 			break;
 		case 'F':
 			Model::hipRot[1] -= rotateSpeed;
@@ -171,16 +171,16 @@ void Controls::independentControls(WPARAM wParam) {
 			Model::RLegUpperRot[2] -= rotateSpeed;
 			break;
 		case 'A':
-			Model::RLegUpperRot[1] += rotateSpeed;
-			break;
-		case 'D':
 			Model::RLegUpperRot[1] -= rotateSpeed;
 			break;
+		case 'D':
+			Model::RLegUpperRot[1] += rotateSpeed;
+			break;
 		case 'Q':
-			Model::RLegUpperRot[0] += rotateSpeed;
+			Model::RLegUpperRot[0] -= rotateSpeed;
 			break;
 		case 'E':
-			Model::RLegUpperRot[0] -= rotateSpeed;
+			Model::RLegUpperRot[0] += rotateSpeed;
 			break;
 		case 'R':
 			Model::RLegHingeRot += rotateSpeed;
@@ -451,11 +451,6 @@ void Controls::presetAnimationKeyDown(WPARAM wParam) {
 			Animation::cancelAllAnimations();
 			Animation::startJumping();
 		}
-		break;
-
-	case VK_OEM_5:
-		Animation::stopWalking();
-		Animation::startReset();
 		break;
 
 	default:

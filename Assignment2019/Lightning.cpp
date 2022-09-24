@@ -113,8 +113,18 @@ void Lightning::windRedMaterial() {
 }
 
 void Lightning::darkerBlueMaterial() {
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, darkBlueMaterialAmbient);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, darkBlueMaterialDiffuse);
+	switch (Texture::currentSkin) {
+	case 1:
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, darkBlueMaterialAmbient);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, darkBlueMaterialDiffuse);
+		break;
+	case 2:
+		greenSkinMaterial();
+		break;
+	case 3:
+		redSkinMaterial();
+		break;
+	}
 }
 
 void Lightning::darkerGreyMaterial() {
