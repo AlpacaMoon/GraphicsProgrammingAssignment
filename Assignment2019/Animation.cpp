@@ -10,15 +10,25 @@
 int Animation::playingCutscene = 0;
 Time Animation::gunFireCooldownTime(0.0f);
 
+bool Animation::switchingWeapon = false;
+
 void Animation::runAnimations() {
+
+	// Unconditional Animations
+	Animation::shootBullet();
+
+	if (switchingWeapon) {
+		if (openRightHand(300.0f * Time::elapsedSeconds) == false) {
+			switchingWeapon = false;
+		}
+	}
+
 	// Disallow input if resetting body parts
 	if (isResetting) {
 		if (softReset(250.0f * Time::elapsedSeconds))
 			isResetting = false;
 		return;
 	}
-
-	Animation::shootBullet();
 
 	// Disable animations if not in Animation Mode
 	if (Controls::controlMode != 2) {
@@ -52,6 +62,7 @@ void Animation::runAnimations() {
 
 void Animation::switchWeapon(int n) {
 	Model::currentWeapon = n - 1;
+	switchingWeapon = true;
 }
 
 void Animation::hardReset() {
@@ -130,10 +141,8 @@ bool Animation::softReset(float speed) {
 		}
 
 		for (int j = 0; j < 5; j++) {
-			if (softResetClamping(&Model::RFingerRot[i][j], -360, Model::openedFingerRot[i][j], 360, speed) == false)
-				stopped = false;
-			if (softResetClamping(&Model::LFingerRot[i][j], -360, Model::openedFingerRot[i][j], 360, speed) == false)
-				stopped = false;
+			openRightHand(speed * 3);
+			openLeftHand(speed * 3);
 		}
 	}
 	if (softResetClamping(&Model::RLegHingeRot, -360, Model::defaultRLegHingeRot, 360, speed) == false)
@@ -498,52 +507,90 @@ void Animation::jump() {
 // ==================== #1 - Zipline away ====================
 
 
-// General Animations
+// Hand Animations
 
-void Animation::closeRightHand(float fingerSpeed) {
+bool Animation::closeRightHand(float fingerSpeed) {
+	bool closing = false;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 3; j++) {
-			Model::RFingerRot[i][j] += fingerSpeed;
-			if (Model::RFingerRot[i][j] > Model::closedFingerRot[i][j])
-				Model::RFingerRot[i][j] = Model::closedFingerRot[i][j];
+			// If empty handed
+			if (Model::currentWeapon == 0) {
+				if (softResetClamping(&Model::RFingerRot[i][j], -360, Model::closedFingerRot[i][j], 360, fingerSpeed) == false) {
+					closing = true;
+				}
+			}
+			// If holding gun
+			else if (Model::currentWeapon == 1) {
+				if (softResetClamping(&Model::RFingerRot[i][j], -360, Model::holdingGunFingerRot[i][j], 360, fingerSpeed) == false) {
+					closing = true;
+				}
+			}
+			// If holding Knife
+			else if (Model::currentWeapon == 2) {
+				if (softResetClamping(&Model::RFingerRot[i][j], -360, Model::holdingKnifeFingerRot[i][j], 360, fingerSpeed) == false) {
+					closing = true;
+				}
+			}
 		}
 	}
+	return closing;
 }
 
-void Animation::closeLeftHand(float fingerSpeed) {
+bool Animation::closeLeftHand(float fingerSpeed) {
+	bool closing = false;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 3; j++) {
 			if (Model::LFingerRot[i][j] < Model::closedFingerRot[i][j]) {
+				closing = true;
 				Model::LFingerRot[i][j] += fingerSpeed;
 				if (Model::LFingerRot[i][j] > Model::closedFingerRot[i][j])
 					Model::LFingerRot[i][j] = Model::closedFingerRot[i][j];
 			}
 		}
 	}
+	return closing;
 }
 
-void Animation::openRightHand(float fingerSpeed) {
+bool Animation::openRightHand(float fingerSpeed) {
+	bool closing = false;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 3; j++) {
-			if (Model::RFingerRot[i][j] > Model::openedFingerRot[i][j]) {
-				Model::RFingerRot[i][j] -= fingerSpeed;
-				if (Model::RFingerRot[i][j] < Model::openedFingerRot[i][j])
-					Model::RFingerRot[i][j] = Model::openedFingerRot[i][j];
+			// If empty handed
+			if (Model::currentWeapon == 0) {
+				if (softResetClamping(&Model::RFingerRot[i][j], -360, Model::openedFingerRot[i][j], 360, fingerSpeed) == false) {
+					closing = true;
+				}
+			}
+			// If holding gun
+			else if (Model::currentWeapon == 1) {
+				if (softResetClamping(&Model::RFingerRot[i][j], -360, Model::holdingGunFingerRot[i][j], 360, fingerSpeed) == false) {
+					closing = true;
+				}
+			}
+			// If holding Knife
+			else if (Model::currentWeapon == 2) {
+				if (softResetClamping(&Model::RFingerRot[i][j], -360, Model::holdingKnifeFingerRot[i][j], 360, fingerSpeed) == false) {
+					closing = true;
+				}
 			}
 		}
 	}
+	return closing;
 }
 
-void Animation::openLeftHand(float fingerSpeed) {
+bool Animation::openLeftHand(float fingerSpeed) {
+	bool closing = false;
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 3; j++) {
 			if (Model::LFingerRot[i][j] > Model::openedFingerRot[i][j]) {
+				closing = true;
 				Model::LFingerRot[i][j] -= fingerSpeed;
 				if (Model::LFingerRot[i][j] < Model::openedFingerRot[i][j])
 					Model::LFingerRot[i][j] = Model::openedFingerRot[i][j];
 			}
 		}
 	}
+	return closing;
 }
 
 

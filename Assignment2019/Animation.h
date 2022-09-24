@@ -15,6 +15,7 @@ public:
 
     // Weapon related methods
     static void switchWeapon(int n);
+    static bool switchingWeapon;
 
     // Methods to Move body parts
     static void hardReset();
@@ -46,16 +47,15 @@ public:
     // 1) Zipline away
 
 
-    // General Animations
+    // Hand Animations
     static float fingerSpeed;
-    static void closeRightHand(float fingerSpeed);
-    static void closeLeftHand(float fingerSpeed);
-    static void openRightHand(float fingerSpeed);
-    static void openLeftHand(float fingerSpeed);
+    static bool closeRightHand(float fingerSpeed);
+    static bool closeLeftHand(float fingerSpeed);
+    static bool openRightHand(float fingerSpeed);
+    static bool openLeftHand(float fingerSpeed);
 
-    // Clamping rotations
+    // Clamping rotations / transformations
     static float clampFloat(float value, float min, float max);
-
     static void clampHead();
     static void clampHip();
     static void clampBody();
