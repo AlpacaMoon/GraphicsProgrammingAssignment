@@ -15,7 +15,12 @@ bool Animation::switchingWeapon = false;
 void Animation::runAnimations() {
 
 	// Unconditional Animations
-	Animation::shootBullet();
+	if (Model::currentWeapon == 1) {
+		Animation::shootBullet();
+	}
+	else if (Model::currentWeapon == 2) {
+		Animation::swingKnife();
+	}
 
 	if (switchingWeapon) {
 		if (openRightHand(300.0f * Time::elapsedSeconds) == false) {
@@ -204,8 +209,10 @@ void Animation::walk() {
 		openRightHand(speed);
 		openLeftHand(speed);
 
-		if (softResetClamping(&Model::RArmRot[0][2], -360, 15, 360, speed) == false)
-			stopped = false;
+		if (!isSwingingKnife()) {
+			if (softResetClamping(&Model::RArmRot[0][2], -360, 15, 360, speed) == false)
+				stopped = false;
+		}
 		if (softResetClamping(&Model::LArmRot[0][2], -360, 15, 360, speed) == false)
 			stopped = false;
 
@@ -268,8 +275,10 @@ void Animation::walk() {
 			Model::bodyRot[2] -= 0.02 * speed;
 		}
 
-		Model::RArmRot[0][2] += (-15 - Model::RArmRot[0][2]) * 0.6 * Time::elapsedSeconds * 15;
-		Model::RArmRot[0][2] = clampFloat(Model::RArmRot[0][2], -15, 45);
+		if (!isSwingingKnife()) {
+			Model::RArmRot[0][2] += (-15 - Model::RArmRot[0][2]) * 0.6 * Time::elapsedSeconds * 15;
+			Model::RArmRot[0][2] = clampFloat(Model::RArmRot[0][2], -15, 45);
+		}
 		Model::LArmRot[0][2] += (45 - Model::LArmRot[0][2]) * 0.6 * Time::elapsedSeconds * 15;
 		Model::LArmRot[0][2] = clampFloat(Model::LArmRot[0][2], -15, 45);
 
@@ -318,9 +327,10 @@ void Animation::walk() {
 		Model::RLegHingeRot -= 0.4 * speed;
 		Model::bodyRot[0] += 0.05 * speed;
 
-
-		Model::RArmRot[0][2] += (45 - Model::RArmRot[0][2]) * 0.6 * Time::elapsedSeconds * 15;
-		Model::RArmRot[0][2] = clampFloat(Model::RArmRot[0][2], -15, 45);
+		if (!isSwingingKnife()) {
+			Model::RArmRot[0][2] += (45 - Model::RArmRot[0][2]) * 0.6 * Time::elapsedSeconds * 15;
+			Model::RArmRot[0][2] = clampFloat(Model::RArmRot[0][2], -15, 45);
+		}
 		Model::LArmRot[0][2] += (-15 - Model::LArmRot[0][2]) * 0.6 * Time::elapsedSeconds * 15;
 		Model::LArmRot[0][2] = clampFloat(Model::LArmRot[0][2], -15, 45);
 
@@ -392,13 +402,15 @@ void Animation::jump() {
 		softResetClamping(&Model::LLegHingeRot, -360, -90, 360, speed * 1.5);
 		softResetClamping(&Model::LFeetRot, -360, 20, 360, speed);
 
-		softResetClamping(&Model::RArmRot[0][0], -360, Model::defaultRArmRot[0][0] + 40.0f, 360, speed / 2.0f);
-		softResetClamping(&Model::RArmRot[0][1], -360, Model::defaultRArmRot[0][1] + 20.0f, 360, speed / 2.0f);
-		softResetClamping(&Model::RArmRot[0][2], -360, Model::defaultRArmRot[0][2], 360, speed / 2.0f);
-		softResetClamping(&Model::RArmRot[1][2], -360, Model::defaultRArmRot[1][2], 360, speed / 2.0f);
-		softResetClamping(&Model::RArmRot[2][0], -360, Model::defaultRArmRot[2][0], 360, speed / 2.0f);
-		softResetClamping(&Model::RArmRot[2][1], -360, Model::defaultRArmRot[2][1], 360, speed / 2.0f);
-		softResetClamping(&Model::RArmRot[2][2], -360, Model::defaultRArmRot[2][2], 360, speed / 2.0f);
+		if (!isSwingingKnife()) {
+			softResetClamping(&Model::RArmRot[0][0], -360, Model::defaultRArmRot[0][0] + 40.0f, 360, speed / 2.0f);
+			softResetClamping(&Model::RArmRot[0][1], -360, Model::defaultRArmRot[0][1] + 20.0f, 360, speed / 2.0f);
+			softResetClamping(&Model::RArmRot[0][2], -360, Model::defaultRArmRot[0][2], 360, speed / 2.0f);
+			softResetClamping(&Model::RArmRot[1][2], -360, Model::defaultRArmRot[1][2], 360, speed / 2.0f);
+			softResetClamping(&Model::RArmRot[2][0], -360, Model::defaultRArmRot[2][0], 360, speed / 2.0f);
+			softResetClamping(&Model::RArmRot[2][1], -360, Model::defaultRArmRot[2][1], 360, speed / 2.0f);
+			softResetClamping(&Model::RArmRot[2][2], -360, Model::defaultRArmRot[2][2], 360, speed / 2.0f);
+		}
 
 		softResetClamping(&Model::LArmRot[0][0], -360, Model::defaultLArmRot[0][0] - 40.0f, 360, speed / 2.0f);
 		softResetClamping(&Model::LArmRot[0][1], -360, Model::defaultLArmRot[0][1] - 20.0f, 360, speed / 2.0f);
@@ -424,8 +436,10 @@ void Animation::jump() {
 	float thisFallSpeed = jumpFallSpeed * Time::elapsedSeconds;
 	
 	if (jumpSteps == 3) {
-		softResetClamping(&Model::RArmRot[0][0], -360, Model::defaultRArmRot[0][0] + 80.0f, 360, speed / 2.0f);
-		softResetClamping(&Model::RArmRot[0][1], -360, Model::defaultRArmRot[0][1] + 40.0f, 360, speed / 2.0f);
+		if (!isSwingingKnife()) {
+			softResetClamping(&Model::RArmRot[0][0], -360, Model::defaultRArmRot[0][0] + 80.0f, 360, speed / 2.0f);
+			softResetClamping(&Model::RArmRot[0][1], -360, Model::defaultRArmRot[0][1] + 40.0f, 360, speed / 2.0f);
+		}
 		softResetClamping(&Model::LArmRot[0][0], -360, Model::defaultLArmRot[0][0] - 80.0f, 360, speed / 2.0f);
 		softResetClamping(&Model::LArmRot[0][1], -360, Model::defaultLArmRot[0][1] - 40.0f, 360, speed / 2.0f);
 
@@ -448,9 +462,11 @@ void Animation::jump() {
 		Model::bodyPos[1] += (-0.45 - Model::bodyPos[1]) * thisSpeed;
 
 		thisSpeed *= 15;
-		softResetClamping(&Model::RArmRot[0][0], -360, Model::defaultRArmRot[0][0] - 5, 360, thisSpeed * 2);
-		softResetClamping(&Model::RArmRot[0][1], -360, Model::defaultRArmRot[0][1], 360, thisSpeed);
-		softResetClamping(&Model::RArmRot[1][2], -360, 20, 360, thisSpeed);
+		if (!isSwingingKnife()) {
+			softResetClamping(&Model::RArmRot[0][0], -360, Model::defaultRArmRot[0][0] - 5, 360, thisSpeed * 2);
+			softResetClamping(&Model::RArmRot[0][1], -360, Model::defaultRArmRot[0][1], 360, thisSpeed);
+			softResetClamping(&Model::RArmRot[1][2], -360, 20, 360, thisSpeed);
+		}
 		softResetClamping(&Model::LArmRot[0][0], -360, Model::defaultLArmRot[0][0] + 5, 360, thisSpeed * 2);
 		softResetClamping(&Model::LArmRot[0][1], -360, Model::defaultLArmRot[0][1], 360, thisSpeed);
 		softResetClamping(&Model::LArmRot[1][2], -360, 20, 360, thisSpeed);
@@ -462,12 +478,14 @@ void Animation::jump() {
 	else if (jumpSteps == 5) {
 		float thisSpeed = jumpRecoverSpeed * Time::elapsedSeconds;
 		bool stopped = true;
-		if (softResetClamping(&Model::RArmRot[0][0], -360, Model::defaultRArmRot[0][0], 360, thisSpeed) == false)
-			stopped = false;
-		if(softResetClamping(&Model::RArmRot[0][1], -360, Model::defaultRArmRot[0][1], 360, thisSpeed) == false)
-			stopped = false;
-		if(softResetClamping(&Model::RArmRot[1][2], -360, Model::defaultRArmRot[1][2], 360, thisSpeed * 5) == false)
-			stopped = false;
+		if (!isSwingingKnife()) {
+			if (softResetClamping(&Model::RArmRot[0][0], -360, Model::defaultRArmRot[0][0], 360, thisSpeed) == false)
+				stopped = false;
+			if (softResetClamping(&Model::RArmRot[0][1], -360, Model::defaultRArmRot[0][1], 360, thisSpeed) == false)
+				stopped = false;
+			if (softResetClamping(&Model::RArmRot[1][2], -360, Model::defaultRArmRot[1][2], 360, thisSpeed * 5) == false)
+				stopped = false;
+		}
 		if(softResetClamping(&Model::LArmRot[0][0], -360, Model::defaultLArmRot[0][0], 360, thisSpeed) == false)
 			stopped = false;
 		if(softResetClamping(&Model::LArmRot[0][1], -360, Model::defaultLArmRot[0][1], 360, thisSpeed) == false)
@@ -600,7 +618,7 @@ bool Animation::openLeftHand(float fingerSpeed) {
 
 
 
-// Clamping
+// Clamping Transformations
 float Animation::clampFloat(float value, float min, float max) {
 	if (value > max)
 		return max;
@@ -639,18 +657,18 @@ void Animation::clampLeftLeg() {
 	Model::LFeetRot = clampFloat(Model::LFeetRot, -20, 20);
 }
 void Animation::clampRightArm() {
-	Model::RArmRot[0][2] = clampFloat(Model::RArmRot[0][2], -180, 180);
-	Model::RArmRot[0][1] = clampFloat(Model::RArmRot[0][1], -75, 75);
-	Model::RArmRot[0][0] = clampFloat(Model::RArmRot[0][0], 0, 180);
+	Model::RArmRot[0][2] = clampFloat(Model::RArmRot[0][2], -100, 135);
+	Model::RArmRot[0][1] = clampFloat(Model::RArmRot[0][1], -35, 60);
+	Model::RArmRot[0][0] = clampFloat(Model::RArmRot[0][0], 0, 170);
 	Model::RArmRot[1][2] = clampFloat(Model::RArmRot[1][2], 0, 160);
 	Model::RArmRot[2][2] = clampFloat(Model::RArmRot[2][2], -60, 60);
 	Model::RArmRot[2][1] = clampFloat(Model::RArmRot[2][1], -90, 90);
 	Model::RArmRot[2][0] = clampFloat(Model::RArmRot[2][0], -90, 90);
 }
 void Animation::clampLeftArm() {
-	Model::LArmRot[0][2] = clampFloat(Model::LArmRot[0][2], -180, 180);
-	Model::LArmRot[0][1] = clampFloat(Model::LArmRot[0][1], -75, 75);
-	Model::LArmRot[0][0] = clampFloat(Model::LArmRot[0][0], -180, 0);
+	Model::LArmRot[0][2] = clampFloat(Model::LArmRot[0][2], -100, 135);
+	Model::LArmRot[0][1] = clampFloat(Model::LArmRot[0][1], -60, 30);
+	Model::LArmRot[0][0] = clampFloat(Model::LArmRot[0][0], -170, 0);
 	Model::LArmRot[1][2] = clampFloat(Model::LArmRot[1][2], 0, 160);
 	Model::LArmRot[2][2] = clampFloat(Model::LArmRot[2][2], -60, 60);
 	Model::LArmRot[2][1] = clampFloat(Model::LArmRot[2][1], -90, 90);
@@ -672,7 +690,6 @@ void Animation::clampLeftFingers() {
 }
 
 // Weapon R99
-
 void Animation::shootBullet() {
 	// Add new bullets if fire button is pressed
 	if (Model::isFired && gunFireCooldownTime.hasPassedEndTime()) {
@@ -749,7 +766,91 @@ void Animation::shootBullet() {
 			glPopMatrix();
 		}
 	}
+}
 
+// Weapon knife
+Time Animation::knifeCooldownTime(0.0f);
+int Animation::knifeAttackSteps = 0;
+void Animation::startSwingKnife() {
+	if (knifeAttackSteps == 0) {
+		knifeAttackSteps = 1;
+	}
+}
+bool Animation::isSwingingKnife() {
+	return knifeAttackSteps != 0;
+}
+void Animation::swingKnife() {
+	// Initiate attack
+	if (Model::isFired && knifeCooldownTime.hasPassedEndTime()) {
+		startSwingKnife();
+	}
+
+	// Play attack animations
+	if (knifeAttackSteps == 1) {
+		float swingSpeed = 200.0f * Time::elapsedSeconds;
+		knifeCooldownTime.setTime(0.0f);
+		bool stopped = true;
+		if (!softResetClamping(&Model::hipRot[1], -360, 10, 360, swingSpeed * 0.2))
+			stopped = false;
+		if (!softResetClamping(&Model::hipRot[2], -360, 5, 360, swingSpeed * 0.2))
+			stopped = false;
+		if (!softResetClamping(&Model::RArmRot[0][0], -360, Model::defaultRArmRot[0][0] + 10, 360, swingSpeed))
+			stopped = false;
+		if (!softResetClamping(&Model::RArmRot[0][1], -360, Model::defaultRArmRot[0][1] + 60, 360, swingSpeed))
+			stopped = false;
+		if (!softResetClamping(&Model::RArmRot[0][2], -360, Model::defaultRArmRot[0][2] + 10, 360, swingSpeed))
+			stopped = false;
+		if (!softResetClamping(&Model::RArmRot[2][0], -360, Model::defaultRArmRot[2][0] - 40, 360, swingSpeed))
+			stopped = false;
+
+		if (stopped) {
+			knifeAttackSteps = 2;
+		}
+	}
+	else if (knifeAttackSteps == 2) {
+		float swingSpeed = 350.0f * Time::elapsedSeconds;
+		float mul = 0.8;
+		bool stopped = true;
+		if (!softResetClamping(&Model::hipRot[1], -360, -10, 360, swingSpeed * 0.5))
+			stopped = false;
+		if (!softResetClamping(&Model::hipRot[2], -360, -10, 360, swingSpeed * 0.5))
+			stopped = false;
+		if (!softResetClamping(&Model::RArmRot[0][0], -360, Model::defaultRArmRot[0][0] + 10, 360, swingSpeed))
+			stopped = false;
+		if (!softResetClamping(&Model::RArmRot[0][1], -360, Model::defaultRArmRot[0][1] - 20, 360, swingSpeed))
+			stopped = false;
+		if (!softResetClamping(&Model::RArmRot[0][2], -360, Model::defaultRArmRot[0][2] + 15, 360, swingSpeed))
+			stopped = false;
+		if (!softResetClamping(&Model::RArmRot[1][2], -360, Model::defaultRArmRot[1][2] - 40, 360, swingSpeed))
+			stopped = false;
+		if (!softResetClamping(&Model::RArmRot[2][0], -360, Model::defaultRArmRot[2][0] - 60, 360, swingSpeed))
+			stopped = false;
+		if (!softResetClamping(&Model::RArmRot[2][2], -360, Model::defaultRArmRot[2][2] - 45, 360, swingSpeed))
+			stopped = false;
+
+		if (stopped) {
+			knifeAttackSteps = 3;	// (Reverting to original)
+		}
+	}
+	else if (knifeAttackSteps == 3) {
+		float swingSpeed = 120.0f * Time::elapsedSeconds;
+		bool stopped = true;
+		if (!softResetClamping(&Model::hipRot[1], -360, 0, 360, swingSpeed * 0.5))
+			stopped = false;
+		if (!softResetClamping(&Model::hipRot[2], -360, 0, 360, swingSpeed * 0.5))
+			stopped = false;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (i == 2)
+					swingSpeed = 300.0f * Time::elapsedSeconds;
+				if (!softResetClamping(&Model::RArmRot[i][j], -360, Model::defaultRArmRot[i][j], 360, swingSpeed))
+					stopped = false;
+			}
+		}
+		if (stopped) {
+			knifeAttackSteps = 0;
+		}
+	}
 }
 
 /*	Texture files

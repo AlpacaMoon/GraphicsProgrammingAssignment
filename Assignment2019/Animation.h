@@ -9,9 +9,6 @@ public:
     // Main method (runs all the below mentioned animations)
     static void runAnimations();
 
-    // Variables 
-    static Time gunFireCooldownTime;
-
     // Weapon related methods
     static void switchWeapon(int n);
     static bool switchingWeapon;
@@ -42,10 +39,6 @@ public:
     static void jump();
 
 
-    // Cutscene
-    // 1) Zipline away
-
-
     // Hand Animations
     static float fingerSpeed;
     static bool closeRightHand(float fingerSpeed);
@@ -65,8 +58,16 @@ public:
     static void clampRightFingers();
     static void clampLeftFingers();
 
-    //weapon
-    static  void shootBullet();
+    // Weapon R99
+    static void shootBullet();
+    static Time gunFireCooldownTime;
+ 
+    // Weapon Kukri Knife
+    static void startSwingKnife();
+    static bool isSwingingKnife();
+    static void swingKnife();
+    static Time knifeCooldownTime;
+    static int knifeAttackSteps;
 
     // TV screen
     static int currentTVscreen;

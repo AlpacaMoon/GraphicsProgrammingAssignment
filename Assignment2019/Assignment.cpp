@@ -70,13 +70,11 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 
 	case WM_LBUTTONDOWN:
-		if (Model::currentWeapon == 1)
-			Model::isFired = true;
+		Model::isFired = true;
 		break;
 
 	case WM_LBUTTONUP:
-		if (Model::currentWeapon == 1)
-			Model::isFired = false;
+		Model::isFired = false;
 		break;
 
 	case WM_MOUSEWHEEL:

@@ -213,10 +213,10 @@ void Controls::independentControls(WPARAM wParam) {
 			Model::LLegUpperRot[1] += rotateSpeed;
 			break;
 		case 'Q':
-			Model::LLegUpperRot[0] += rotateSpeed;
+			Model::LLegUpperRot[0] -= rotateSpeed;
 			break;
 		case 'E':
-			Model::LLegUpperRot[0] -= rotateSpeed;
+			Model::LLegUpperRot[0] += rotateSpeed;
 			break;
 		case 'R':
 			Model::LLegHingeRot += rotateSpeed;
