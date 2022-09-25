@@ -34,5 +34,7 @@ public:
 
 	static void blackVentMaterial();
 
+	static void tvScreenMaterial();
+
 };
 

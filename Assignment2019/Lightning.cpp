@@ -5,7 +5,7 @@
 
 //Lightning variables 
 
-bool Lightning::onLightning;
+bool Lightning::onLightning = true;
 
 //blue
 //GLfloat blueMaterialAmbient[4] = { (120 / 255.0), (142 / 255.0), (163 / 255.0),1 };
@@ -169,4 +169,7 @@ void Lightning::greenSkinMaterial() {
 void Lightning::redSkinMaterial() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, redMaterialAmbient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, redMaterialDiffuse);
+}
+void Lightning::tvScreenMaterial() {
+	defaultMaterial();
 }

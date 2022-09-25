@@ -30,7 +30,7 @@ void Animation::runAnimations() {
 
 	// Disallow input if resetting body parts
 	if (isResetting) {
-		if (softReset(250.0f * Time::elapsedSeconds))
+		if (softReset(400.0f * Time::elapsedSeconds))
 			isResetting = false;
 		return;
 	}
@@ -109,17 +109,19 @@ bool Animation::isResetting = false;
 void Animation::startReset() {
 	isResetting = true;
 
-	// Prevent it from rotating more than one circle
-	if (Model::bodyRot[1] >= 360.0f || Model::bodyRot[1] <= -360.0f) {
-		Model::bodyRot[1] = fmodf(Model::bodyRot[1], 360.0f);
-	}
+	for (int i = 0; i < 3; i++) {
+		// Prevent it from rotating more than one circle
+		if (Model::bodyRot[i] >= 360.0f || Model::bodyRot[i] <= -360.0f) {
+			Model::bodyRot[i] = fmodf(Model::bodyRot[i], 360.0f);
+		}
 
-	// Then tell it to rotate to the side (left or right) that is closest to 0 degree
-	if (Model::bodyRot[1] >= 180.0f) {
-		Model::bodyRot[1] = -360.0f + Model::bodyRot[1];
-	}
-	else if (Model::bodyRot[1] <= -180.0f) {
-		Model::bodyRot[1] = 360.0f + Model::bodyRot[1];
+		// Then tell it to rotate to the side (left or right) that is closest to 0 degree
+		if (Model::bodyRot[i] >= 180.0f) {
+			Model::bodyRot[i] = -360.0f + Model::bodyRot[i];
+		}
+		else if (Model::bodyRot[i] <= -180.0f) {
+			Model::bodyRot[i] = 360.0f + Model::bodyRot[i];
+		}
 	}
 }
 
@@ -151,8 +153,10 @@ bool Animation::softReset(float speed) {
 		}
 
 		for (int j = 0; j < 5; j++) {
-			openRightHand(speed * 3);
-			openLeftHand(speed * 3);
+			if (openRightHand(speed * 2))
+				stopped = false;
+			if (openLeftHand(speed * 2))
+				stopped = false;
 		}
 	}
 	if (softResetClamping(&Model::RLegHingeRot, -360, Model::defaultRLegHingeRot, 360, speed) == false)

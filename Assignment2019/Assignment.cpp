@@ -181,9 +181,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				// Enable / disable gridlines
 				Environment::showGridlines = !Environment::showGridlines;
 				break;
-
 			}
-
 			Controls::manageControlsKeyDown(wParam);
 		}
 		break;
@@ -274,7 +272,7 @@ void display()
 
 //--------------------------------------------------------------------
 void setupEnvironmentLightning() {
-	Lightning::onLightning = false;
+	Lightning::onLightning = true;
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);

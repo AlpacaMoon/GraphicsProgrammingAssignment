@@ -26,6 +26,8 @@ float buttWidth = 0.1f;
 
 // Decoration
 float Model::zipLineBackTubeRotation = 0;
+float Model::zipLineBackTubeCyclerRotation = 0.0f;
+float Model::zipLineBackTubeStringsRotation = 0.0f;
 
 // Weapon Variables
 /* Current weapon
@@ -935,6 +937,7 @@ void Model::Torso() {
 		glPushMatrix();
 		{
 			Color::cyan();
+			Lightning::tvScreenMaterial();
 			glTranslatef(0, -0.01, 0);
 			// 0.68027 : 0.45 = The tv texture ratio
 			float tvWidthHalf = (0.68027f) / 2.0f;
@@ -1232,6 +1235,8 @@ void Model::Torso() {
 			glMatrixMode(GL_TEXTURE);
 			glScalef(5, 1, 1);
 			glRotatef(-90, 0, 0, 1);
+			glTranslatef(0, zipLineBackTubeStringsRotation, 0);
+			zipLineBackTubeStringsRotation += 0.2f * Time::elapsedSeconds;
 			glMatrixMode(GL_MODELVIEW);
 
 			float stringRad = 0.01f;
@@ -1239,9 +1244,21 @@ void Model::Torso() {
 			glTranslatef(-0.67, 0.345, -0.3);
 			gluCylinder(torsoObj, stringRad, stringRad, stringLen, 8, 40);
 			glTranslatef(0.035, -0.1, 0);
+
+			glMatrixMode(GL_TEXTURE);
+			glLoadIdentity();
+			glScalef(5, 1, 1);
+			glRotatef(-90, 0, 0, 1);
+			glTranslatef(0, -zipLineBackTubeStringsRotation, 0);
+			glMatrixMode(GL_MODELVIEW);
+
 			gluCylinder(torsoObj, stringRad, stringRad, stringLen, 8, 40);
 			gluQuadricTexture(torsoObj, GL_FALSE);
 			Texture::off();
+
+
+			if (zipLineBackTubeStringsRotation >= 10.0f)
+				zipLineBackTubeStringsRotation -= 10.0f;
 
 			// Reset GL_TEXTURE matrix
 			glMatrixMode(GL_TEXTURE);
@@ -2550,7 +2567,6 @@ void Model::zipLineTube() {
 	glPopMatrix();
 }
 
-
 void Model::zipLineBackTube() {
 	if (zipLineBackTubeObj == NULL) {
 		zipLineBackTubeObj = gluNewQuadric();
@@ -2559,7 +2575,7 @@ void Model::zipLineBackTube() {
 	{
 		float containerRadius = 0.12f, containerHeight = 0.5f;
 		float lidRadius = containerRadius + 0.01f, lidHeight = 0.05f;
-		float zipLineBackTubeRotSpeed = 120.0f;
+		float zipLineBackTubeRotSpeed = 300.0f;
 
 		glTranslatef(0, containerHeight / 2.0f, 0);
 		glRotatef(-90, 0, 1, 0);
@@ -2687,9 +2703,17 @@ void Model::zipLineBackTube() {
 
 				Texture::on();
 				Texture::use(Texture::_yellowRope);
-				gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
-				gluCylinder(zipLineBackTubeObj, cyclerRadius, cyclerRadius, cyclerThickness, 12, 3);
-				gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);
+				glPushMatrix();
+				{
+					glRotatef(zipLineBackTubeCyclerRotation, 0, 0, 1);
+					zipLineBackTubeCyclerRotation += 50.0f * Time::elapsedSeconds;
+					if (zipLineBackTubeCyclerRotation >= 3600.0f)
+						zipLineBackTubeCyclerRotation -= 3600.0f;
+					gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
+					gluCylinder(zipLineBackTubeObj, cyclerRadius, cyclerRadius, cyclerThickness, 12, 3);
+					gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);
+				}
+				glPopMatrix();
 				Texture::off();
 
 				glMatrixMode(GL_TEXTURE);
