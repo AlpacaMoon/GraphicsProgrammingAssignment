@@ -24,6 +24,9 @@ float armWidth = 0.15f;
 float handThickness = 0.075f;
 float buttWidth = 0.1f;
 
+// Decoration
+float Model::zipLineBackTubeRotation = 0;
+
 // Weapon Variables
 /* Current weapon
 *	0 = Empty handed
@@ -146,6 +149,7 @@ float Model::holdingKnifeFingerRot[5][3] = {
 	{40, 70, 70},
 	{40, 70, 70},
 };
+
 void Model::Pathfinder() {
 	glPushMatrix();
 	{
@@ -2551,11 +2555,11 @@ void Model::zipLineBackTube() {
 	if (zipLineBackTubeObj == NULL) {
 		zipLineBackTubeObj = gluNewQuadric();
 	}
-
 	glPushMatrix();
 	{
 		float containerRadius = 0.12f, containerHeight = 0.5f;
 		float lidRadius = containerRadius + 0.01f, lidHeight = 0.05f;
+		float zipLineBackTubeRotSpeed = 120.0f;
 
 		glTranslatef(0, containerHeight / 2.0f, 0);
 		glRotatef(-90, 0, 1, 0);
@@ -2565,15 +2569,26 @@ void Model::zipLineBackTube() {
 		Lightning::greyMaterial();
 
 		// Tube itself
-		Texture::on();
-		Texture::use(Texture::_winder);
-		gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
 		glTranslatef(0, 0, -containerHeight / 2.0f);
-		gluCylinder(zipLineBackTubeObj, containerRadius, containerRadius, containerHeight, 24, 12);
+		glPushMatrix();
+		{
+			Texture::on();
+			Texture::use(Texture::_winder);
+			gluQuadricTexture(zipLineBackTubeObj, GL_TRUE);
 
-		gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);
-		Texture::off();
+			glRotatef(zipLineBackTubeRotation, 0, 0, 1);
+			zipLineBackTubeRotation += zipLineBackTubeRotSpeed * Time::elapsedSeconds;
+			// Prevent float value overflow
+			if (zipLineBackTubeRotation >= 3600.0f)
+				zipLineBackTubeRotation -= 3600.0f;
 
+			gluCylinder(zipLineBackTubeObj, containerRadius, containerRadius, containerHeight, 24, 12);
+
+			gluQuadricTexture(zipLineBackTubeObj, GL_FALSE);
+			Texture::off();
+		}
+		glPopMatrix();
+		
 		// Lids
 		Color::lightBlue();
 		Lightning::bodyMainMaterial();

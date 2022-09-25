@@ -41,6 +41,7 @@ public:
 
 	static void zipLineTube();
 	static void zipLineBackTube();
+	static float zipLineBackTubeRotation;
 
 	// Weapon Models
 	static const int MAX_BULLETS_ON_SCREEN = 100;
