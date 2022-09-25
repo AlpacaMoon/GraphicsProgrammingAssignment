@@ -10,7 +10,6 @@ public:
     static void runAnimations();
 
     // Variables 
-    static int playingCutscene;
     static Time gunFireCooldownTime;
 
     // Weapon related methods

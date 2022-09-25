@@ -2,12 +2,12 @@
 #include "Model.h"
 #include "Time.h"
 #include "Controls.h"
+#include <math.h>
 
 /* Current playing cutscene
 *	0 = No cutscenes are playing
 *	1 - Zipline away
 */
-int Animation::playingCutscene = 0;
 Time Animation::gunFireCooldownTime(0.0f);
 
 bool Animation::switchingWeapon = false;
@@ -35,29 +35,21 @@ void Animation::runAnimations() {
 		return;
 	}
 
-	// if not playing cutscene
-	if (playingCutscene == 0) {
-
-		if (!isJumping() && Controls::isPressingWalk()) {
-			if (walkSteps == 0)
-				startWalking();
-			else
-				rotateWalk();
-		}
-
-		if (walkSteps != 0) {
-			Animation::walk();
-		}
-
-		if (isJumping()) {
-			jump();
-		}
-
+	if (!isJumping() && Controls::isPressingWalk()) {
+		if (walkSteps == 0)
+			startWalking();
+		else
+			rotateWalk();
 	}
-	// If cutscene == Zipline away
-	else if (playingCutscene == 1) {
 
+	if (walkSteps != 0) {
+		Animation::walk();
 	}
+
+	if (isJumping()) {
+		jump();
+	}
+
 }
 
 void Animation::switchWeapon(int n) {
@@ -111,6 +103,19 @@ bool Animation::softResetClamping(float* target, float min, float frustum, float
 bool Animation::isResetting = false;
 void Animation::startReset() {
 	isResetting = true;
+
+	// Prevent it from rotating more than one circle
+	if (Model::bodyRot[1] >= 360.0f || Model::bodyRot[1] <= -360.0f) {
+		Model::bodyRot[1] = fmodf(Model::bodyRot[1], 360.0f);
+	}
+
+	// Then tell it to rotate to the side (left or right) that is closest to 0 degree
+	if (Model::bodyRot[1] >= 180.0f) {
+		Model::bodyRot[1] = -360.0f + Model::bodyRot[1];
+	}
+	else if (Model::bodyRot[1] <= -180.0f) {
+		Model::bodyRot[1] = 360.0f + Model::bodyRot[1];
+	}
 }
 
 // Resets animation to original rotation and position, 
