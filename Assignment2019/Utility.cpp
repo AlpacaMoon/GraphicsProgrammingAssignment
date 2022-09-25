@@ -201,7 +201,7 @@ void Utility::drawTube(float centerA[3], float normalA[3], float radiusA, float 
 	glPushMatrix();
 
 	// For some reason the tube will get shrinked to infinity when it is parallel to Z-axis (the bug is probably in orthogonalBasis())
-	// So instead of solving the bug, here I just rotate the tube 90 degrees so that it isn't parallel to Z-axis
+	// So instead of solving the problem, here I just rotate the tube 90 degrees so that it isn't parallel to Z-axis
 	float zAxis[3] = { 0, 0, 1 };
 	if (isParallelVector(normalA, zAxis) || isParallelVector(normalB, zAxis)) {
 		glRotatef(-90, 0, 1, 0);
