@@ -4,6 +4,7 @@
 #include "Animation.h"
 #include "Model.h"
 #include "Texture.h"
+#include "Lightning.h"
 
 /*	1 = Posing Mode / Independent Controls Mode
 *	2 = Animation Mode
@@ -88,7 +89,7 @@ void Controls::independentControls(WPARAM wParam) {
 		return;
 
 	// Switch control parts
-	if (wParam >= '1' && wParam <= '6') {
+	if (wParam >= '1' && wParam <= '7') {
 		currentControlPart = wParam - '0';
 	}
 
@@ -429,6 +430,32 @@ void Controls::independentControls(WPARAM wParam) {
 		Animation::clampRightFingers();
 		Animation::clampLeftFingers();
 		break;
+	case 7:
+		// Control light position
+		float lightSpeed = 0.2f;
+		switch (wParam) {
+		case 'W':
+			Lightning::positionLight[2] -= lightSpeed;
+			break;
+		case 'S':
+			Lightning::positionLight[2] += lightSpeed;
+			break;
+		case 'A':
+			Lightning::positionLight[0] -= lightSpeed;
+			break;
+		case 'D':
+			Lightning::positionLight[0] += lightSpeed;
+			break;
+		case 'Q':
+			Lightning::positionLight[1] -= lightSpeed;
+			break;
+		case 'E':
+			Lightning::positionLight[1] += lightSpeed;
+			break;
+		case 'R':
+			Lightning::visualizeLightPos = !Lightning::visualizeLightPos;
+			break;
+		}
 	}
 }
 

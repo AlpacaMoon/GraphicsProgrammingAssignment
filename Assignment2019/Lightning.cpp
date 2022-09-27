@@ -2,10 +2,16 @@
 #include "Texture.h";
 #include <Windows.h>
 #include <gl/GL.h>
+#include <gl/GLU.h>
 
 //Lightning variables 
 
 bool Lightning::onLightning = true;
+
+GLfloat Lightning::ambientLight[4];
+GLfloat Lightning::diffuseLight[4];
+GLfloat Lightning::positionLight[4];
+bool Lightning::visualizeLightPos = false;
 
 //blue
 //GLfloat blueMaterialAmbient[4] = { (120 / 255.0), (142 / 255.0), (163 / 255.0),1 };
@@ -18,10 +24,10 @@ GLfloat redMaterialAmbient[4] = { (186 / 255.0), (73 / 255.0), (76 / 255.0),1 };
 GLfloat redMaterialDiffuse[4] = { (186 / 255.0), (73 / 255.0), (76 / 255.0),1 };
 //yellow
 GLfloat yellowMaterialAmbient[4] = { (254 / 255.0), (217 / 255.0), (79 / 255.0),1 };
-GLfloat yellowMaterialDiffuse[4] = { (254 / 255.0), (217 / 255.0), (79 / 255.0),1 };
+GLfloat yellowMaterialDiffuse[4] = {0, 0, 0,1 };
 //grey
-GLfloat greyMaterialAmbient[4] = { (79 / 255.0), (79 / 255.0), (78 / 255.0),1 };
-GLfloat greyMaterialDiffuse[4] = { (79 / 255.0), (79 / 255.0), (78 / 255.0),1 };
+GLfloat greyMaterialAmbient[4] = { (99 / 255.0), (99 / 255.0), (98 / 255.0),1 };
+GLfloat greyMaterialDiffuse[4] = { (99 / 255.0), (99 / 255.0), (98 / 255.0),1 };
 //wine red
 GLfloat windRedMaterialAmbient[4] = { (142 / 255.0), (21 / 255.0), (5 / 255.0),1 };
 GLfloat windRedMaterialDiffuse[4] = { (142 / 255.0), (21 / 255.0), (5 / 255.0),1 };
@@ -57,7 +63,39 @@ GLfloat blackVentMaterialDiffuse[4] = { (170 / 255.0), (171 / 255.0), (173 / 255
 GLfloat defaultMatAmbient[4] = { 0.2, 0.2, 0.2, 1 };
 GLfloat defaultMatDiffuse[4] = { 0.8, 0.8, 0.8, 1 };
 
+GLUquadricObj* lightConcrete;
+
+void Lightning::initialize() {
+	for (int i = 0; i < 4; i++) {
+		ambientLight[i] = 1;
+		diffuseLight[i] = 1;
+	}
+	positionLight[0] = 0;
+	positionLight[1] = 5;
+	positionLight[2] = 0;
+	positionLight[3] = 0;
+}
+
 void Lightning::lightningSwitch() {
+
+	// Update light position
+	glLightfv(GL_LIGHT0, GL_POSITION, Lightning::positionLight);
+
+	// Visualize light position using a small sphere
+	if (visualizeLightPos) {
+		if (lightConcrete == NULL)
+			lightConcrete = gluNewQuadric();
+		glPushMatrix();
+		{
+			glDisable(GL_LIGHTING);
+			glColor3f(1, 0.8, 0);
+			glTranslatef(positionLight[0], positionLight[1], positionLight[2]);
+			gluSphere(lightConcrete, 0.1, 16, 16);
+		}
+		glPopMatrix();
+	}
+
+	// Light switch
 	if (onLightning) {
 		//enable which type of light
 		glEnable(GL_LIGHT0);

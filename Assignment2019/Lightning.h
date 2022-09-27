@@ -1,8 +1,17 @@
-class Lightning {
 #pragma once
+#include <Windows.h>
+#include <gl/GL.h>
+class Lightning {
 public: 
 	static bool onLightning;
 	static void lightningSwitch();
+
+	static GLfloat ambientLight[4];
+	static GLfloat diffuseLight[4];
+	static GLfloat positionLight[4];
+	static void initialize();
+	static bool visualizeLightPos;
+	
 
 	static void defaultMaterial();
 

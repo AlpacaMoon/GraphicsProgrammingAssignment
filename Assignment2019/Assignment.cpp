@@ -26,11 +26,6 @@ const int Z_AXIS[3] = { 0, 0, 1 };
 float camRotation[3] = { 0,0,0 };
 float camRotateSpeed = 5.0f;
 
-//lighting 
-GLfloat ambientLight[4] = { 1,1,1,1 }; //RGBA
-GLfloat diffuseLight[4] = { 1,1,1,1 }; //RGBA
-GLfloat positionLight[4] = { 0,5,0,0 }; //x,y,z,0
-
 //lookAt
 float eye[3] = { 0,0,5 };
 float tempEye[3] = { 0,0,0 };
@@ -238,18 +233,18 @@ void display()
 	//glClearColor(1, 1, 1, 1);
 	glClearColor(0.8, 0.8, 0.8, 1);
 
-	// Lighting switch
-	Lightning::lightningSwitch();
-
 	// Real thing
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(eye[0], eye[1], eye[2], lookAt[0], lookAt[1], lookAt[2], up[0], up[1], up[2]);
 
-
+	// camera rotation
 	glRotatef(camRotation[0], 1, 0, 0);
 	glRotatef(camRotation[1], 0, 1, 0);
 	glRotatef(camRotation[2], 0, 0, 1);
+
+	// Lighting switch + update light position
+	Lightning::lightningSwitch();
 
 	Environment::skybox();
 	Environment::gridLines();
@@ -259,9 +254,6 @@ void display()
 	glPushMatrix();
 	{
 		Model::Pathfinder();
-		//Model::r99();
-		//Model::kukriKnife();
-
 	}
 	glPopMatrix();
 
@@ -273,10 +265,11 @@ void display()
 //--------------------------------------------------------------------
 void setupEnvironmentLightning() {
 	Lightning::onLightning = true;
+	Lightning::initialize();
 
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-	glLightfv(GL_LIGHT0, GL_POSITION, positionLight);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, Lightning::ambientLight);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, Lightning::diffuseLight);
+	glLightfv(GL_LIGHT0, GL_POSITION, Lightning::positionLight);
 }
 
 void setupCamera()
