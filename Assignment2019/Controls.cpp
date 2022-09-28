@@ -455,6 +455,11 @@ void Controls::independentControls(WPARAM wParam) {
 		case 'R':
 			Lightning::visualizeLightPos = !Lightning::visualizeLightPos;
 			break;
+		case 'F':
+			Lightning::positionLight[0] = 0;
+			Lightning::positionLight[1] = 5;
+			Lightning::positionLight[2] = 0;
+			break;
 		}
 	}
 }
